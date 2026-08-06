@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE, SOCIALS, NAV } from '../consts';
+import Icon from './Icon.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+const rotator = posts.slice(0, 5);
+const ticker = posts.slice(0, 8);
+const fmt = (d: Date) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+const path = Astro.url.pathname;
+---
+
+<!-- 1. Utility bar -->
+<div class="util">
+  <div class="wrap">
+    <span class="clock" id="clock">Tutoria News</span>
+    <span class="rotator">
+      <button class="arw" data-dir="-1" aria-label="Précédent"><Icon name="chevronL" size={14} /></button>
+      <span class="rot-track">
+        {rotator.map((p, i) => (
+          <span class={`rot-item${i === 0 ? ' active' : ''}`}><a href={`/blog/${p.id}/`}>{p.data.title}</a></span>
+        ))}
+      </span>
+      <button class="arw" data-dir="1" aria-label="Suivant"><Icon name="chevronR" size={14} /></button>
+    </span>
+  </div>
+</div>
+
+<!-- 2. Masthead -->
+<div class="masthead">
+  <div class="wrap">
+    <div class="socials">
+      <a href={SOCIALS.facebook} aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12Z"/></svg></a>
+      <a href={SOCIALS.tiktok} aria-label="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2 1.6 3.6 3.6 3.9v2.6c-1.3 0-2.6-.4-3.6-1.1v6.6a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.7a2.9 2.9 0 1 0 2 2.8V3H16Z"/></svg></a>
+      <a href={SOCIALS.youtube} aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3-.4-4.4a2.6 2.6 0 0 0-1.8-1.8C19.4 5.4 12 5.4 12 5.4s-7.4 0-8.8.4A2.6 2.6 0 0 0 1.4 7.6C1 9 1 12 1 12s0 3 .4 4.4a2.6 2.6 0 0 0 1.8 1.8c1.4.4 8.8.4 8.8.4s7.4 0 8.8-.4a2.6 2.6 0 0 0 1.8-1.8C23 15 23 12 23 12ZM9.8 15V9l5.2 3-5.2 3Z"/></svg></a>
+    </div>
+    <a href="/" class="brand" aria-label="Tutoria News — accueil">
+      <img src="/logo.png" alt="Tutoria News — Explorez, Apprenez, Partagez" />
+    </a>
+    <span class="actu-flag"><Icon name="bolt" size={16} /> ACTU</span>
+  </div>
+</div>
+
+<!-- 3. Nav -->
+<nav class="nav">
+  <div class="wrap">
+    <button class="burger" id="burger" aria-label="Menu"><Icon name="menu" /></button>
+    <div class="links" id="menu">
+      {NAV.map((n) => (
+        <a href={n.href} aria-current={path === n.href ? 'page' : undefined}>{n.label}</a>
+      ))}
+    </div>
+    <div class="tools">
+      <a href="/articles/" aria-label="Rechercher"><Icon name="search" size={20} /></a>
+      <button id="theme-toggle" aria-label="Basculer le mode sombre"><Icon name="moon" size={20} /></button>
+    </div>
+  </div>
+</nav>
+
+<!-- 4. ACTU ticker -->
+<div class="ticker">
+  <div class="wrap">
+    <span class="flag"><Icon name="bolt" size={14} /> ACTU</span>
+    <div class="track-wrap">
+      <div class="track">
+        {[...ticker, ...ticker].map((p) => (
+          <span class="item">
+            {p.data.cover && <img src={p.data.cover} alt="" />}
+            <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+            <span>{fmt(p.data.date)}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>

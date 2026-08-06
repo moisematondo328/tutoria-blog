@@ -1,0 +1,14 @@
+---
+// Bloc newsletter — le formulaire sera relié à un service (MailerLite/Buttondown) au déploiement.
+import Icon from './Icon.astro';
+---
+<div class="newsletter">
+  <div class="bell"><Icon name="bell" size={40} /></div>
+  <h4>Oh bonjour 👋</h4>
+  <p>Inscris-toi à notre newsletter pour suivre nos actualités.</p>
+  <form onsubmit="this.querySelector('small').textContent='Merci ! Inscription bientôt active.';return false;">
+    <input type="email" name="email" placeholder="Adresse e-mail *" required aria-label="Adresse e-mail" />
+    <button type="submit">S'abonner</button>
+    <small>Nous ne spammons pas ! Consulte notre politique de confidentialité.</small>
+  </form>
+</div>

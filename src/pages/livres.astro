@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+
+const books = [
+  { title: 'POWER — Les 48 lois du pouvoir', author: 'Robert Greene', status: 'Disponible', grad: 'linear-gradient(150deg,#0e8074,#0b3f39)' },
+  { title: 'La Chèvre de ma mère', author: 'Ricardo Kaniama', status: 'Disponible', grad: 'linear-gradient(150deg,#12a594,#0e6b62)' },
+  { title: 'Connaissance des aliments', author: 'Émilie Fredot', status: 'Bientôt disponible', grad: 'linear-gradient(150deg,#e0a400,#a06b00)' },
+  { title: '48 Lois de la nature humaine', author: 'Robert Greene', status: 'Bientôt disponible', grad: 'linear-gradient(150deg,#0b6e64,#08423b)' },
+];
+---
+
+<BaseLayout title="Livres" description="Découvrez, lisez et téléchargez une sélection de livres.">
+  <section class="banner">
+    <div class="wrap">
+      <span class="eyebrow">La bibliothèque</span>
+      <h1>Découvrez, Lisez et Téléchargez</h1>
+    </div>
+  </section>
+
+  <div class="section wrap">
+    <p style="color:var(--muted);font-size:1.08rem;max-width:640px;margin-top:0">
+      Une sélection de lectures pour nourrir ta curiosité et passer à l'action. Lecture en ligne et
+      téléchargement seront bientôt reconnectés.
+    </p>
+    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
+      {books.map((b) => (
+        <article class="card reveal">
+          <div class="book-cover" style={`background:${b.grad}`}>
+            <Icon name="book" />
+            <strong>{b.title}</strong>
+          </div>
+          <div class="body">
+            <div class="meta"><span class="a"><Icon name="author" /> {b.author}</span></div>
+            <p class="excerpt">{b.status}</p>
+            <span class="more"><Icon name="download" /> Télécharger</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

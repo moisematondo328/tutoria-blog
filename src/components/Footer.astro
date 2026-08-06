@@ -1,0 +1,40 @@
+---
+import { SITE, SOCIALS, PILLARS, NAV } from '../consts';
+const year = 2026;
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="brandline">
+          <strong style="font-size:1.35rem">Tutoria <span style="color:var(--yellow)">News</span></strong>
+        </div>
+        <p class="muted">{SITE.description}</p>
+        <div class="social-row">
+          <a href={SOCIALS.facebook} aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12Z"/></svg></a>
+          <a href={SOCIALS.tiktok} aria-label="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c.3 2 1.6 3.6 3.6 3.9v2.6c-1.3 0-2.6-.4-3.6-1.1v6.6a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.7a2.9 2.9 0 1 0 2 2.8V3H16Z"/></svg></a>
+          <a href={SOCIALS.youtube} aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3-.4-4.4a2.6 2.6 0 0 0-1.8-1.8C19.4 5.4 12 5.4 12 5.4s-7.4 0-8.8.4A2.6 2.6 0 0 0 1.4 7.6C1 9 1 12 1 12s0 3 .4 4.4a2.6 2.6 0 0 0 1.8 1.8c1.4.4 8.8.4 8.8.4s7.4 0 8.8-.4a2.6 2.6 0 0 0 1.8-1.8C23 15 23 12 23 12ZM9.8 15V9l5.2 3-5.2 3Z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Rubriques</h4>
+        <ul>
+          {PILLARS.map((p) => <li><a href={`/categorie/${p.slug}/`}>{p.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          {NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h4>La promesse</h4>
+        <p class="muted">« {SITE.slogan} »<br />Tu lis, tu comprends, tu appliques.</p>
+        <p class="muted">Fondé par {SITE.author}.</p>
+      </div>
+    </div>
+    <div class="copyright">© {year} Tutoria News — Média éducatif francophone. Tous droits réservés.</div>
+  </div>
+</footer>

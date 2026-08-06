@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PILLARS } from '../consts';
+---
+
+<BaseLayout title="Page introuvable" description="Cette page n'existe pas ou a été déplacée.">
+  <section class="banner">
+    <div class="wrap">
+      <span class="eyebrow">Erreur 404</span>
+      <h1>Oups, page introuvable</h1>
+    </div>
+  </section>
+
+  <div class="wrap" style="max-width:720px;padding:44px 20px 20px;text-align:center">
+    <p style="font-size:1.1rem;color:var(--muted)">
+      La page que tu cherches n'existe pas ou a été déplacée. Pas de panique — voici par où continuer :
+    </p>
+    <p style="margin:22px 0">
+      <a class="badge-inline" href="/" style="font-size:.9rem;padding:10px 20px">← Retour à l'accueil</a>
+    </p>
+    <div class="pillars" style="margin-top:20px">
+      {PILLARS.map((p) => (
+        <a class="pillar" href={`/categorie/${p.slug}/`}>
+          <h3>{p.name}</h3>
+          <p>{p.blurb}</p>
+          <div class="bar" style={`background:${p.color}`}></div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

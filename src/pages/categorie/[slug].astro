@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { PILLARS } from '../../consts';
+
+export async function getStaticPaths() {
+  return PILLARS.map((p) => ({ params: { slug: p.slug }, props: { pillar: p } }));
+}
+
+const { pillar } = Astro.props;
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.categorySlug === pillar.slug)
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+---
+
+<BaseLayout title={pillar.name} description={pillar.blurb}>
+  <div class="breadcrumb">
+    <div class="wrap"><a href="/">Accueil</a> » {pillar.name}</div>
+  </div>
+
+  <div class="layout">
+    <div>
+      <h1 class="section-title">{pillar.emoji} Catégorie : {pillar.name}</h1>
+      <div class="cards">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    </div>
+    <Sidebar />
+  </div>
+</BaseLayout>

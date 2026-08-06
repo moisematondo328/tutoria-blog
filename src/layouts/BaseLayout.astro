@@ -1,0 +1,113 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE } from '../consts';
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+const { title, description = SITE.description, image } = Astro.props;
+const pageTitle = title ? `${title} — ${SITE.title}` : `${SITE.title} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image ? new URL(image, Astro.site) : undefined;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/logo.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <ClientRouter />
+    <script is:inline>
+      try { const t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      function setup() {
+        const root = document.documentElement;
+        // Mode sombre
+        const tt = document.getElementById('theme-toggle');
+        if (tt && !tt.dataset.bound) {
+          tt.dataset.bound = '1';
+          tt.addEventListener('click', () => {
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            try { localStorage.setItem('theme', next); } catch (e) {}
+          });
+        }
+        // Menu mobile
+        const burger = document.getElementById('burger');
+        const menu = document.getElementById('menu');
+        if (burger && !burger.dataset.bound) { burger.dataset.bound = '1'; burger.addEventListener('click', () => menu && menu.classList.toggle('open')); }
+        // Horloge
+        if (window.__clock) clearInterval(window.__clock);
+        const clock = document.getElementById('clock');
+        if (clock) {
+          const tick = () => {
+            const d = new Date();
+            clock.textContent = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) + '  ' + d.toLocaleTimeString('fr-FR');
+          };
+          tick(); window.__clock = setInterval(tick, 1000);
+        }
+        // Rotateur de titres
+        if (window.__rot) clearInterval(window.__rot);
+        const items = Array.from(document.querySelectorAll('.rot-item'));
+        if (items.length) {
+          let i = Math.max(0, items.findIndex((el) => el.classList.contains('active')));
+          const show = (n) => { items.forEach((el) => el.classList.remove('active')); i = (n + items.length) % items.length; items[i].classList.add('active'); };
+          show(i);
+          window.__rot = setInterval(() => show(i + 1), 4500);
+          document.querySelectorAll('.util .arw').forEach((b) => { if (!b.dataset.bound) { b.dataset.bound = '1'; b.addEventListener('click', () => show(i + Number(b.dataset.dir))); } });
+        }
+        // Hero slider
+        if (window.__slider) clearInterval(window.__slider);
+        const slides = Array.from(document.querySelectorAll('.hero-slider .slide'));
+        const dots = Array.from(document.querySelectorAll('.hero-slider .dot'));
+        if (slides.length) {
+          let s = Math.max(0, slides.findIndex((el) => el.classList.contains('active')));
+          const go = (n) => {
+            s = (n + slides.length) % slides.length;
+            slides.forEach((el, k) => { el.classList.toggle('active', k === s); el.setAttribute('aria-hidden', k === s ? 'false' : 'true'); });
+            dots.forEach((d, k) => d.classList.toggle('active', k === s));
+          };
+          const restart = () => { clearInterval(window.__slider); window.__slider = setInterval(() => go(s + 1), 5500); };
+          go(s); restart();
+          document.querySelectorAll('.hero-slider .hs-nav').forEach((b) => { if (!b.dataset.bound) { b.dataset.bound = '1'; b.addEventListener('click', () => { go(s + Number(b.dataset.slideDir)); restart(); }); } });
+          dots.forEach((d) => { if (!d.dataset.bound) { d.dataset.bound = '1'; d.addEventListener('click', () => { go(Number(d.dataset.slideTo)); restart(); }); } });
+        }
+        // Révélation au scroll
+        if (window.__io) window.__io.disconnect();
+        const els = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window && els.length) {
+          window.__io = new IntersectionObserver((entries) => {
+            entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); window.__io.unobserve(e.target); } });
+          }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+          els.forEach((el) => window.__io.observe(el));
+        } else { els.forEach((el) => el.classList.add('in')); }
+      }
+      document.addEventListener('astro:page-load', setup);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+---
+
+<BaseLayout title="Tous les articles" description="Tous les articles de Tutoria News.">
+  <div class="breadcrumb"><div class="wrap"><a href="/">Accueil</a> » Articles</div></div>
+
+  <div class="layout">
+    <div>
+      <h1 class="section-title">Tous les articles</h1>
+      <div class="search-box" style="max-width:420px;margin-bottom:22px">
+        <input type="search" id="filter" placeholder="Filtrer par titre…" aria-label="Filtrer" />
+        <button type="button" onclick="document.getElementById('filter').value='';window.__filter()">Effacer</button>
+      </div>
+      <div class="cards" id="grid">
+        {posts.map((post) => (
+          <div class="filter-item" data-title={post.data.title.toLowerCase()}>
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
+      <p id="noresult" style="display:none;color:var(--muted)">Aucun article ne correspond.</p>
+    </div>
+    <Sidebar />
+  </div>
+
+  <script is:inline>
+    const input = document.getElementById('filter');
+    const items = [...document.querySelectorAll('.filter-item')];
+    const noresult = document.getElementById('noresult');
+    window.__filter = function () {
+      const q = (input.value || '').trim().toLowerCase();
+      let shown = 0;
+      items.forEach((el) => {
+        const ok = el.dataset.title.includes(q);
+        el.style.display = ok ? '' : 'none';
+        if (ok) shown++;
+      });
+      noresult.style.display = shown ? 'none' : 'block';
+    };
+    input.addEventListener('input', window.__filter);
+    // pré-remplir depuis ?q=
+    const q = new URLSearchParams(location.search).get('q');
+    if (q) { input.value = q; window.__filter(); }
+  </script>
+</BaseLayout>

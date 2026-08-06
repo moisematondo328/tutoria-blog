@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Icon from '../components/Icon.astro';
+import HeroSlider from '../components/HeroSlider.astro';
+import { PILLARS } from '../consts';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+const heroPosts = posts.slice(0, 5);
+const rest = posts.slice(5, 13);
+---
+
+<BaseLayout>
+  <div class="layout">
+    <div>
+      <HeroSlider posts={heroPosts} />
+
+      <h2 class="section-title">Derniers articles</h2>
+      <div class="cards">
+        {rest.map((post) => <PostCard post={post} />)}
+      </div>
+    </div>
+
+    <Sidebar />
+  </div>
+
+  <section class="band">
+    <div class="section wrap">
+      <h2 class="section-title center">Nos rubriques</h2>
+      <div class="pillars">
+        {PILLARS.map((p) => (
+          <a class="pillar reveal" href={`/categorie/${p.slug}/`}>
+            <span class="ic" style={`background:${p.color}`}><Icon name={p.icon} /></span>
+            <h3>{p.name}</h3>
+            <p>{p.blurb}</p>
+            <div class="bar" style={`background:${p.color}`}></div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

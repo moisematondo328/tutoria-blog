@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Icon from '../components/Icon.astro';
+import { SOCIALS } from '../consts';
+---
+
+<BaseLayout title="Contact" description="Une question, une suggestion, une collaboration ? Écris-nous.">
+  <section class="banner">
+    <div class="wrap">
+      <span class="eyebrow">Nous sommes à ton écoute</span>
+      <h1>Nous contacter</h1>
+    </div>
+  </section>
+
+  <div class="contact-grid">
+    <div>
+      <p style="color:var(--muted);font-size:1.08rem;margin-top:0">
+        Une question, une suggestion ou une opportunité de collaboration ? Remplis le formulaire —
+        on te répond vite.
+      </p>
+
+      <ul class="info-list">
+        <li><span class="ic"><Icon name="chat" /></span><div><b>Écris-nous</b><span>Formulaire ci-dessous — réponse sous 48 h</span></div></li>
+        <li><span class="ic"><Icon name="author" /></span><div><b>Communauté</b><span>Rejoins-nous sur les réseaux</span></div></li>
+        <li><span class="ic"><Icon name="bolt" /></span><div><b>Collaborations</b><span>Partenariats, sponsoring, interventions</span></div></li>
+      </ul>
+
+      <form class="form-card" style="margin-top:22px" onsubmit="this.querySelector('.note').textContent='Merci ! Le formulaire sera actif au déploiement.';return false;">
+        <label for="nom">Nom complet</label>
+        <input id="nom" name="nom" required />
+        <label for="email">Adresse email</label>
+        <input id="email" type="email" name="email" required />
+        <label for="sujet">Sujet</label>
+        <input id="sujet" name="sujet" />
+        <label for="message">Votre message</label>
+        <textarea id="message" name="message" required></textarea>
+        <button class="submit" type="submit">Soumettre le formulaire</button>
+        <p class="note" style="color:#d7efeb;margin:12px 0 0;font-size:.85rem"></p>
+      </form>
+
+      <p style="margin-top:18px">
+        <strong>Suivez-nous :</strong>
+        <a href={SOCIALS.facebook}>Facebook</a> ·
+        <a href={SOCIALS.tiktok}>TikTok</a> ·
+        <a href={SOCIALS.youtube}>YouTube</a>
+      </p>
+    </div>
+    <Newsletter />
+  </div>
+</BaseLayout>

@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import { PILLARS } from '../consts';
+import Newsletter from './Newsletter.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+const recent = posts.slice(0, 5);
+const counts = Object.fromEntries(
+  PILLARS.map((p) => [p.slug, posts.filter((x) => x.data.categorySlug === p.slug).length])
+);
+---
+
+<aside class="sidebar">
+  <div class="widget">
+    <h4>Rechercher</h4>
+    <form class="search-box" action="/articles/" method="get">
+      <input type="search" name="q" placeholder="Un sujet, un mot-clé…" aria-label="Rechercher" />
+      <button type="submit">OK</button>
+    </form>
+  </div>
+
+  <div class="widget">
+    <h4>Articles récents</h4>
+    <ul class="recent">
+      {recent.map((p) => <li><a href={`/blog/${p.id}/`}>{p.data.title}</a></li>)}
+    </ul>
+  </div>
+
+  <div class="widget">
+    <h4>Catégories</h4>
+    <ul class="cats">
+      {PILLARS.map((p) => (
+        <li><a href={`/categorie/${p.slug}/`}>{p.name}<span>{counts[p.slug]}</span></a></li>
+      ))}
+    </ul>
+  </div>
+
+  <Newsletter />
+</aside>

@@ -1,0 +1,33 @@
+---
+import { SITE } from '../consts';
+import Icon from './Icon.astro';
+
+interface Props { posts: any[]; }
+const { posts } = Astro.props;
+const fmt = (d: Date) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<section class="hero-slider reveal" aria-roledescription="carrousel" aria-label="Articles à la une">
+  <div class="slides">
+    {posts.map((p, i) => (
+      <article class={`slide${i === 0 ? ' active' : ''}`} aria-hidden={i === 0 ? 'false' : 'true'}>
+        {p.data.cover && <img src={p.data.cover} alt={p.data.title} loading={i === 0 ? 'eager' : 'lazy'} />}
+        <div class="veil"></div>
+        <div class="content">
+          <a class="cat" href={`/categorie/${p.data.categorySlug}/`}>{p.data.category}</a>
+          <h2><a href={`/blog/${p.id}/`}>{p.data.title}</a></h2>
+          <div class="meta"><Icon name="author" size={15} /> {SITE.author} · <Icon name="calendar" size={15} /> {fmt(p.data.date)}</div>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <button class="hs-nav prev" data-slide-dir="-1" aria-label="Précédent"><Icon name="chevronL" size={22} /></button>
+  <button class="hs-nav next" data-slide-dir="1" aria-label="Suivant"><Icon name="chevronR" size={22} /></button>
+
+  <div class="dots">
+    {posts.map((_, i) => (
+      <button class={`dot${i === 0 ? ' active' : ''}`} data-slide-to={i} aria-label={`Article ${i + 1}`}></button>
+    ))}
+  </div>
+</section>

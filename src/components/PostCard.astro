@@ -1,0 +1,31 @@
+---
+import { SITE } from '../consts';
+import Icon from './Icon.astro';
+
+interface Props {
+  post: {
+    id: string;
+    data: { title: string; date: Date; category: string; categorySlug: string; excerpt: string; cover: string };
+  };
+}
+const { post } = Astro.props;
+const { title, date, category, excerpt, cover } = post.data;
+const dateStr = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<article class="card reveal">
+  <a href={`/blog/${post.id}/`} class="thumb">
+    {cover && <img src={cover} alt={title} loading="lazy" />}
+    <span class="cat">{category}</span>
+  </a>
+  <div class="body">
+    <h3><a href={`/blog/${post.id}/`}>{title}</a></h3>
+    <div class="meta">
+      <span class="a"><Icon name="author" /> {SITE.author}</span>
+      <span><Icon name="calendar" /> {dateStr}</span>
+      <span><Icon name="chat" /> 0</span>
+    </div>
+    <p class="excerpt">{excerpt}</p>
+    <a class="more" href={`/blog/${post.id}/`}>En savoir plus <Icon name="arrowRight" /></a>
+  </div>
+</article>
