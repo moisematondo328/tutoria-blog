@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import Icon from '../../components/Icon.astro';
+import Giscus from '../../components/Giscus.astro';
 import { SITE, readingTime } from '../../consts';
 
 export async function getStaticPaths() {
@@ -38,6 +39,7 @@ const mins = readingTime(post.body ?? '');
       <div class="prose">
         <Content />
       </div>
+      <Giscus />
     </article>
 
     <Sidebar />

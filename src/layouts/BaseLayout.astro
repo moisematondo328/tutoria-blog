@@ -55,6 +55,8 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
             const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             root.setAttribute('data-theme', next);
             try { localStorage.setItem('theme', next); } catch (e) {}
+            const gf = document.querySelector('iframe.giscus-frame');
+            if (gf) gf.contentWindow.postMessage({ giscus: { setConfig: { theme: next === 'dark' ? 'dark' : 'light' } } }, 'https://giscus.app');
           });
         }
         // Menu mobile
@@ -124,6 +126,31 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
             if (btn) { btn.disabled = false; btn.textContent = orig; }
           });
         });
+        // Giscus (commentaires) — (ré)injection à chaque navigation
+        const gw = document.querySelector('.giscus-wrap');
+        if (gw) {
+          gw.innerHTML = '';
+          const dark = root.getAttribute('data-theme') === 'dark';
+          const gs = document.createElement('script');
+          const gAttrs = {
+            'data-repo': 'moisematondo328/tutoria-blog',
+            'data-repo-id': 'R_kgDOTwRb-A',
+            'data-category': 'Announcements',
+            'data-category-id': 'DIC_kwDOTwRb-M4DC20Z',
+            'data-mapping': 'pathname',
+            'data-strict': '0',
+            'data-reactions-enabled': '1',
+            'data-emit-metadata': '0',
+            'data-input-position': 'bottom',
+            'data-theme': dark ? 'dark' : 'light',
+            'data-lang': 'fr',
+          };
+          gs.src = 'https://giscus.app/client.js';
+          Object.entries(gAttrs).forEach(([k, v]) => gs.setAttribute(k, v));
+          gs.crossOrigin = 'anonymous';
+          gs.async = true;
+          gw.appendChild(gs);
+        }
       }
       document.addEventListener('astro:page-load', setup);
     </script>
