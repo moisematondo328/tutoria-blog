@@ -40,6 +40,15 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
     <script is:inline>
       try { const t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
     </script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C4VSWCY4HC"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-C4VSWCY4HC', { send_page_view: false });
+    </script>
   </head>
   <body>
     <Header />
@@ -52,6 +61,8 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
     <script>
       function setup() {
         const root = document.documentElement;
+        // Google Analytics — 1 vue par page/navigation
+        if (window.gtag) window.gtag('event', 'page_view', { page_path: location.pathname + location.search, page_location: location.href, page_title: document.title });
         // Mode sombre
         const tt = document.getElementById('theme-toggle');
         if (tt && !tt.dataset.bound) {
