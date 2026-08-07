@@ -18,7 +18,7 @@ cover: "/uploads/2025/05/les-habitudes-qui-rallongent-la-vie.webp"
 
 <h3 class="wp-block-heading">Manger avec conscience</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Manger-avec-conscience.avif" alt="Manger avec conscience" class="wp-image-1897"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Manger-avec-conscience.webp" alt="Manger avec conscience" class="wp-image-1897"/></figure>
 
 <p>Notre alimentation joue un rôle fondamental dans la prévention des maladies et le maintien d’une bonne santé. Il ne s’agit pas de suivre un régime à la mode, mais d’adopter une alimentation variée, équilibrée et naturelle.</p>
 
@@ -44,7 +44,7 @@ cover: "/uploads/2025/05/les-habitudes-qui-rallongent-la-vie.webp"
 
 <h3 class="wp-block-heading">Dire non à ce qui nuit</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Dire-non-a-ce-qui-nuit.avif" alt="Dire non à ce qui nuit" class="wp-image-1896"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Dire-non-a-ce-qui-nuit.webp" alt="Dire non à ce qui nuit" class="wp-image-1896"/></figure>
 
 <p>Devenir acteur de sa santé, c’est aussi avoir le courage de se libérer des habitudes toxiques : le tabac, l’alcool en excès, la malbouffe, la surconsommation d’écrans, etc. Ces comportements, souvent ancrés dans notre quotidien, grignotent lentement mais sûrement notre vitalité.</p>
 

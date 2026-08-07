@@ -38,7 +38,7 @@ cover: "/uploads/2025/05/un-marathon-ou-un-sprint0.webp"
 
 <h3 class="wp-block-heading"><strong>Trouver le juste rythme : l’art de l’alternance</strong></h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/La-vie-des-hommes.avif" alt="Trouver le juste rythme : l’art de l’alternance" class="wp-image-1846"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/La-vie-des-hommes.webp" alt="Trouver le juste rythme : l’art de l’alternance" class="wp-image-1846"/></figure>
 
 <p>La sagesse consiste à alterner entre constance et intensité, vision long terme et agilité immédiate. Vivre pleinement, c’est reconnaître les cycles et adapter sa stratégie :</p>
 

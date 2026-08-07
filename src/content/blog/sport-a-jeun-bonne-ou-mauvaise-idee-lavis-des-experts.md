@@ -28,7 +28,7 @@ cover: "/uploads/2025/06/Sport-a-jeun-Bonne-ou-mauvaise-idee-Lavis-des-experts.w
 
 <h2 class="wp-block-heading">2. Pourquoi certaines personnes choisissent de s’entraîner à jeun ?</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Pourquoi-certaines-personnes-choisissent-de-sentrainer-a-jeun-.avif" alt="Pourquoi certaines personnes choisissent de s’entraîner à jeun ?" class="wp-image-1932"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Pourquoi-certaines-personnes-choisissent-de-sentrainer-a-jeun-.webp" alt="Pourquoi certaines personnes choisissent de s’entraîner à jeun ?" class="wp-image-1932"/></figure>
 
 <h3 class="wp-block-heading">a) Brûler plus de graisses</h3>
 
@@ -104,7 +104,7 @@ cover: "/uploads/2025/06/Sport-a-jeun-Bonne-ou-mauvaise-idee-Lavis-des-experts.w
 
 <h2 class="wp-block-heading">6. Et le sport à jeun pour la musculation ?</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Et-le-sport-a-jeun-pour-la-musculation.avif" alt="Et le sport à jeun pour la musculation ?" class="wp-image-1931"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Et-le-sport-a-jeun-pour-la-musculation.webp" alt="Et le sport à jeun pour la musculation ?" class="wp-image-1931"/></figure>
 
 <p>La musculation demande plus d’énergie, notamment en glucides.<br><strong>Coach Hugo Boucher :</strong> <em>« À jeun, on risque de puiser dans les protéines musculaires pour produire de l’énergie, ce qui va à l’encontre des objectifs de prise de masse. »</em></p>
 

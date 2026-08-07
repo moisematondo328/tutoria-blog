@@ -18,7 +18,7 @@ cover: "/uploads/2025/09/Comment-mieux-dormir-7-astuces-naturelles.webp"
 
 <h2 class="wp-block-heading">1. Créez une routine du coucher</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V1.avif" alt="Créez une routine du coucher" class="wp-image-2105"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V1.webp" alt="Créez une routine du coucher" class="wp-image-2105"/></figure>
 
 <p>Le corps adore les habitudes. Se coucher et se lever à la même heure chaque jour, même le week-end, envoie un signal clair à votre <strong>horloge biologique interne (rythme circadien)</strong>.</p>
 
@@ -26,7 +26,7 @@ cover: "/uploads/2025/09/Comment-mieux-dormir-7-astuces-naturelles.webp"
 
 <h2 class="wp-block-heading">2. Aménagez un sanctuaire de repos</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V2.avif" alt="Aménagez un sanctuaire de repos " class="wp-image-2110"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V2.webp" alt="Aménagez un sanctuaire de repos " class="wp-image-2110"/></figure>
 
 <p>Votre chambre doit devenir un <strong>havre de paix</strong> : calme, sombre, fraîche et bien aérée.</p>
 
@@ -34,7 +34,7 @@ cover: "/uploads/2025/09/Comment-mieux-dormir-7-astuces-naturelles.webp"
 
 <h2 class="wp-block-heading">3. Offrez à votre corps un moment de détente</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V3.avif" alt="Offrez à votre corps un moment de détente" class="wp-image-2113"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V3.webp" alt="Offrez à votre corps un moment de détente" class="wp-image-2113"/></figure>
 
 <p>Avant de dormir, préparez le corps et l’esprit à <strong>ralentir</strong>.<br>Lecture, méditation, respiration ou étirements doux : ces rituels réduisent le rythme cardiaque et favorisent la sécrétion de sérotonine.</p>
 
@@ -42,7 +42,7 @@ cover: "/uploads/2025/09/Comment-mieux-dormir-7-astuces-naturelles.webp"
 
 <h2 class="wp-block-heading">4. Faites confiance aux plantes</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V4.avif" alt="Faites confiance aux plantes" class="wp-image-2107"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V4.webp" alt="Faites confiance aux plantes" class="wp-image-2107"/></figure>
 
 <p>La phytothérapie est un allié puissant.</p>
 
@@ -56,19 +56,19 @@ cover: "/uploads/2025/09/Comment-mieux-dormir-7-astuces-naturelles.webp"
 
 <h2 class="wp-block-heading">5. Apprenez à déposer vos fardeaux</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V5.avif" alt="Apprenez à déposer vos fardeaux" class="wp-image-2108"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V5.webp" alt="Apprenez à déposer vos fardeaux" class="wp-image-2108"/></figure>
 
 <p>La cause principale de l’insomnie n’est pas le bruit ou la lumière, mais… <strong>les pensées envahissantes</strong>.<br>Prenez un carnet, notez vos idées, ou essayez la méditation guidée.<br>Des études démontrent que <strong>10 minutes de respiration profonde</strong> réduisent le taux de cortisol (l’hormone du stress) et accélèrent l’endormissement.</p>
 
 <h2 class="wp-block-heading">6. Dites adieu aux excitants après 16h</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V6.avif" alt="Dites adieu aux excitants après 16h" class="wp-image-2109"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V6.webp" alt="Dites adieu aux excitants après 16h" class="wp-image-2109"/></figure>
 
 <p>Café, thé, sodas, chocolat : tous contiennent de la caféine. Leur effet stimulant peut durer jusqu’à <strong>8 heures</strong> après ingestion.<br>Alternative : une infusion aux <strong>graines de chia</strong> ou au <strong>moringa</strong>. Ces superaliments hydratent, régulent la glycémie et favorisent un sommeil plus stable.</p>
 
 <h2 class="wp-block-heading">7. Soyez patient et à l’écoute de votre corps</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V7.avif" alt="Soyez patient et à l’écoute de votre corps" class="wp-image-2104"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/V7.webp" alt="Soyez patient et à l’écoute de votre corps" class="wp-image-2104"/></figure>
 
 <p>Le sommeil réparateur ne revient pas en une nuit. Comme un muscle, il s’entraîne. Observez vos habitudes, testez différents rituels, ajustez progressivement.</p>
 

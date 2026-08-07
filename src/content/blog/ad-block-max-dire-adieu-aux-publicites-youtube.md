@@ -24,7 +24,7 @@ cover: "/uploads/2025/03/Adieu-au-PUB-Youtube.webp"
 
 <h2 class="wp-block-heading">Ad Block Max : la solution qu'il vous faut</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/AdBlock-Max-la-solution-1-png.avif" alt="" class="wp-image-1773"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/AdBlock-Max-la-solution-1-png.webp" alt="" class="wp-image-1773"/></figure>
 
 <p><a href="https://chromewebstore.google.com/detail/gcaoacfoknodmofedelgkacmokjocapa?utm_source=item-share-cb" target="_blank" rel="noopener noreferrer nofollow">Ad Block Max</a> est un outil conçu pour filtrer les publicités sur YouTube et bien d'autres sites. Il fonctionne aussi bien sur ordinateur que sur mobile et s'installe en quelques clics.</p>
 

@@ -28,7 +28,7 @@ cover: "/uploads/2025/06/Ou-investir-en-2025-En-immobilier-ou-en-bourse-.webp"
 
 <h3 class="wp-block-heading">La Bourse en 2025 : Volatilité et Opportunités Sectorielles</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/La-Bourse-en-2025.avif" alt="La Bourse en 2025 : Volatilité et Opportunités Sectorielles" class="wp-image-1905"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/La-Bourse-en-2025.webp" alt="La Bourse en 2025 : Volatilité et Opportunités Sectorielles" class="wp-image-1905"/></figure>
 
 <h4 class="wp-block-heading">Performance des marchés</h4>
 

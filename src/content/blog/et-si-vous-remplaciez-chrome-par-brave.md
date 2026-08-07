@@ -10,7 +10,7 @@ cover: "/uploads/2025/04/Chrome-VS-Brave.webp"
 
 <h2 class="wp-block-heading">1. <strong>Chrome te surveille. Brave te protège.</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/04/Chrome-te-surveille-png.avif" alt="Désinstalle Chrome et installe Brave : tu me remercieras !" class="wp-image-1819"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/04/Chrome-te-surveille-png.webp" alt="Désinstalle Chrome et installe Brave : tu me remercieras !" class="wp-image-1819"/></figure>
 
 <p>Chaque clic, chaque site que tu visites, chaque recherche que tu fais… Google le sait. Chrome bosse pour Google, pas pour toi.</p>
 
@@ -64,7 +64,7 @@ cover: "/uploads/2025/04/Chrome-VS-Brave.webp"
 
 <h2 class="wp-block-heading">4. <strong>Pas de galère : Brave, c’est comme Chrome (en mieux)</strong></h2>
 
-<figure class="wp-block-image size-large"><img src="/uploads/2025/04/Brave-cest-comme-Chrome-1024x673.avif" alt="" class="wp-image-1818"/></figure>
+<figure class="wp-block-image size-large"><img src="/uploads/2025/04/Brave-cest-comme-Chrome-1024x673.webp" alt="" class="wp-image-1818"/></figure>
 
 <p>Tu connais Chrome ? Tu connais déjà Brave. Même interface, même extensions, mêmes raccourcis. En plus, tu peux importer :</p>
 
@@ -80,7 +80,7 @@ cover: "/uploads/2025/04/Chrome-VS-Brave.webp"
 
 <h2 class="wp-block-heading">5. <strong>C’est pas juste un navigateur. C’est un statement.</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/04/Moins-de-stress-numerique-png.avif" alt="" class="wp-image-1821"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/04/Moins-de-stress-numerique-png.webp" alt="" class="wp-image-1821"/></figure>
 
 <p>Quand tu choisis Brave, tu dis non au pistage, à la pub forcée, au monopole de Google. Tu dis oui à :</p>
 

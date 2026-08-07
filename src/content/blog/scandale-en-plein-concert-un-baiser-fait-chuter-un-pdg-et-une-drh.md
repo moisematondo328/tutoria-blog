@@ -20,7 +20,7 @@ cover: "/uploads/2025/07/Le-scandale-ColdplayGate.webp"
 
 <h4 class="wp-block-heading">Andy Byron – PDG de la startup tech Astronomer</h4>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Andy-Byron-–-PDG-de-la-startup-tech-Astronomer.avif" alt="Andy Byron – PDG de la startup tech Astronomer" class="wp-image-1983"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Andy-Byron-–-PDG-de-la-startup-tech-Astronomer.webp" alt="Andy Byron – PDG de la startup tech Astronomer" class="wp-image-1983"/></figure>
 
 <ul class="wp-block-list">
 <li>Né en 1974, Andy Byron est un dirigeant américain qui s’est illustré dans plusieurs entreprises du secteur des logiciels.</li>
@@ -34,7 +34,7 @@ cover: "/uploads/2025/07/Le-scandale-ColdplayGate.webp"
 
 <h4 class="wp-block-heading">Kristin Cabot – Directrice des Ressources Humaines</h4>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Kristin-Cabot-–-Directrice-des-Ressources-Humaines.avif" alt="Kristin Cabot – Directrice des Ressources Humaines" class="wp-image-1984"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Kristin-Cabot-–-Directrice-des-Ressources-Humaines.webp" alt="Kristin Cabot – Directrice des Ressources Humaines" class="wp-image-1984"/></figure>
 
 <ul class="wp-block-list">
 <li>Forte d’une expérience de plus de 20 ans dans les RH, elle a travaillé auparavant chez Neo4j avant de rejoindre Astronomer en 2024.</li>
@@ -88,7 +88,7 @@ cover: "/uploads/2025/07/Le-scandale-ColdplayGate.webp"
 
 <h2 class="wp-block-heading">Ce que ce scandale nous apprend tous</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Ce-que-ce-scandale-nous-apprend-tous.avif" alt="Ce que ce scandale nous apprend tous" class="wp-image-1985"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Ce-que-ce-scandale-nous-apprend-tous.webp" alt="Ce que ce scandale nous apprend tous" class="wp-image-1985"/></figure>
 
 <p>Tu n’es peut-être pas un PDG ou une DRH, mais tu es un <strong>acteur de ton propre destin</strong>.<br>Tu es observé par ta famille, tes collègues, ton entourage, et… ton futur “toi”.</p>
 

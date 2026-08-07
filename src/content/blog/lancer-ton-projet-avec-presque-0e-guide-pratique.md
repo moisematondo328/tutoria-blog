@@ -26,7 +26,7 @@ cover: "/uploads/2025/03/Lancer-ton-projet.webp"
 
 <h2 class="wp-block-heading">2️⃣ Quelles sont les solutions pour financer ton projet ?</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/les-solutions-pour-financer-ton-projet-png.avif" alt="" class="wp-image-1811"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/les-solutions-pour-financer-ton-projet-png.webp" alt="" class="wp-image-1811"/></figure>
 
 <h3 class="wp-block-heading">1. L’autofinancement – Utilise tes propres ressources</h3>
 

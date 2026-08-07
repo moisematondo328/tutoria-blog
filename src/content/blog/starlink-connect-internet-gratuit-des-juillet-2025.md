@@ -12,7 +12,7 @@ cover: "/uploads/2025/05/Starlink-Connect-Internet-gratuit.webp"
 
 <h2 class="wp-block-heading"><strong>Une alliance pour connecter les zones oubliées</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Une-alliance-pour-connecter-les-zones-oubliees.avif" alt="Une alliance pour connecter les zones oubliées" class="wp-image-1884"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Une-alliance-pour-connecter-les-zones-oubliees.webp" alt="Une alliance pour connecter les zones oubliées" class="wp-image-1884"/></figure>
 
 <p>Starlink, grâce à ses milliers de satellites en orbite basse, permet une connexion haut débit sans infrastructure terrestre. En s’associant avec l’opérateur T-Mobile, SpaceX vise désormais à rendre cette technologie accessible directement depuis un smartphone classique, sans antenne ni modem satellite. L’objectif : faire disparaître les zones blanches.</p>
 
@@ -32,7 +32,7 @@ cover: "/uploads/2025/05/Starlink-Connect-Internet-gratuit.webp"
 
 <h2 class="wp-block-heading"><strong>Quels appareils seront compatibles ?</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Quels-appareils-seront-compatibles.avif" alt="Quels appareils seront compatibles ?" class="wp-image-1883"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Quels-appareils-seront-compatibles.webp" alt="Quels appareils seront compatibles ?" class="wp-image-1883"/></figure>
 
 <p>Parmi les modèles déjà annoncés compatibles :</p>
 
@@ -74,7 +74,7 @@ cover: "/uploads/2025/05/Starlink-Connect-Internet-gratuit.webp"
 
 <h2 class="wp-block-heading"><strong>Un ciel devenu réseau</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Un-ciel-devenu-reseau.avif" alt="Un ciel devenu réseau" class="wp-image-1882"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Un-ciel-devenu-reseau.webp" alt="Un ciel devenu réseau" class="wp-image-1882"/></figure>
 
 <p>Avec Starlink Connect, le ciel devient vecteur de connectivité. Ce projet ne se limite pas à une prouesse technologique : il redéfinit les contours de la justice numérique. Si les conditions sont réunies, chaque citoyen pourrait demain se connecter au monde, quel que soit l’endroit où il vit.</p>
 

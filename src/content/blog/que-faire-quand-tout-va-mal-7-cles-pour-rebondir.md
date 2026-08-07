@@ -14,7 +14,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">1. Concentrez-vous sur la solution</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Solution.avif" alt="Concentrez-vous sur la solution" class="wp-image-2082"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Solution.webp" alt="Concentrez-vous sur la solution" class="wp-image-2082"/></figure>
 
 <p>Lorsque les choses vont mal, notre premier réflexe est souvent de ruminer, de rejouer le problème en boucle. Mais l’énergie dépensée à ressasser est une énergie perdue.</p>
 
@@ -24,7 +24,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">2. Rappelez-vous que la douleur est temporaire</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/douleur-temporaire.avif" alt="Rappelez-vous que la douleur est temporaire" class="wp-image-2078"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/douleur-temporaire.webp" alt="Rappelez-vous que la douleur est temporaire" class="wp-image-2078"/></figure>
 
 <p>Quand on traverse un moment difficile, on a l’impression qu’il durera pour toujours. Pourtant, tout passe. Les émotions sont comme des vagues : elles montent, elles déferlent… puis elles finissent par redescendre.</p>
 
@@ -32,7 +32,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">3. Faites une pause</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Faire-pause.avif" alt="Faites une pause" class="wp-image-2079"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Faire-pause.webp" alt="Faites une pause" class="wp-image-2079"/></figure>
 
 <p>La société nous pousse à “tenir bon” coûte que coûte. Mais parfois, la meilleure stratégie est de ralentir. Une marche dans la nature, une sieste réparatrice, quelques minutes de respiration profonde… ce sont des gestes simples qui permettent à votre esprit de retrouver de la clarté.</p>
 
@@ -40,7 +40,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">4. Acceptez les faits</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Acceptez-les-faits.avif" alt="Acceptez les faits" class="wp-image-2077"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Acceptez-les-faits.webp" alt="Acceptez les faits" class="wp-image-2077"/></figure>
 
 <p>L’une des plus grandes sources de souffrance vient de notre refus de la réalité. On se dit “Si seulement j’avais fait ceci…” ou “Pourquoi cela m’est arrivé ?”. Mais le passé est immuable. <strong>Résister aux faits, c’est comme lutter contre le vent : on s’épuise inutilement.</strong></p>
 
@@ -48,7 +48,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">5. Rappelez-vous votre “pourquoi”</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Pourquoi.avif" alt="Rappelez-vous votre “pourquoi”" class="wp-image-2081"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Pourquoi.webp" alt="Rappelez-vous votre “pourquoi”" class="wp-image-2081"/></figure>
 
 <p>Dans les moments difficiles, nous avons besoin d’un ancrage. Votre “pourquoi” - vos rêves, vos valeurs, vos objectifs - est votre boussole intérieure.</p>
 
@@ -58,7 +58,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">6. Soyez toujours positif</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Toujours-positif.avif" alt="Soyez toujours positif" class="wp-image-2083"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Toujours-positif.webp" alt="Soyez toujours positif" class="wp-image-2083"/></figure>
 
 <p>Dans chaque épreuve, il y a une graine de lumière. Peut-être un apprentissage, une rencontre inattendue, ou une nouvelle opportunité.</p>
 
@@ -68,7 +68,7 @@ cover: "/uploads/2025/09/Que-faire-quand-les-choses-tournent-mal-7-cles-pour-reb
 
 <h3 class="wp-block-heading">7. N’abandonnez jamais</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Ne-jamais-abandonner.avif" alt="N’abandonnez jamais" class="wp-image-2080"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/09/Ne-jamais-abandonner.webp" alt="N’abandonnez jamais" class="wp-image-2080"/></figure>
 
 <p>La résilience, c’est avancer malgré la douleur. C’est se dire : “Ok, je tombe, mais je me relève.” Chaque pas, même minuscule, compte.</p>
 

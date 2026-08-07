@@ -12,7 +12,7 @@ cover: "/uploads/2025/06/Comment-definir-ses-objectifs-et-passer-en-action.webp"
 
 <p><strong>Les objectifs personnels : Une invitation à se connaître soi-même</strong></p>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Les-objectifs-personnel.avif" alt="Les objectifs personnels : Une invitation à se connaître soi-même" class="wp-image-1926"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Les-objectifs-personnel.webp" alt="Les objectifs personnels : Une invitation à se connaître soi-même" class="wp-image-1926"/></figure>
 
 <p>Les objectifs personnels sont peut-être les plus intimes. Ce sont ceux qui touchent à votre bien-être, à vos relations, à votre développement spirituel et émotionnel. Que ce soit <a href="/blog/devenir-acteur-de-sa-sante-les-habitudes-qui-rallongent-la-vie/">améliorer votre santé</a>, trouver plus de paix intérieure ou apprendre de nouvelles compétences, ces objectifs vous aident à devenir la meilleure version de vous-même.</p>
 
@@ -22,7 +22,7 @@ cover: "/uploads/2025/06/Comment-definir-ses-objectifs-et-passer-en-action.webp"
 
 <p><strong>Les objectifs professionnels : Conquérir vos ambitions tout en restant fidèle à vous-même</strong></p>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Les-objectifs-professionnels.avif" alt="Les objectifs professionnels : Conquérir vos ambitions tout en restant fidèle à vous-même" class="wp-image-1925"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Les-objectifs-professionnels.webp" alt="Les objectifs professionnels : Conquérir vos ambitions tout en restant fidèle à vous-même" class="wp-image-1925"/></figure>
 
 <p>Les objectifs professionnels, eux, sont souvent plus visibles. Ils touchent à votre carrière, à votre croissance professionnelle, à vos réussites matérielles et à l'impact que vous souhaitez avoir dans votre domaine. Mais il est essentiel de ne pas perdre de vue que ces objectifs doivent également être en harmonie avec qui vous êtes réellement. La poursuite de la carrière idéale ne doit pas vous faire oublier la personne que vous souhaitez être.</p>
 

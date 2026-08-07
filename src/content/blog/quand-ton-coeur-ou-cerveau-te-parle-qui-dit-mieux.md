@@ -14,7 +14,7 @@ cover: "/uploads/2025/03/Quand-ton-coeur-ou-cerveau-te-parle.webp"
 
 <h2 class="wp-block-heading"><strong>Cœur vs. Cerveau : Le grand duel intérieur</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Coeur-vs.-Cerveau-png.avif" alt="Quand ton cœur ou cerveau te parle : qui dit mieux ?" class="wp-image-1783"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Coeur-vs.-Cerveau-png.webp" alt="Quand ton cœur ou cerveau te parle : qui dit mieux ?" class="wp-image-1783"/></figure>
 
 <h3 class="wp-block-heading"><strong>🧠 Le cerveau : le stratège de la raison</strong></h3>
 
@@ -106,7 +106,7 @@ cover: "/uploads/2025/03/Quand-ton-coeur-ou-cerveau-te-parle.webp"
 
 <h2 class="wp-block-heading"><strong>Alors, qui dit mieux ?</strong></h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/qui-dit-mieux--png.avif" alt="" class="wp-image-1784"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/qui-dit-mieux--png.webp" alt="" class="wp-image-1784"/></figure>
 
 <p>La vraie réponse… c’est <strong>les deux</strong>.</p>
 

@@ -12,7 +12,7 @@ cover: "/uploads/2025/08/Cable-ou-chargeur-que-faut-il-debrancher-en-premier.web
 
 <h3 class="wp-block-heading">Un risque silencieux dans nos gestes quotidiens</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/08/Un-risque-silencieux-dans-nos-gestes-quotidiens.avif" alt="Un risque silencieux dans nos gestes quotidiens" class="wp-image-2013"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/08/Un-risque-silencieux-dans-nos-gestes-quotidiens.webp" alt="Un risque silencieux dans nos gestes quotidiens" class="wp-image-2013"/></figure>
 
 <p>Imaginons une scène classique : vous avez fini de recharger votre téléphone. Vous tirez simplement le câble pour débrancher le téléphone, ou vous arrachez le chargeur de la prise murale avec le câble encore attaché. Ce que vous ne voyez pas, c’est que ce petit geste peut provoquer :</p>
 
@@ -48,7 +48,7 @@ cover: "/uploads/2025/08/Cable-ou-chargeur-que-faut-il-debrancher-en-premier.web
 
 <h3 class="wp-block-heading">Pourquoi c’est important dans l’ère des technologies émergentes</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/08/stations-de-recharge-sans-fil.avif" alt="Pourquoi c’est important dans l’ère des technologies émergentes" class="wp-image-2012"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/08/stations-de-recharge-sans-fil.webp" alt="Pourquoi c’est important dans l’ère des technologies émergentes" class="wp-image-2012"/></figure>
 
 <p>Avec l’arrivée des <strong>super chargeurs</strong>, des <strong>stations de recharge sans fil</strong>, et des <strong>prises intelligentes</strong>, la gestion de l’énergie devient un enjeu central.</p>
 
@@ -78,7 +78,7 @@ cover: "/uploads/2025/08/Cable-ou-chargeur-que-faut-il-debrancher-en-premier.web
 
 <h3 class="wp-block-heading">Le mot de la fin</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/08/preserver-vos-appareils-dans-le-temps.avif" alt="Le mot de la fin" class="wp-image-2011"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/08/preserver-vos-appareils-dans-le-temps.webp" alt="Le mot de la fin" class="wp-image-2011"/></figure>
 
 <p>Ce n’est pas parce qu’un geste est simple qu’il est sans conséquence. À l’ère des objets connectés, <strong>chaque interaction avec nos <a href="/blog/largent-numerique-levier-contre-la-pauvrete-rurale/">appareils doit être intelligente</a>, préventive et respectueuse des cycles électroniques.</strong> Un bon geste aujourd’hui, c’est un téléphone qui dure demain.</p>
 

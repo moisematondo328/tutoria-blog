@@ -12,7 +12,7 @@ cover: "/uploads/2025/07/Ce-que-cache-vraiment-le-stress-post-traumatique.webp"
 
 <h3 class="wp-block-heading">Qu’est-ce que le stress post-traumatique ?</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Quest-ce-que-le-stress-post-traumatique-.avif" alt="Qu’est-ce que le stress post-traumatique ?" class="wp-image-1974"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Quest-ce-que-le-stress-post-traumatique-.webp" alt="Qu’est-ce que le stress post-traumatique ?" class="wp-image-1974"/></figure>
 
 <p>Le stress post-traumatique est un trouble anxieux qui apparaît après avoir vécu ou été témoin d’un événement traumatisant. Il peut s’agir d’une agression, d’un accident, d’un viol, d’une catastrophe naturelle, d’une guerre, ou même d’un accouchement difficile. Tout ce qui provoque un sentiment de peur intense, d’impuissance ou de menace peut laisser cette cicatrice invisible.</p>
 
@@ -66,7 +66,7 @@ cover: "/uploads/2025/07/Ce-que-cache-vraiment-le-stress-post-traumatique.webp"
 
 <h3 class="wp-block-heading">Les mécanismes du traumatisme : que se passe-t-il dans le cerveau ?</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Les-mecanismes-du-traumatisme-que-se-passe-t-il-dans-le-cerveau-.avif" alt="Les mécanismes du traumatisme : que se passe-t-il dans le cerveau ?" class="wp-image-1973"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Les-mecanismes-du-traumatisme-que-se-passe-t-il-dans-le-cerveau-.webp" alt="Les mécanismes du traumatisme : que se passe-t-il dans le cerveau ?" class="wp-image-1973"/></figure>
 
 <p>Quand une personne vit un événement traumatisant, son cerveau entre en mode survie. C’est une réponse biologique normale. Mais chez certaines personnes, le cerveau ne parvient pas à « désactiver » ce mode.</p>
 
@@ -84,7 +84,7 @@ cover: "/uploads/2025/07/Ce-que-cache-vraiment-le-stress-post-traumatique.webp"
 
 <h3 class="wp-block-heading">Quelles sont les causes et les facteurs de risque ?</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Quelles-sont-les-causes-et-les-facteurs-de-risque-.avif" alt="Quelles sont les causes et les facteurs de risque ?" class="wp-image-1972"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Quelles-sont-les-causes-et-les-facteurs-de-risque-.webp" alt="Quelles sont les causes et les facteurs de risque ?" class="wp-image-1972"/></figure>
 
 <p>Le PTSD peut toucher n’importe qui, à tout âge. Mais certains facteurs augmentent le risque :</p>
 

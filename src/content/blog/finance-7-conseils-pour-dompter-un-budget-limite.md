@@ -20,7 +20,7 @@ cover: "/uploads/2025/06/Gerer-son-budget-quand-chaque-centime-compte.webp"
 
 <h2 class="wp-block-heading">2. Établir un budget mensuel réaliste</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Etablir-un-budget-mensuel-realiste.avif" alt="Établir un budget mensuel réaliste" class="wp-image-1939"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Etablir-un-budget-mensuel-realiste.webp" alt="Établir un budget mensuel réaliste" class="wp-image-1939"/></figure>
 
 <p>Un budget n’est pas un carcan : c’est un outil de liberté. Il vous aide à planifier vos dépenses, à éviter les achats impulsifs et à vous rapprocher de vos objectifs, même modestes.</p>
 
@@ -48,7 +48,7 @@ cover: "/uploads/2025/06/Gerer-son-budget-quand-chaque-centime-compte.webp"
 
 <h2 class="wp-block-heading">4. Automatiser l’épargne, même minime</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Automatiser-lepargne-meme-minime.avif" alt="Automatiser l’épargne, même minime" class="wp-image-1940"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Automatiser-lepargne-meme-minime.webp" alt="Automatiser l’épargne, même minime" class="wp-image-1940"/></figure>
 
 <p>Épargner quand on gagne peu peut sembler irréaliste. Pourtant, même 5 à 10 % du revenu mis de côté chaque mois peuvent constituer un coussin de sécurité avec le temps. L’idéal est d’automatiser cette épargne dès que le salaire tombe : un virement automatique vers un compte séparé évite la tentation. Commencez petit : 10 euros, 20 euros, c’est déjà un début. L’objectif n’est pas seulement d’épargner, mais aussi de créer l’habitude de le faire.</p>
 
@@ -62,7 +62,7 @@ cover: "/uploads/2025/06/Gerer-son-budget-quand-chaque-centime-compte.webp"
 
 <h2 class="wp-block-heading">6. Se former et s’éduquer financièrement</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Se-former-et-seduquer-financierement.avif" alt="Se former et s’éduquer financièrement" class="wp-image-1938"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/Se-former-et-seduquer-financierement.webp" alt="Se former et s’éduquer financièrement" class="wp-image-1938"/></figure>
 
 <p>Une des erreurs fréquentes est de penser que les finances personnelles sont réservées aux riches ou aux experts. Pourtant, l’éducation financière est encore plus cruciale quand on dispose de peu. Lire des livres, suivre des vidéos pédagogiques, utiliser des applications de gestion budgétaire : ce sont des moyens gratuits ou peu coûteux d’améliorer sa relation à l’argent. Plus on comprend le fonctionnement de l’argent, plus on en fait un allié, et non une source constante d’angoisse.</p>
 

@@ -10,7 +10,7 @@ cover: "/uploads/2025/07/La-finance-numerique.webp"
 
 <h2 class="wp-block-heading">1. Le défi de l’accès financier dans les zones rurales</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Le-defi-de-lacces-financier-dans-les-zones-rurales.avif" alt="Le défi de l’accès financier dans les zones rurales" class="wp-image-2005"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Le-defi-de-lacces-financier-dans-les-zones-rurales.webp" alt="Le défi de l’accès financier dans les zones rurales" class="wp-image-2005"/></figure>
 
 <ul class="wp-block-list">
 <li>Dans de nombreux pays en développement, les infrastructures bancaires physiques sont quasi inexistantes dans les zones reculées : absence de guichets, coût de transport élevé, manque de titres de garantie ou d’historique de crédit.</li>
@@ -20,7 +20,7 @@ cover: "/uploads/2025/07/La-finance-numerique.webp"
 
 <h2 class="wp-block-heading">2. La finance digitale : leviers et mécanismes d’inclusion</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/La-finance-digitale.avif" alt="La finance digitale : leviers et mécanismes d’inclusion" class="wp-image-2004"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/La-finance-digitale.webp" alt="La finance digitale : leviers et mécanismes d’inclusion" class="wp-image-2004"/></figure>
 
 <h3 class="wp-block-heading">2.1 Réduction des barrières géographiques et de coûts</h3>
 
@@ -66,7 +66,7 @@ cover: "/uploads/2025/07/La-finance-numerique.webp"
 
 <h2 class="wp-block-heading">4. Facteurs de succès et bonnes pratiques</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Facteurs-de-succes-et-bonnes-pratiques.avif" alt="Facteurs de succès et bonnes pratiques" class="wp-image-2003"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/Facteurs-de-succes-et-bonnes-pratiques.webp" alt="Facteurs de succès et bonnes pratiques" class="wp-image-2003"/></figure>
 
 <ul class="wp-block-list">
 <li><strong>Conception locale adaptée</strong> : le cas de <em>RUGR</em> en Inde montre l’efficacité des services en langues locales (agraires, néobanques rurales, éducation financière vernaculaire).</li>

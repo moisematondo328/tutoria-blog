@@ -14,7 +14,7 @@ cover: "/uploads/2025/05/investissements-vs-inflation.webp"
 
 <h3 class="wp-block-heading"><strong>Stratégies pour préserver la valeur de son capital</strong></h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Strategies.avif" alt="Stratégies pour préserver la valeur de son capital" class="wp-image-1874"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Strategies.webp" alt="Stratégies pour préserver la valeur de son capital" class="wp-image-1874"/></figure>
 
 <p><strong>1. Diversifier intelligemment</strong><br>Répartir les placements entre plusieurs classes d’actifs (actions, <a href="/blog/investir-dans-limmobilier-opportunite-en-or-ou-piege/">immobilier</a>, matières premières, etc.) réduit l’exposition à un seul risque. En période inflationniste, certains secteurs résistent mieux, notamment l’immobilier et les entreprises à forte capitalisation.</p>
 
@@ -28,7 +28,7 @@ cover: "/uploads/2025/05/investissements-vs-inflation.webp"
 
 <h3 class="wp-block-heading"><strong>Questions à considérer pour ajuster son portefeuille</strong></h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/portefeuille.avif" alt="Questions à considérer pour ajuster son portefeuille" class="wp-image-1873"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/portefeuille.webp" alt="Questions à considérer pour ajuster son portefeuille" class="wp-image-1873"/></figure>
 
 <ul class="wp-block-list">
 <li>Le portefeuille actuel est-il suffisamment exposé à des actifs résistants à l’inflation ?</li>

@@ -16,7 +16,7 @@ cover: "/uploads/2025/05/Trop-reflechir-tepuise-Lis-ca-1.webp"
 
 <h3 class="wp-block-heading">🧠 Pourquoi tu penses autant ?</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Pourquoi-tu-penses-autant-.avif" alt="🧠 Pourquoi tu penses autant ?" class="wp-image-1835"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Pourquoi-tu-penses-autant-.webp" alt="🧠 Pourquoi tu penses autant ?" class="wp-image-1835"/></figure>
 
 <p>Ton esprit essaie de t’aider, mais parfois, il va trop loin.<br>Tu réfléchis trop souvent parce que :</p>
 

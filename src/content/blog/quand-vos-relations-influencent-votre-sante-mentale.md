@@ -30,7 +30,7 @@ cover: "/uploads/2025/05/Quand-vos-relations-influencent-votre-sante-mentale.web
 
 <h2 class="wp-block-heading">3. Les relations toxiques : des blessures invisibles mais profondes</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Les-relations-toxiques-des-blessures-invisibles-mais-profondes.avif" alt="Les relations toxiques : des blessures invisibles mais profondes" class="wp-image-1866"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Les-relations-toxiques-des-blessures-invisibles-mais-profondes.webp" alt="Les relations toxiques : des blessures invisibles mais profondes" class="wp-image-1866"/></figure>
 
 <p>Si les relations épanouissantes nous nourrissent, les relations toxiques, elles, nous empoisonnent. Une relation basée sur la manipulation, l’humiliation, le jugement constant ou l’absence d’écoute peut devenir une source permanente de stress.</p>
 
@@ -56,7 +56,7 @@ cover: "/uploads/2025/05/Quand-vos-relations-influencent-votre-sante-mentale.web
 
 <h2 class="wp-block-heading">Prendre soin de ses relations, c’est prendre soin de son esprit</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Prendre-soin-de-ses-relations-cest-prendre-soin-de-son-esprit.avif" alt="Prendre soin de ses relations, c’est prendre soin de son esprit" class="wp-image-1862"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Prendre-soin-de-ses-relations-cest-prendre-soin-de-son-esprit.webp" alt="Prendre soin de ses relations, c’est prendre soin de son esprit" class="wp-image-1862"/></figure>
 
 <p>Dans une époque où <a href="/blog/5-astuces-incontournables-pour-proteger-votre-facebook/">les interactions deviennent de plus en plus numériques</a>, rapides, parfois superficielles, il est vital de revenir à l’essence du lien humain. Une parole sincère, un regard qui comprend, une présence silencieuse mais pleine : autant d’actes simples qui peuvent, à leur échelle, sauver une âme en détresse.</p>
 

@@ -12,7 +12,7 @@ cover: "/uploads/2025/06/WhatsApp-Comment-activer-la-transcription-vocale-Guide-
 
 <h3 class="wp-block-heading">Qu'est-ce que la transcription vocale native sur WhatsApp ?</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/cap2-1.avif" alt="Qu'est-ce que la transcription vocale native sur WhatsApp ?" class="wp-image-1913"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/cap2-1.webp" alt="Qu'est-ce que la transcription vocale native sur WhatsApp ?" class="wp-image-1913"/></figure>
 
 <p>La transcription vocale permet de transformer un message audio reçu sur <a href="https://www.whatsapp.com/?lang=fr_FR" target="_blank" rel="noopener noreferrer nofollow">WhatsApp</a> en texte lisible directement dans la conversation. Cette fonctionnalité est intégrée à l’application, sans avoir besoin d’autres outils externes.<br>Avant cette mise à jour, il fallait utiliser des applis comme <em>Transcriber for WhatsApp</em> ou <em>Otter.ai</em>. Désormais, WhatsApp le fait en interne, ce qui garantit une meilleure fluidité, confidentialité, et une intégration parfaite dans l’interface.</p>
 
@@ -48,7 +48,7 @@ cover: "/uploads/2025/06/WhatsApp-Comment-activer-la-transcription-vocale-Guide-
 
 <h3 class="wp-block-heading">Comment activer la transcription vocale sur WhatsApp ?</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/06/cap1.avif" alt="Comment activer la transcription vocale sur WhatsApp ?" class="wp-image-1912"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/06/cap1.webp" alt="Comment activer la transcription vocale sur WhatsApp ?" class="wp-image-1912"/></figure>
 
 <ol class="wp-block-list">
 <li>Ouvre WhatsApp > Paramètres > Discussions</li>

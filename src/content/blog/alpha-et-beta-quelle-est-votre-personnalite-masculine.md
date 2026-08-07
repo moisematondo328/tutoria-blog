@@ -12,7 +12,7 @@ cover: "/uploads/2025/03/Quelle-est-votre-personnalite-masculine.webp"
 
 <h2 class="wp-block-heading">1. L'Homme Alpha : Le Leader Né</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Alpha-png.avif" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1791"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Alpha-png.webp" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1791"/></figure>
 
 <p>L'alpha est souvent décrit comme un chef naturel : charismatique, ambitieux et sûr de lui. Il attire l'attention, impose le respect et excelle dans le leadership. Cependant, un vrai leader sait aussi faire preuve d'écoute et d'intelligence émotionnelle.</p>
 
@@ -22,7 +22,7 @@ cover: "/uploads/2025/03/Quelle-est-votre-personnalite-masculine.webp"
 
 <h2 class="wp-block-heading">2. L'Homme Bêta : Le Suiveur Loyal</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Beta-png.avif" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1792"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Beta-png.webp" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1792"/></figure>
 
 <p>Le bêta est un homme fiable, pacifique et loyal, préférant souvent l'ombre à la lumière. Il excelle dans la collaboration, mais doit veiller à ne pas sombrer dans la passivité.</p>
 
@@ -32,7 +32,7 @@ cover: "/uploads/2025/03/Quelle-est-votre-personnalite-masculine.webp"
 
 <h2 class="wp-block-heading">3. L'Homme Sigma : L'Indépendant Mystérieux</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Sigma-png.avif" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1796"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Sigma-png.webp" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1796"/></figure>
 
 <p>Le sigma est un "loup solitaire" qui trace son propre chemin sans chercher à dominer. Stratège et intelligent, il opère en dehors des structures traditionnelles.</p>
 
@@ -42,7 +42,7 @@ cover: "/uploads/2025/03/Quelle-est-votre-personnalite-masculine.webp"
 
 <h2 class="wp-block-heading">4. L'Homme Oméga : Le Marginal Indifférent</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Omega-png.avif" alt="" class="wp-image-1795"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Omega-png.webp" alt="" class="wp-image-1795"/></figure>
 
 <p>L'oméga refuse le jeu social et <a href="/blog/quand-ton-coeur-ou-cerveau-te-parle-qui-dit-mieux/">suit ses propres règles</a>. Si cette indifférence peut être une force, elle peut aussi entraîner l'isolement.</p>
 
@@ -52,7 +52,7 @@ cover: "/uploads/2025/03/Quelle-est-votre-personnalite-masculine.webp"
 
 <h2 class="wp-block-heading">5. L'Homme Gamma : L'Idéaliste Rebelle</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Gamma-png.avif" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1794"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Gamma-png.webp" alt="Alpha et Bêta : Quelle est votre personnalité masculine ?" class="wp-image-1794"/></figure>
 
 <p>Le gamma est un stratège contestataire, ambitieux mais souvent frustré de ne pas être reconnu. Il critique la hiérarchie et cherche à s'imposer différemment.</p>
 
@@ -62,7 +62,7 @@ cover: "/uploads/2025/03/Quelle-est-votre-personnalite-masculine.webp"
 
 <h2 class="wp-block-heading">6. L'Homme Delta : Le Travailleur Invisible</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Delta-png.avif" alt="" class="wp-image-1793"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/03/Homme-Delta-png.webp" alt="" class="wp-image-1793"/></figure>
 
 <p>Le delta est un homme pragmatique, discret mais indispensable à la société. Ayant souvent connu des déceptions, il privilégie la stabilité à l'ambition.</p>
 

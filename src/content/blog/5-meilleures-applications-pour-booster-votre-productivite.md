@@ -14,7 +14,7 @@ cover: "/uploads/2025/07/5-Meilleures-applications-pour-booster-votre-productivi
 
 <h2 class="wp-block-heading">1. <a href="https://www.notion.com/fr" target="_blank" rel="noopener noreferrer nofollow">Notion</a> – Le cerveau numérique multifonction</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_47_48.avif" alt="Notion – Le cerveau numérique multifonction" class="wp-image-1955"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_47_48.webp" alt="Notion – Le cerveau numérique multifonction" class="wp-image-1955"/></figure>
 
 <blockquote class="wp-block-quote">
 <p>Tout centraliser dans un seul espace de travail</p>
@@ -30,7 +30,7 @@ cover: "/uploads/2025/07/5-Meilleures-applications-pour-booster-votre-productivi
 
 <h2 class="wp-block-heading">2. <a href="https://toggl.com/" target="_blank" rel="noopener noreferrer nofollow">Toggl Track</a> – Voir clairement où part votre temps</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_47_54.avif" alt="Toggl Track – Voir clairement où part votre temps" class="wp-image-1954"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_47_54.webp" alt="Toggl Track – Voir clairement où part votre temps" class="wp-image-1954"/></figure>
 
 <blockquote class="wp-block-quote">
 <p>Chronométrez vos journées… et révélez vos pertes de temps invisibles</p>
@@ -46,7 +46,7 @@ cover: "/uploads/2025/07/5-Meilleures-applications-pour-booster-votre-productivi
 
 <h2 class="wp-block-heading">3. <a href="https://www.forestapp.cc/" target="_blank" rel="noopener noreferrer nofollow">Forest</a> – Rester focus… et faire pousser des arbres</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_47_59.avif" alt="Forest – Rester focus… et faire pousser des arbres" class="wp-image-1953"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_47_59.webp" alt="Forest – Rester focus… et faire pousser des arbres" class="wp-image-1953"/></figure>
 
 <blockquote class="wp-block-quote">
 <p>Moins de téléphone, plus de concentration, et une forêt virtuelle en récompense</p>
@@ -62,7 +62,7 @@ cover: "/uploads/2025/07/5-Meilleures-applications-pour-booster-votre-productivi
 
 <h2 class="wp-block-heading">4. <a href="https://slack.com/intl/fr-tn/" target="_blank" rel="noopener noreferrer nofollow">Slack</a> – Bien travailler à plusieurs</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_48_04.avif" alt="Slack – Bien travailler à plusieurs" class="wp-image-1952"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_48_04.webp" alt="Slack – Bien travailler à plusieurs" class="wp-image-1952"/></figure>
 
 <blockquote class="wp-block-quote">
 <p>Mieux qu’un groupe <a href="/blog/whatsapp-comment-activer-la-transcription-vocale-guide-2025/">WhatsApp</a>, plus clair qu’une chaîne email</p>
@@ -78,7 +78,7 @@ cover: "/uploads/2025/07/5-Meilleures-applications-pour-booster-votre-productivi
 
 <h2 class="wp-block-heading">5. <a href="https://zapier.com/" target="_blank" rel="noopener noreferrer nofollow">Zapier</a> – L’automatisation simple et puissante</h2>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_48_12.avif" alt="Zapier – L’automatisation simple et puissante" class="wp-image-1951"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/07/ChatGPT-Image-9-juil.-2025-09_48_12.webp" alt="Zapier – L’automatisation simple et puissante" class="wp-image-1951"/></figure>
 
 <blockquote class="wp-block-quote">
 <p>Connectez vos outils, et laissez-les travailler à votre place</p>

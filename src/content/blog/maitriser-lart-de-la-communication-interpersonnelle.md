@@ -18,7 +18,7 @@ cover: "/uploads/2025/05/Maitriser-lart-de-la-communication-interpersonnelle.web
 
 <h3 class="wp-block-heading">2. L’écoute profonde : accueillir sans conditions, à l’intérieur comme à l’extérieur</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Lecoute-profonde-accueillir-sans-conditions-a-linterieur-comme-a-lexterieur.avif" alt="L’écoute profonde  accueillir sans conditions, à l’intérieur comme à l’extérieur" class="wp-image-1890"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/Lecoute-profonde-accueillir-sans-conditions-a-linterieur-comme-a-lexterieur.webp" alt="L’écoute profonde  accueillir sans conditions, à l’intérieur comme à l’extérieur" class="wp-image-1890"/></figure>
 
 <p>S’écouter soi-même n’est pas un simple exercice de conscience, c’est un véritable voyage au cœur de ses ressentis, souvent enfouis ou ignorés. Cette écoute intérieure, tendre et patiente, permet de reconnaître ses limites, ses besoins réels, et d’éviter que la parole extérieure ne soit dictée par des peurs ou des malentendus.</p>
 
@@ -56,7 +56,7 @@ cover: "/uploads/2025/05/Maitriser-lart-de-la-communication-interpersonnelle.web
 
 <h3 class="wp-block-heading">La révolution tranquille de la relation à soi</h3>
 
-<figure class="wp-block-image size-full"><img src="/uploads/2025/05/La-revolution-tranquille-de-la-relation-a-soi.avif" alt="La révolution tranquille de la relation à soi" class="wp-image-1889"/></figure>
+<figure class="wp-block-image size-full"><img src="/uploads/2025/05/La-revolution-tranquille-de-la-relation-a-soi.webp" alt="La révolution tranquille de la relation à soi" class="wp-image-1889"/></figure>
 
 <p>Au fond, la qualité des relations humaines se mesure à l’aune de la relation que chacun entretient avec lui-même. Cette révolution tranquille, faite d’attention, de douceur et d’écoute intérieure, transforme les échanges en véritables rencontres. Cultiver cette relation profonde avec soi ouvre la voie à une communication plus riche, plus humaine, plus vivante.</p>
 
