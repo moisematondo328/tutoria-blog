@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tutorianews.net/sitemap-index.xml
+Sitemap: https://tutoria-blog.vercel.app/sitemap-index.xml
