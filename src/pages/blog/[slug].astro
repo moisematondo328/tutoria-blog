@@ -17,9 +17,27 @@ const { title, date, category, cover, excerpt } = post.data;
 const categorySlug = catSlugOf(post.data);
 const dateStr = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 const mins = readingTime(post.body ?? '');
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  image: cover ? new URL(cover, Astro.site).href : undefined,
+  datePublished: new Date(date).toISOString(),
+  dateModified: new Date(date).toISOString(),
+  author: { '@type': 'Person', name: SITE.author },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.title,
+    logo: { '@type': 'ImageObject', url: new URL('/logo.png', Astro.site).href },
+  },
+  description: excerpt,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+};
 ---
 
 <BaseLayout title={title} description={excerpt} image={cover}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
   <div class="breadcrumb">
     <div class="wrap"><a href="/">Accueil</a> » <a href={`/categorie/${categorySlug}/`}>{category}</a> » {title}</div>
   </div>
