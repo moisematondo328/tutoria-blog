@@ -1,14 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
-import { PILLARS } from '../consts';
+import { PILLARS, catSlugOf } from '../consts';
 import Newsletter from './Newsletter.astro';
 
-const posts = (await getCollection('blog')).sort(
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
 );
 const recent = posts.slice(0, 5);
 const counts = Object.fromEntries(
-  PILLARS.map((p) => [p.slug, posts.filter((x) => x.data.categorySlug === p.slug).length])
+  PILLARS.map((p) => [p.slug, posts.filter((x) => catSlugOf(x.data) === p.slug).length])
 );
 ---
 

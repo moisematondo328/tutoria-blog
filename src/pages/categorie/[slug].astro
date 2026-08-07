@@ -3,15 +3,15 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
 import Sidebar from '../../components/Sidebar.astro';
-import { PILLARS } from '../../consts';
+import { PILLARS, catSlugOf } from '../../consts';
 
 export async function getStaticPaths() {
   return PILLARS.map((p) => ({ params: { slug: p.slug }, props: { pillar: p } }));
 }
 
 const { pillar } = Astro.props;
-const posts = (await getCollection('blog'))
-  .filter((p) => p.data.categorySlug === pillar.slug)
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .filter((p) => catSlugOf(p.data) === pillar.slug)
   .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 

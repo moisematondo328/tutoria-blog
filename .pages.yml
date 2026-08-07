@@ -1,0 +1,52 @@
+# Back-office Tutoria News — configuration Pages CMS (pagescms.org)
+# Édite tes articles en ligne façon WordPress → commit sur GitHub → Vercel redéploie.
+
+media:
+  input: public/uploads
+  output: /uploads
+  extensions: [png, jpg, jpeg, webp, gif, avif, svg]
+
+content:
+  - name: articles
+    label: Articles
+    type: collection
+    path: src/content/blog
+    filename: "{fields.title | slugify}.md"
+    view:
+      fields: [title, category, date, draft]
+      primary: title
+      sort: [date, title]
+    fields:
+      - name: title
+        label: Titre
+        type: string
+        required: true
+      - name: date
+        label: Date de publication
+        type: date
+        options:
+          format: "yyyy-MM-dd HH:mm:ss"
+          time: true
+      - name: category
+        label: Rubrique
+        type: select
+        required: true
+        options:
+          values:
+            - Santé & Bien-être
+            - Développement Personnel
+            - Finance & Investissement
+            - Technologie Émergente
+      - name: excerpt
+        label: Résumé (pour le SEO et les cartes)
+        type: text
+      - name: cover
+        label: Image à la une
+        type: image
+      - name: draft
+        label: Brouillon (coché = non publié)
+        type: boolean
+        default: false
+      - name: body
+        label: Contenu de l'article
+        type: rich-text

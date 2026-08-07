@@ -41,8 +41,13 @@ export function pillarBySlug(slug: string): Pillar | undefined {
   return PILLARS.find((p) => p.slug === slug);
 }
 export function pillarByName(name: string): Pillar | undefined {
-  const n = name.replace(/&amp;/g, '&').trim().toLowerCase();
+  const n = (name || '').replace(/&amp;/g, '&').trim().toLowerCase();
   return PILLARS.find((p) => p.name.toLowerCase() === n);
+}
+
+// Slug de rubrique : utilise categorySlug s'il existe, sinon le déduit du nom (pour les articles créés via le back-office)
+export function catSlugOf(data: { category: string; categorySlug?: string }): string {
+  return data.categorySlug || pillarByName(data.category)?.slug || 'actualites';
 }
 
 // Temps de lecture approximatif à partir du HTML de l'article
