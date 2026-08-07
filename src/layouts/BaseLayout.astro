@@ -106,6 +106,24 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
           }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
           els.forEach((el) => window.__io.observe(el));
         } else { els.forEach((el) => el.classList.add('in')); }
+        // Formulaires Web3Forms (contact + newsletter)
+        document.querySelectorAll('form.w3form').forEach((form) => {
+          if (form.dataset.bound) return; form.dataset.bound = '1';
+          const msg = form.querySelector('.form-msg');
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"], button');
+            const orig = btn ? btn.textContent : '';
+            if (btn) { btn.disabled = true; btn.textContent = 'Envoi…'; }
+            try {
+              const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+              const data = await res.json();
+              if (msg) msg.textContent = data.success ? (form.dataset.success || '✅ Merci !') : '❌ Oups, réessaie dans un instant.';
+              if (data.success) form.reset();
+            } catch (err) { if (msg) msg.textContent = '❌ Erreur réseau, réessaie.'; }
+            if (btn) { btn.disabled = false; btn.textContent = orig; }
+          });
+        });
       }
       document.addEventListener('astro:page-load', setup);
     </script>

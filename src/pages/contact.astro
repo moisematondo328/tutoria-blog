@@ -26,17 +26,23 @@ import { SOCIALS } from '../consts';
         <li><span class="ic"><Icon name="bolt" /></span><div><b>Collaborations</b><span>Partenariats, sponsoring, interventions</span></div></li>
       </ul>
 
-      <form class="form-card" style="margin-top:22px" onsubmit="this.querySelector('.note').textContent='Merci ! Le formulaire sera actif au déploiement.';return false;">
+      <form class="form-card w3form" style="margin-top:22px"
+        action="https://api.web3forms.com/submit" method="POST"
+        data-success="✅ Merci ! Ton message est bien parti — on te répond vite.">
+        <input type="hidden" name="access_key" value="bdb279ee-0299-4b3a-985a-e8ee91257ba0" />
+        <input type="hidden" name="subject" value="Nouveau message — Contact Tutoria News" />
+        <input type="hidden" name="from_name" value="Site Tutoria News" />
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
         <label for="nom">Nom complet</label>
-        <input id="nom" name="nom" required />
+        <input id="nom" name="name" required />
         <label for="email">Adresse email</label>
         <input id="email" type="email" name="email" required />
         <label for="sujet">Sujet</label>
-        <input id="sujet" name="sujet" />
+        <input id="sujet" name="Sujet" />
         <label for="message">Votre message</label>
         <textarea id="message" name="message" required></textarea>
         <button class="submit" type="submit">Soumettre le formulaire</button>
-        <p class="note" style="color:#d7efeb;margin:12px 0 0;font-size:.85rem"></p>
+        <p class="form-msg" style="color:#eafffb;margin:12px 0 0;font-size:.9rem;font-weight:600"></p>
       </form>
 
       <p style="margin-top:18px">
