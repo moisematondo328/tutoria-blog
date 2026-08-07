@@ -1,10 +1,17 @@
 # Back-office Tutoria News — configuration Pages CMS (pagescms.org)
-# Édite tes articles en ligne façon WordPress → commit sur GitHub → Vercel redéploie.
+# Édite tes articles ET tes livres en ligne → commit sur GitHub → Vercel redéploie.
 
 media:
-  input: public/uploads
-  output: /uploads
-  extensions: [png, jpg, jpeg, webp, gif, avif, svg]
+  - name: images
+    label: Images
+    input: public/uploads
+    output: /uploads
+    extensions: [png, jpg, jpeg, webp, gif, avif, svg]
+  - name: files
+    label: Fichiers (PDF)
+    input: public/livres
+    output: /livres
+    extensions: [pdf, epub]
 
 content:
   - name: articles
@@ -43,6 +50,8 @@ content:
       - name: cover
         label: Image à la une
         type: image
+        options:
+          media: images
       - name: draft
         label: Brouillon (coché = non publié)
         type: boolean
@@ -50,3 +59,45 @@ content:
       - name: body
         label: Contenu de l'article
         type: rich-text
+
+  - name: books
+    label: Livres
+    type: collection
+    path: src/content/books
+    filename: "{fields.title | slugify}.md"
+    view:
+      fields: [title, author, available]
+      primary: title
+      sort: [order, title]
+    fields:
+      - name: title
+        label: Titre
+        type: string
+        required: true
+      - name: author
+        label: Auteur
+        type: string
+      - name: cover
+        label: Couverture
+        type: image
+        options:
+          media: images
+      - name: description
+        label: Description
+        type: text
+      - name: file
+        label: Fichier à télécharger (PDF)
+        type: file
+        options:
+          media: files
+      - name: readUrl
+        label: Lien de lecture en ligne (optionnel)
+        type: string
+      - name: available
+        label: Disponible (décoché = « Bientôt »)
+        type: boolean
+        default: true
+      - name: order
+        label: Ordre d'affichage
+        type: number
+        default: 0

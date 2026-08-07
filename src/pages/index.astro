@@ -2,31 +2,56 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
-import Sidebar from '../components/Sidebar.astro';
-import Icon from '../components/Icon.astro';
 import HeroSlider from '../components/HeroSlider.astro';
-import { PILLARS } from '../consts';
+import Newsletter from '../components/Newsletter.astro';
+import Icon from '../components/Icon.astro';
+import { PILLARS, catSlugOf } from '../consts';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
 );
-const heroPosts = posts.slice(0, 5);
-const rest = posts.slice(5, 13);
+const heroBig = posts.slice(0, 4); // grande vedette rotative (slider)
+const heroSide = posts.slice(4, 8); // 4 petites cartes
+const byPillar = PILLARS.map((p) => ({
+  ...p,
+  items: posts.filter((x) => catSlugOf(x.data) === p.slug).slice(0, 4),
+}));
 ---
 
 <BaseLayout>
-  <div class="layout">
-    <div>
-      <HeroSlider posts={heroPosts} />
-
-      <h2 class="section-title">Derniers articles</h2>
-      <div class="cards">
-        {rest.map((post) => <PostCard post={post} />)}
+  <div class="home-hero">
+    <div class="hero-mosaic">
+      <div class="hero-main">
+        <HeroSlider posts={heroBig} />
+      </div>
+      <div class="hero-side">
+        {heroSide.map((p) => (
+          <a class="mini-card reveal" href={`/blog/${p.id}/`}>
+            {p.data.cover && <img src={p.data.cover} alt={p.data.title} loading="lazy" />}
+            <div class="veil"></div>
+            <div class="mc-content">
+              <span class="cat">{p.data.category}</span>
+              <h3>{p.data.title}</h3>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
-
-    <Sidebar />
   </div>
+
+  {byPillar.map((p) =>
+    p.items.length > 0 ? (
+      <section class="home-section">
+        <div class="sec-head">
+          <h2 class="section-title" style={`--dot:${p.color}`}>{p.name}</h2>
+          <a class="see-all" href={`/categorie/${p.slug}/`}>Voir tout <Icon name="arrowRight" /></a>
+        </div>
+        <div class="cards-4">
+          {p.items.map((post) => <PostCard post={post} />)}
+        </div>
+      </section>
+    ) : null
+  )}
 
   <section class="band">
     <div class="section wrap">
@@ -42,5 +67,9 @@ const rest = posts.slice(5, 13);
         ))}
       </div>
     </div>
+  </section>
+
+  <section class="home-section">
+    <div class="nl-home reveal"><Newsletter /></div>
   </section>
 </BaseLayout>

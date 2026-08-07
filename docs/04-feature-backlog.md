@@ -17,7 +17,7 @@
 - [ ] **Récupérer le domaine `tutorianews.net`** (SEO marque) — sinon rester en vercel.app.
 - [ ] **Newsletter → vrai service de liste** (MailerLite/Buttondown) au lieu d'e-mails Web3Forms.
 - [ ] **Recherche plein-texte** (Pagefind) au lieu du filtre par titre.
-- [ ] **Vrais livres/PDF** sur la page Livres (aujourd'hui : exemples).
+- [x] **Bibliothèque gérable** (collection `books` + back-office) — reste à uploader les vrais PDF/couvertures.
 - [ ] **Compteur de commentaires** réel sur les cartes (au lieu de « 0 »).
 
 ## 🟡 Moyen terme

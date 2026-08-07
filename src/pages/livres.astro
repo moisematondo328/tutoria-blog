@@ -1,12 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 
-const books = [
-  { title: 'POWER — Les 48 lois du pouvoir', author: 'Robert Greene', status: 'Disponible', grad: 'linear-gradient(150deg,#0e8074,#0b3f39)' },
-  { title: 'La Chèvre de ma mère', author: 'Ricardo Kaniama', status: 'Disponible', grad: 'linear-gradient(150deg,#12a594,#0e6b62)' },
-  { title: 'Connaissance des aliments', author: 'Émilie Fredot', status: 'Bientôt disponible', grad: 'linear-gradient(150deg,#e0a400,#a06b00)' },
-  { title: '48 Lois de la nature humaine', author: 'Robert Greene', status: 'Bientôt disponible', grad: 'linear-gradient(150deg,#0b6e64,#08423b)' },
+const books = (await getCollection('books')).sort(
+  (a, b) => (a.data.order || 0) - (b.data.order || 0)
+);
+const grads = [
+  'linear-gradient(150deg,#0e8074,#0b3f39)',
+  'linear-gradient(150deg,#12a594,#0e6b62)',
+  'linear-gradient(150deg,#e0a400,#a06b00)',
+  'linear-gradient(150deg,#0b6e64,#08423b)',
 ];
 ---
 
@@ -20,23 +24,36 @@ const books = [
 
   <div class="section wrap">
     <p style="color:var(--muted);font-size:1.08rem;max-width:640px;margin-top:0">
-      Une sélection de lectures pour nourrir ta curiosité et passer à l'action. Lecture en ligne et
-      téléchargement seront bientôt reconnectés.
+      Une sélection de lectures pour nourrir ta curiosité et passer à l'action.
     </p>
-    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">
-      {books.map((b) => (
-        <article class="card reveal">
-          <div class="book-cover" style={`background:${b.grad}`}>
-            <Icon name="book" />
-            <strong>{b.title}</strong>
-          </div>
-          <div class="body">
-            <div class="meta"><span class="a"><Icon name="author" /> {b.author}</span></div>
-            <p class="excerpt">{b.status}</p>
-            <span class="more"><Icon name="download" /> Télécharger</span>
-          </div>
-        </article>
-      ))}
-    </div>
+
+    {books.length ? (
+      <div class="books-grid">
+        {books.map((b, i) => (
+          <article class="book-card reveal">
+            <div class="book-cover" style={b.data.cover ? '' : `background:${grads[i % grads.length]}`}>
+              {b.data.cover ? <img src={b.data.cover} alt={b.data.title} loading="lazy" /> : <Icon name="book" size={40} />}
+              {!b.data.available && <span class="book-soon">Bientôt</span>}
+            </div>
+            <div class="book-body">
+              <h3>{b.data.title}</h3>
+              {b.data.author && <div class="book-author">{b.data.author}</div>}
+              {b.data.description && <p class="book-desc">{b.data.description}</p>}
+              <div class="book-actions">
+                {b.data.available && b.data.file && (
+                  <a class="book-btn" href={b.data.file} download><Icon name="download" size={16} /> Télécharger</a>
+                )}
+                {b.data.available && b.data.readUrl && (
+                  <a class="book-btn ghost" href={b.data.readUrl} target="_blank" rel="noopener noreferrer"><Icon name="book" size={16} /> Lire</a>
+                )}
+                {!b.data.available && <span class="book-btn disabled">Bientôt disponible</span>}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p style="color:var(--muted)">📚 La bibliothèque est en construction — reviens bientôt.</p>
+    )}
   </div>
 </BaseLayout>

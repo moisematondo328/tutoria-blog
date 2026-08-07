@@ -27,7 +27,8 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/logo.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -52,6 +53,19 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
   </head>
   <body>
     <Header />
+
+    <div class="search-overlay" id="search-overlay" hidden>
+      <button class="search-backdrop" id="search-backdrop" aria-label="Fermer la recherche"></button>
+      <div class="search-panel" role="dialog" aria-label="Recherche">
+        <div class="search-bar">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="site-search" type="search" placeholder="Rechercher un article…" autocomplete="off" aria-label="Rechercher" />
+          <button class="search-close" id="search-close" aria-label="Fermer">✕</button>
+        </div>
+        <div class="search-results" id="search-results"><p class="sr-hint">Tape un mot-clé pour chercher dans tous les articles.</p></div>
+      </div>
+    </div>
+
     <main>
       <slot />
     </main>
@@ -166,6 +180,52 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
           gs.crossOrigin = 'anonymous';
           gs.async = true;
           gw.appendChild(gs);
+        }
+        // Recherche / filtre de la page Articles
+        const filterInput = document.getElementById('filter');
+        if (filterInput) {
+          const items = Array.from(document.querySelectorAll('.filter-item'));
+          const noresult = document.getElementById('noresult');
+          const apply = () => {
+            const q = (filterInput.value || '').trim().toLowerCase();
+            let shown = 0;
+            items.forEach((el) => {
+              const ok = !q || (el.dataset.search || '').includes(q);
+              el.style.display = ok ? '' : 'none';
+              if (ok) shown++;
+            });
+            if (noresult) noresult.style.display = shown ? 'none' : 'block';
+          };
+          filterInput.addEventListener('input', apply);
+          const clearBtn = document.getElementById('filter-clear');
+          if (clearBtn) clearBtn.addEventListener('click', () => { filterInput.value = ''; apply(); filterInput.focus(); });
+          const q = new URLSearchParams(location.search).get('q');
+          if (q) filterInput.value = q;
+          apply();
+        }
+        // Recherche globale (overlay)
+        const overlay = document.getElementById('search-overlay');
+        if (overlay) {
+          const sInput = document.getElementById('site-search');
+          const sResults = document.getElementById('search-results');
+          const renderSearch = () => {
+            const q = (sInput.value || '').trim().toLowerCase();
+            if (!q) { sResults.innerHTML = '<p class="sr-hint">Tape un mot-clé pour chercher dans tous les articles.</p>'; return; }
+            const list = (window.__searchIndex || []).filter((a) => (a.title + ' ' + a.excerpt + ' ' + a.category).toLowerCase().includes(q)).slice(0, 25);
+            if (!list.length) { sResults.innerHTML = '<p class="sr-hint">Aucun article ne correspond.</p>'; return; }
+            sResults.innerHTML = list.map((a) => '<a class="sr-item" href="' + a.url + '"><span class="sr-cat">' + a.category + '</span><span class="sr-title">' + a.title + '</span></a>').join('');
+          };
+          const openSearch = async () => {
+            overlay.hidden = false; document.body.classList.add('no-scroll'); sInput.focus();
+            if (!window.__searchIndex) { try { window.__searchIndex = await (await fetch('/search-index.json')).json(); } catch (e) { window.__searchIndex = []; } }
+            renderSearch();
+          };
+          const closeSearch = () => { overlay.hidden = true; document.body.classList.remove('no-scroll'); sInput.value = ''; renderSearch(); };
+          sInput.oninput = renderSearch;
+          document.getElementById('search-close').onclick = closeSearch;
+          document.getElementById('search-backdrop').onclick = closeSearch;
+          document.onkeydown = (e) => { if (e.key === 'Escape' && !overlay.hidden) closeSearch(); };
+          document.querySelectorAll('[data-search-open]').forEach((b) => { b.onclick = (e) => { e.preventDefault(); openSearch(); }; });
         }
       }
       document.addEventListener('astro:page-load', setup);

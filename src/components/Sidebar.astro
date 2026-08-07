@@ -15,10 +15,10 @@ const counts = Object.fromEntries(
 <aside class="sidebar">
   <div class="widget">
     <h4>Rechercher</h4>
-    <form class="search-box" action="/articles/" method="get">
-      <input type="search" name="q" placeholder="Un sujet, un mot-clé…" aria-label="Rechercher" />
-      <button type="submit">OK</button>
-    </form>
+    <button class="search-trigger" data-search-open type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span>Rechercher un article…</span>
+    </button>
   </div>
 
   <div class="widget">

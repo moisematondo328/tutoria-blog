@@ -24,8 +24,24 @@ Définie dans `src/content.config.ts` (schéma Zod).
 | Finance & Investissement | `finance-investissement` | `#0B6E64` | finance |
 | Technologie Émergente | `technologie-emergente` | `#12A594` | tech |
 
+## Collection `books` (livres) — `src/content/books/*.md`
+| Champ | Type | Description |
+|---|---|---|
+| `title` | string | Titre du livre |
+| `author` | string | Auteur |
+| `cover` | image | Couverture (`/uploads/…`) |
+| `description` | text | Résumé |
+| `file` | file | PDF à télécharger (`/livres/…`) |
+| `readUrl` | string | Lien de lecture en ligne (optionnel) |
+| `available` | boolean | `false` = badge « Bientôt » |
+| `order` | number | Ordre d'affichage |
+
+Gérable depuis le back-office (Pages CMS → collection **Livres**).
+
 ## Médias
-- Emplacement : `public/uploads/AAAA/MM/`
+- Images : `public/uploads/AAAA/MM/` (→ `/uploads/`)
+- Fichiers livres (PDF) : `public/livres/` (→ `/livres/`)
+- Emplacement historique : `public/uploads/AAAA/MM/`
 - Format : **WebP** (converti/compressé, largeur max 1000 px, qualité ~58).
 - Référence dans le contenu : `/uploads/AAAA/MM/fichier.webp`.
 
