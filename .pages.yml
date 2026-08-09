@@ -101,3 +101,26 @@ content:
         label: Ordre d'affichage
         type: number
         default: 0
+
+  - name: videos
+    label: Vidéos
+    type: collection
+    path: src/content/videos
+    filename: "{fields.title | slugify}.md"
+    view:
+      fields: [title, order]
+      primary: title
+      sort: [order, title]
+    fields:
+      - name: title
+        label: Titre de la vidéo
+        type: string
+        required: true
+      - name: youtube
+        label: Lien YouTube (ou identifiant de la vidéo)
+        type: string
+        required: true
+      - name: order
+        label: Ordre d'affichage
+        type: number
+        default: 0

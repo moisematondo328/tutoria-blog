@@ -1,14 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { SITE, PILLARS } from '../consts';
+import { PILLARS } from '../consts';
 ---
 
-<BaseLayout title="À propos" description="Tutoria News, média éducatif francophone fondé par Moïse Matondo.">
+<BaseLayout title="À propos" description="Tutoria News t'explique la santé, la finance, le développement personnel et la tech de façon simple et pratique.">
   <section class="banner">
     <div class="wrap">
-      <span class="eyebrow">Vision pour l'avenir</span>
-      <h1>À propos de nous</h1>
+      <span class="eyebrow">Qui sommes-nous</span>
+      <h1>À propos de Tutoria News</h1>
     </div>
   </section>
 
@@ -18,23 +18,24 @@ import { SITE, PILLARS } from '../consts';
         <span class="ic"><Icon name="growth" /></span>
         <h3>Notre philosophie</h3>
         <p>
-          <strong>Tutoria News</strong> — de <em>Tutoriel</em> et <em>Orientation</em> — est bien
-          plus qu'un magazine : une communauté dédiée à l'éducation, l'inspiration et l'innovation.
-          Notre promesse tient en trois verbes : <strong>tu lis, tu comprends, tu appliques.</strong>
+          Le nom <strong>Tutoria</strong> vient de deux mots : <em>Tutoriel</em> et
+          <em>Orientation</em>. Ça résume bien ce qu'on fait : t'expliquer les choses simplement,
+          puis te montrer quoi faire ensuite. Notre promesse tient en trois verbes :
+          <strong>tu lis, tu comprends, tu appliques.</strong>
         </p>
       </div>
       <div class="info-card yellow reveal">
         <span class="ic"><Icon name="health" /></span>
         <h3>Notre mission</h3>
         <p>
-          Fournir des contenus fiables et engageants pour permettre à chacun de grandir, d'apprendre
-          et de réussir. Chaque article part d'une situation réelle du quotidien et se termine par
-          une action concrète, applicable dès aujourd'hui.
+          On part toujours d'une situation réelle du quotidien, et on termine par une action
+          concrète que tu peux faire dès aujourd'hui. Pas de blabla, pas de jargon : des conseils
+          utiles, vérifiés, et faciles à mettre en pratique.
         </p>
       </div>
     </div>
 
-    <h2 class="section-title" style="margin-top:26px">Nos quatre piliers</h2>
+    <h2 class="section-title" style="margin-top:26px">Nos quatre rubriques</h2>
     <div class="pillars">
       {PILLARS.map((p) => (
         <a class="pillar reveal" href={`/categorie/${p.slug}/`}>
@@ -48,9 +49,9 @@ import { SITE, PILLARS } from '../consts';
 
     <div class="info-card reveal" style="margin:30px 0 20px;text-align:center">
       <p style="font-size:1.05rem;color:var(--ink)">
-        Fondé par <strong>{SITE.author}</strong>. Rejoins-nous sur
+        On publie aussi des vidéos et des astuces courtes sur
         <a href="https://www.tiktok.com/@tutorianews">TikTok</a> et
-        <a href="https://www.youtube.com/@TutoriaNews">YouTube</a> — et fais partie du voyage. 🚀
+        <a href="https://www.youtube.com/@TutoriaNews">YouTube</a>. Viens jeter un œil et dis-nous ce que tu en penses.
       </p>
     </div>
   </div>

@@ -145,6 +145,21 @@ a:hover { text-decoration: underline; }
 .see-all:hover .icon { transform: translateX(4px); }
 .cards-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .nl-home { max-width: 620px; margin: 0 auto; }
+
+/* Vidéos YouTube (aperçu cliquable + lecteur) */
+.videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+.video-item .yt-title { margin-top: 10px; font-weight: 600; color: var(--navy); font-size: 0.98rem; line-height: 1.3; }
+.yt-facade { position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; cursor: pointer; background: #000; }
+.yt-facade img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s, opacity .2s; }
+.yt-facade:hover img { transform: scale(1.04); opacity: 0.88; }
+.yt-facade .yt-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px; background: rgba(0,0,0,0.72); border: 0; border-radius: 12px; cursor: pointer; transition: background .2s; }
+.yt-facade:hover .yt-play { background: #ff0000; }
+.yt-facade .yt-play::before { content: ""; position: absolute; top: 50%; left: 52%; transform: translate(-50%, -50%); border-style: solid; border-width: 10px 0 10px 17px; border-color: transparent transparent transparent #fff; }
+.prose .yt-facade { margin: 1.5em 0; }
+.video-embed { position: relative; aspect-ratio: 16/9; margin: 1.5em 0; border-radius: 12px; overflow: hidden; background: #000; }
+.video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.newsletter a { color: #fff; text-decoration: underline; }
+.newsletter .form-msg { font-weight: 600; opacity: 1; margin-top: 8px; }
 @media (max-width: 980px) {
   .mosaic { grid-template-columns: 1fr; }
   .mosaic .featured { min-height: 320px; }

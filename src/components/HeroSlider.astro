@@ -7,7 +7,7 @@ const { posts } = Astro.props;
 const fmt = (d: Date) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 
-<section class="hero-slider reveal" aria-roledescription="carrousel" aria-label="Articles à la une">
+<section class="hero-slider" aria-roledescription="carrousel" aria-label="Articles à la une">
   <div class="slides">
     {posts.map((p, i) => (
       <article class={`slide${i === 0 ? ' active' : ''}`} aria-hidden={i === 0 ? 'false' : 'true'}>

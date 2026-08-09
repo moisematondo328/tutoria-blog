@@ -28,4 +28,13 @@ const books = defineCollection({
   }),
 });
 
-export const collections = { blog, books };
+const videos = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/videos' }),
+  schema: z.object({
+    title: z.string(),
+    youtube: z.string(), // lien YouTube ou identifiant de la vidéo
+    order: z.number().optional().default(0),
+  }),
+});
+
+export const collections = { blog, books, videos };

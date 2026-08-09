@@ -13,9 +13,9 @@ interface Props {
   image?: string;
 }
 const { title, description = SITE.description, image } = Astro.props;
-const pageTitle = title ? `${title} — ${SITE.title}` : `${SITE.title} — ${SITE.tagline}`;
+const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} · ${SITE.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = image ? new URL(image, Astro.site) : undefined;
+const ogImage = new URL(image ?? '/og.png', Astro.site);
 ---
 
 <!doctype html>
@@ -30,10 +30,19 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tutoria News" />
+    <meta property="og:locale" content="fr_FR" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -227,6 +236,29 @@ const ogImage = image ? new URL(image, Astro.site) : undefined;
           document.onkeydown = (e) => { if (e.key === 'Escape' && !overlay.hidden) closeSearch(); };
           document.querySelectorAll('[data-search-open]').forEach((b) => { b.onclick = (e) => { e.preventDefault(); openSearch(); }; });
         }
+        // YouTube : liens/iframes du contenu -> aperçu cliquable, puis clic -> lecteur
+        const ytId = (url) => { if (!url) return ''; const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([\w-]{11})/); return m ? m[1] : (/^[\w-]{11}$/.test(url) ? url : ''); };
+        document.querySelectorAll('.prose a[href*="youtu"], .prose iframe[src*="youtu"]').forEach((el) => {
+          const url = el.getAttribute('href') || el.getAttribute('src') || '';
+          const id = ytId(url);
+          if (!id) return;
+          if (el.tagName === 'A') {
+            const txt = (el.textContent || '').trim().toLowerCase();
+            if (txt && txt.indexOf('youtu') === -1 && txt !== url.toLowerCase()) return;
+          }
+          const fac = document.createElement('div');
+          fac.className = 'yt-facade'; fac.dataset.id = id;
+          fac.innerHTML = '<img loading="lazy" src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="Vidéo YouTube"><button class="yt-play" aria-label="Lire la vidéo"></button>';
+          el.replaceWith(fac);
+        });
+        document.querySelectorAll('.yt-facade').forEach((f) => {
+          if (f.dataset.bound) return; f.dataset.bound = '1';
+          f.addEventListener('click', () => {
+            const w = document.createElement('div'); w.className = 'video-embed';
+            w.innerHTML = '<iframe src="https://www.youtube.com/embed/' + f.dataset.id + '?autoplay=1" title="Vidéo YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            f.replaceWith(w);
+          });
+        });
       }
       document.addEventListener('astro:page-load', setup);
     </script>

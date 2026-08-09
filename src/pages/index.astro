@@ -5,7 +5,7 @@ import PostCard from '../components/PostCard.astro';
 import HeroSlider from '../components/HeroSlider.astro';
 import Newsletter from '../components/Newsletter.astro';
 import Icon from '../components/Icon.astro';
-import { PILLARS, catSlugOf } from '../consts';
+import { PILLARS, catSlugOf, youtubeId } from '../consts';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
@@ -16,6 +16,7 @@ const byPillar = PILLARS.map((p) => ({
   ...p,
   items: posts.filter((x) => catSlugOf(x.data) === p.slug).slice(0, 4),
 }));
+const videos = (await getCollection('videos')).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 ---
 
 <BaseLayout>
@@ -26,7 +27,7 @@ const byPillar = PILLARS.map((p) => ({
       </div>
       <div class="hero-side">
         {heroSide.map((p) => (
-          <a class="mini-card reveal" href={`/blog/${p.id}/`}>
+          <a class="mini-card" href={`/blog/${p.id}/`}>
             {p.data.cover && <img src={p.data.cover} alt={p.data.title} loading="lazy" />}
             <div class="veil"></div>
             <div class="mc-content">
@@ -51,6 +52,29 @@ const byPillar = PILLARS.map((p) => ({
         </div>
       </section>
     ) : null
+  )}
+
+  {videos.length > 0 && (
+    <section class="home-section">
+      <div class="sec-head">
+        <h2 class="section-title">Nos vidéos</h2>
+        <a class="see-all" href="https://www.youtube.com/@TutoriaNews" target="_blank" rel="noopener noreferrer">Voir la chaîne <Icon name="arrowRight" /></a>
+      </div>
+      <div class="videos-grid">
+        {videos.map((v) => {
+          const id = youtubeId(v.data.youtube);
+          return id ? (
+            <div class="video-item">
+              <div class="yt-facade" data-id={id}>
+                <img loading="lazy" src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt={v.data.title} />
+                <button class="yt-play" aria-label="Lire la vidéo"></button>
+              </div>
+              <div class="yt-title">{v.data.title}</div>
+            </div>
+          ) : null;
+        })}
+      </div>
+    </section>
   )}
 
   <section class="band">

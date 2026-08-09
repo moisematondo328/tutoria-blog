@@ -5,15 +5,16 @@ import Icon from './Icon.astro';
 <div class="newsletter">
   <div class="bell"><Icon name="bell" size={40} /></div>
   <h4>Oh bonjour 👋</h4>
-  <p>Inscris-toi à notre newsletter pour suivre nos actualités.</p>
+  <p>Reçois nos meilleurs conseils directement dans ta boîte mail.</p>
   <form class="w3form" action="https://api.web3forms.com/submit" method="POST"
-    data-success="✅ Inscription confirmée — à très vite !">
+    data-success="✅ Inscription confirmée, à très vite !">
     <input type="hidden" name="access_key" value="bdb279ee-0299-4b3a-985a-e8ee91257ba0" />
     <input type="hidden" name="subject" value="Nouvel abonné newsletter — Tutoria News" />
     <input type="hidden" name="from_name" value="Newsletter Tutoria News" />
     <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off" />
-    <input type="email" name="email" placeholder="Adresse e-mail *" required aria-label="Adresse e-mail" />
+    <input type="email" name="email" placeholder="Ton adresse e-mail" required aria-label="Adresse e-mail" />
     <button type="submit">S'abonner</button>
-    <small class="form-msg">Nous ne spammons pas ! Consulte notre politique de confidentialité.</small>
+    <small class="nl-note">Pas de spam. Tu peux te désinscrire quand tu veux. Vois notre <a href="/confidentialite/">politique de confidentialité</a>.</small>
+    <small class="form-msg"></small>
   </form>
 </div>
