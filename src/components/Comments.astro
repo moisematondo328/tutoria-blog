@@ -11,7 +11,7 @@ const pageId = Astro.url.pathname;
   </div>
 
   <form id="comment-form" class="c-form" data-page-id={pageId}>
-    <p class="c-intro">Un avis, une question, une expérience à partager ? Laisse un commentaire — indique juste ton nom, aucun compte n'est requis. Il apparaîtra après validation.</p>
+    <p class="c-intro">Ton avis compte. Laisse un message avec ton prénom, pas de compte à créer. On relit chaque commentaire avant de le publier.</p>
     <input type="text" name="name" placeholder="Ton nom" maxlength="60" required aria-label="Ton nom" />
     <textarea name="text" placeholder="Ton commentaire…" rows="4" maxlength="2000" required aria-label="Ton commentaire"></textarea>
     <input type="text" name="website" class="c-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />

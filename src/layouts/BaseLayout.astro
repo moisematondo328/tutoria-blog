@@ -166,9 +166,9 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
             try {
               const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
               const data = await res.json();
-              if (msg) msg.textContent = data.success ? (form.dataset.success || '✅ Merci !') : '❌ Oups, réessaie dans un instant.';
+              if (msg) msg.textContent = data.success ? (form.dataset.success || 'Message envoyé, on te répond vite.') : 'Envoi impossible pour le moment. Réessaie.';
               if (data.success) form.reset();
-            } catch (err) { if (msg) msg.textContent = '❌ Erreur réseau, réessaie.'; }
+            } catch (err) { if (msg) msg.textContent = 'Connexion perdue. Réessaie dans un instant.'; }
             if (btn) { btn.disabled = false; btn.textContent = orig; }
           });
         });
@@ -190,12 +190,16 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
               });
               const data = await res.json().catch(() => ({}));
               if (data.success) {
-                if (msg) msg.textContent = form.dataset.success || '✅ Merci !';
+                if (msg) msg.textContent = form.dataset.success || 'Merci, tu es inscrit.';
                 form.reset();
+              } else if (data.error === 'email') {
+                if (msg) msg.textContent = 'Vérifie ton adresse e-mail.';
+              } else if (data.error === 'config') {
+                if (msg) msg.textContent = 'L’inscription n’est pas encore active. Réessaie bientôt.';
               } else {
-                if (msg) msg.textContent = '❌ Oups, vérifie ton adresse et réessaie.';
+                if (msg) msg.textContent = 'Inscription impossible pour le moment. Réessaie.';
               }
-            } catch (err) { if (msg) msg.textContent = '❌ Erreur réseau, réessaie.'; }
+            } catch (err) { if (msg) msg.textContent = 'Connexion perdue. Réessaie dans un instant.'; }
             if (btn) { btn.disabled = false; btn.textContent = orig; }
           });
         });
@@ -208,10 +212,10 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
             .then((r) => r.json())
             .then((d) => {
               const cs = (d && d.comments) || [];
-              if (!cs.length) { cList.innerHTML = '<p class="c-empty">Sois le premier à commenter cet article.</p>'; return; }
+              if (!cs.length) { cList.innerHTML = '<p class="c-empty">Aucun commentaire pour l’instant. Ouvre la discussion.</p>'; return; }
               cList.innerHTML = cs.map((c) => `<div class="c-item"><div class="c-head"><span class="c-name">${escHtml(c.name)}</span><span class="c-date">${new Date(c.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div><div class="c-text">${escHtml(c.text)}</div></div>`).join('');
             })
-            .catch(() => { cList.innerHTML = '<p class="c-empty">Les commentaires n\'ont pas pu être chargés.</p>'; });
+            .catch(() => { cList.innerHTML = '<p class="c-empty">Impossible d’afficher les commentaires pour le moment.</p>'; });
         }
         const cForm = document.getElementById('comment-form');
         if (cForm && !cForm.dataset.bound) {
@@ -231,9 +235,11 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
             try {
               const res = await fetch('/api/comments', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
               const d = await res.json().catch(() => ({}));
-              if (d.ok) { if (msg) msg.textContent = '✅ Merci ! Ton commentaire sera visible après validation.'; cForm.reset(); }
-              else { if (msg) msg.textContent = '❌ Vérifie ton nom et ton message, puis réessaie.'; }
-            } catch (err) { if (msg) msg.textContent = '❌ Erreur réseau, réessaie.'; }
+              if (d.ok) { if (msg) msg.textContent = 'Merci, ton commentaire est reçu. Il apparaîtra après relecture.'; cForm.reset(); }
+              else if (d.error === 'champs') { if (msg) msg.textContent = 'Écris ton nom et un message.'; }
+              else if (d.error === 'config') { if (msg) msg.textContent = 'Les commentaires ne sont pas encore activés sur le site.'; }
+              else { if (msg) msg.textContent = 'Envoi impossible pour le moment. Réessaie.'; }
+            } catch (err) { if (msg) msg.textContent = 'Connexion perdue. Réessaie dans un instant.'; }
             if (btn) { btn.disabled = false; btn.textContent = orig; }
           });
         }
