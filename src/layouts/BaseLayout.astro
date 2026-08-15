@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Newsletter from '../components/Newsletter.astro';
 import { SITE } from '../consts';
 import { ClientRouter } from 'astro:transitions';
 import Analytics from '@vercel/analytics/astro';
@@ -75,6 +76,14 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
       </div>
     </div>
 
+    <div class="nl-popup" id="nl-popup" hidden>
+      <button class="nl-popup-backdrop" id="nl-popup-close" aria-label="Fermer"></button>
+      <div class="nl-popup-panel">
+        <button class="nl-popup-x" id="nl-popup-x" aria-label="Fermer">✕</button>
+        <Newsletter />
+      </div>
+    </div>
+
     <main>
       <slot />
     </main>
@@ -94,8 +103,6 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
             const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             root.setAttribute('data-theme', next);
             try { localStorage.setItem('theme', next); } catch (e) {}
-            const gf = document.querySelector('iframe.giscus-frame');
-            if (gf) gf.contentWindow.postMessage({ giscus: { setConfig: { theme: next === 'dark' ? 'dark' : 'light' } } }, 'https://giscus.app');
           });
         }
         // Menu mobile
@@ -165,30 +172,70 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
             if (btn) { btn.disabled = false; btn.textContent = orig; }
           });
         });
-        // Giscus (commentaires) — (ré)injection à chaque navigation
-        const gw = document.querySelector('.giscus-wrap');
-        if (gw) {
-          gw.innerHTML = '';
-          const dark = root.getAttribute('data-theme') === 'dark';
-          const gs = document.createElement('script');
-          const gAttrs = {
-            'data-repo': 'moisematondo328/tutoria-blog',
-            'data-repo-id': 'R_kgDOTwRb-A',
-            'data-category': 'Announcements',
-            'data-category-id': 'DIC_kwDOTwRb-M4DC20Z',
-            'data-mapping': 'pathname',
-            'data-strict': '0',
-            'data-reactions-enabled': '1',
-            'data-emit-metadata': '0',
-            'data-input-position': 'bottom',
-            'data-theme': dark ? 'dark' : 'light',
-            'data-lang': 'fr',
-          };
-          gs.src = 'https://giscus.app/client.js';
-          Object.entries(gAttrs).forEach(([k, v]) => gs.setAttribute(k, v));
-          gs.crossOrigin = 'anonymous';
-          gs.async = true;
-          gw.appendChild(gs);
+        // Newsletter Brevo (via la fonction serveur /api/subscribe)
+        document.querySelectorAll('form.nl-form').forEach((form) => {
+          if (form.dataset.bound) return; form.dataset.bound = '1';
+          const msg = form.querySelector('.form-msg');
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"], button');
+            const input = form.querySelector('input[type="email"]');
+            const orig = btn ? btn.textContent : '';
+            if (btn) { btn.disabled = true; btn.textContent = 'Un instant…'; }
+            try {
+              const res = await fetch(form.getAttribute('action') || '/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: input ? input.value : '' }),
+              });
+              const data = await res.json().catch(() => ({}));
+              if (data.success) {
+                if (msg) msg.textContent = form.dataset.success || '✅ Merci !';
+                form.reset();
+              } else {
+                if (msg) msg.textContent = '❌ Oups, vérifie ton adresse et réessaie.';
+              }
+            } catch (err) { if (msg) msg.textContent = '❌ Erreur réseau, réessaie.'; }
+            if (btn) { btn.disabled = false; btn.textContent = orig; }
+          });
+        });
+        // Commentaires maison (sans compte, pré-modérés) — chargement + envoi
+        const cList = document.getElementById('comments-list');
+        if (cList) {
+          const pid = cList.dataset.pageId;
+          const escHtml = (s) => String(s).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+          fetch('/api/comments?pageId=' + encodeURIComponent(pid))
+            .then((r) => r.json())
+            .then((d) => {
+              const cs = (d && d.comments) || [];
+              if (!cs.length) { cList.innerHTML = '<p class="c-empty">Sois le premier à commenter cet article.</p>'; return; }
+              cList.innerHTML = cs.map((c) => `<div class="c-item"><div class="c-head"><span class="c-name">${escHtml(c.name)}</span><span class="c-date">${new Date(c.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span></div><div class="c-text">${escHtml(c.text)}</div></div>`).join('');
+            })
+            .catch(() => { cList.innerHTML = '<p class="c-empty">Les commentaires n\'ont pas pu être chargés.</p>'; });
+        }
+        const cForm = document.getElementById('comment-form');
+        if (cForm && !cForm.dataset.bound) {
+          cForm.dataset.bound = '1';
+          const msg = cForm.querySelector('.c-msg');
+          cForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = cForm.querySelector('button[type="submit"]');
+            const orig = btn ? btn.textContent : '';
+            if (btn) { btn.disabled = true; btn.textContent = 'Envoi…'; }
+            const payload = {
+              pageId: cForm.dataset.pageId,
+              name: cForm.name.value,
+              text: cForm.text.value,
+              website: cForm.website.value,
+            };
+            try {
+              const res = await fetch('/api/comments', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+              const d = await res.json().catch(() => ({}));
+              if (d.ok) { if (msg) msg.textContent = '✅ Merci ! Ton commentaire sera visible après validation.'; cForm.reset(); }
+              else { if (msg) msg.textContent = '❌ Vérifie ton nom et ton message, puis réessaie.'; }
+            } catch (err) { if (msg) msg.textContent = '❌ Erreur réseau, réessaie.'; }
+            if (btn) { btn.disabled = false; btn.textContent = orig; }
+          });
         }
         // Recherche / filtre de la page Articles
         const filterInput = document.getElementById('filter');
@@ -259,6 +306,19 @@ const ogImage = new URL(image ?? '/og.png', Astro.site);
             f.replaceWith(w);
           });
         });
+        // Popup newsletter (après un délai, refermable, une fois par semaine)
+        const pop = document.getElementById('nl-popup');
+        if (pop) {
+          const closePop = () => { pop.hidden = true; try { localStorage.setItem('nl_pop', String(Date.now())); } catch (e) {} };
+          const px = document.getElementById('nl-popup-x'); if (px) px.onclick = closePop;
+          const pb = document.getElementById('nl-popup-close'); if (pb) pb.onclick = closePop;
+          let dismissed = false;
+          try { const d = localStorage.getItem('nl_pop'); dismissed = !!d && (Date.now() - Number(d) < 7 * 24 * 3600 * 1000); } catch (e) {}
+          if (!dismissed && !window.__nlPopScheduled) {
+            window.__nlPopScheduled = true;
+            setTimeout(() => { if (!pop.dataset.done) pop.hidden = false; }, 25000);
+          }
+        }
       }
       document.addEventListener('astro:page-load', setup);
     </script>

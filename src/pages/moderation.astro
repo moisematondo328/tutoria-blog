@@ -1,0 +1,81 @@
+---
+// Page privée de modération des commentaires (non listée, non indexée).
+// Accès protégé par le SECRET (variable ADMIN_SECRET côté serveur) que tu saisis ici.
+---
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Modération — Tutoria News</title>
+  <style>
+    :root { --teal:#0E8074; --yellow:#FDD200; --ink:#23302E; }
+    body { font-family: system-ui, sans-serif; max-width: 780px; margin: 0 auto; padding: 28px 18px; color: var(--ink); background:#f6f8f7; }
+    h1 { color: var(--teal); }
+    .bar { display:flex; gap:10px; margin: 14px 0 24px; flex-wrap:wrap; }
+    input[type=password] { flex:1; min-width:220px; padding:10px 12px; border:1px solid #cfe0dc; border-radius:10px; font-size:15px; }
+    button { border:0; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer; }
+    .load { background:var(--teal); color:#fff; }
+    .card { background:#fff; border:1px solid #e3ecea; border-radius:14px; padding:16px 18px; margin-bottom:14px; }
+    .meta { font-size:13px; color:#6b7c78; margin-bottom:8px; }
+    .meta b { color:var(--ink); }
+    .txt { white-space:pre-wrap; line-height:1.5; }
+    .actions { margin-top:12px; display:flex; gap:10px; }
+    .ok { background:var(--teal); color:#fff; }
+    .no { background:#e5484d; color:#fff; }
+    .empty { color:#6b7c78; }
+    .msg { margin:10px 0; font-weight:600; }
+  </style>
+</head>
+<body>
+  <h1>Modération des commentaires</h1>
+  <p>Saisis ton mot de passe de modération, puis approuve ✅ ou supprime 🗑️ chaque commentaire en attente.</p>
+  <div class="bar">
+    <input id="secret" type="password" placeholder="Mot de passe de modération" />
+    <button class="load" id="load">Charger les commentaires en attente</button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div id="list"></div>
+
+  <script is:inline>
+    const $ = (s) => document.querySelector(s);
+    const secretEl = $('#secret'), listEl = $('#list'), msgEl = $('#msg');
+    try { const s = localStorage.getItem('mod_secret'); if (s) secretEl.value = s; } catch (e) {}
+
+    async function load() {
+      const secret = secretEl.value.trim();
+      if (!secret) { msgEl.textContent = 'Entre ton mot de passe.'; return; }
+      try { localStorage.setItem('mod_secret', secret); } catch (e) {}
+      msgEl.textContent = 'Chargement…';
+      const res = await fetch('/api/moderate?secret=' + encodeURIComponent(secret));
+      if (res.status === 401) { msgEl.textContent = '❌ Mot de passe incorrect.'; listEl.innerHTML=''; return; }
+      const data = await res.json();
+      const pend = data.pending || [];
+      msgEl.textContent = pend.length ? (pend.length + ' commentaire(s) en attente') : '';
+      if (!pend.length) { listEl.innerHTML = '<p class="empty">Rien en attente. 👌</p>'; return; }
+      listEl.innerHTML = pend.map((c) => `
+        <div class="card" data-page="${encodeURIComponent(c.pageId)}" data-id="${c.id}">
+          <div class="meta"><b>${esc(c.name)}</b> · ${new Date(c.date).toLocaleString('fr-FR')} · <span>${esc(c.pageId)}</span></div>
+          <div class="txt">${esc(c.text)}</div>
+          <div class="actions">
+            <button class="ok" data-a="approve">✅ Approuver</button>
+            <button class="no" data-a="delete">🗑️ Supprimer</button>
+          </div>
+        </div>`).join('');
+    }
+    function esc(s){ return String(s).replace(/[&<>"]/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+    listEl.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-a]'); if (!btn) return;
+      const card = btn.closest('.card');
+      const secret = secretEl.value.trim();
+      btn.disabled = true;
+      const res = await fetch('/api/moderate', { method:'POST', headers:{'content-type':'application/json'},
+        body: JSON.stringify({ secret, action: btn.dataset.a, pageId: decodeURIComponent(card.dataset.page), id: card.dataset.id }) });
+      if (res.ok) card.remove(); else { btn.disabled = false; msgEl.textContent = '❌ Erreur.'; }
+    });
+    $('#load').addEventListener('click', load);
+    if (secretEl.value) load();
+  </script>
+</body>
+</html>

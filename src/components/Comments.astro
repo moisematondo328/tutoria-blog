@@ -1,0 +1,22 @@
+---
+// Commentaires maison : le visiteur laisse un nom + un message (aucun compte).
+// Le commentaire part en modération ; il n'apparaît qu'après validation (page /moderation).
+import Icon from './Icon.astro';
+const pageId = Astro.url.pathname;
+---
+<section class="comments" id="commentaires">
+  <h2 class="section-title"><Icon name="chat" size={22} /> Commentaires</h2>
+
+  <div id="comments-list" data-page-id={pageId}>
+    <p class="c-loading">Chargement des commentaires…</p>
+  </div>
+
+  <form id="comment-form" class="c-form" data-page-id={pageId}>
+    <p class="c-intro">Un avis, une question, une expérience à partager ? Laisse un commentaire — indique juste ton nom, aucun compte n'est requis. Il apparaîtra après validation.</p>
+    <input type="text" name="name" placeholder="Ton nom" maxlength="60" required aria-label="Ton nom" />
+    <textarea name="text" placeholder="Ton commentaire…" rows="4" maxlength="2000" required aria-label="Ton commentaire"></textarea>
+    <input type="text" name="website" class="c-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <button type="submit">Publier mon commentaire</button>
+    <small class="c-msg"></small>
+  </form>
+</section>

@@ -4,3 +4,8 @@ dist/
 .vercel/
 .DS_Store
 npm-debug.log*
+
+# Secrets — ne JAMAIS committer (clés API, etc.)
+.env
+.env.*
+!.env.example

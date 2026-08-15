@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import Icon from '../../components/Icon.astro';
-import Giscus from '../../components/Giscus.astro';
+import Comments from '../../components/Comments.astro';
 import { SITE, readingTime, catSlugOf } from '../../consts';
 
 export async function getStaticPaths() {
@@ -58,7 +58,7 @@ const jsonLd = {
       <div class="prose">
         <Content />
       </div>
-      <Giscus />
+      <Comments title={title} />
     </article>
 
     <Sidebar />
