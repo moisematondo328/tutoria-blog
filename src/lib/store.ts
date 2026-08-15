@@ -1,6 +1,6 @@
-// Couche de stockage tolérante : marche avec l'API REST Upstash (KV_REST_API_* /
-// UPSTASH_REDIS_REST_*) OU avec une URL Redis classique (REDIS_URL / KV_URL via ioredis).
-// Ainsi, quelles que soient les variables injectées par Vercel, les commentaires fonctionnent.
+// Couche de stockage tolérante ET agnostique au préfixe : elle retrouve les
+// variables Redis quel que soit leur nom (KV_*, UPSTASH_*, STORAGE_*, REDIS_URL…).
+// Ainsi, peu importe le préfixe choisi lors de la connexion Vercel, ça marche.
 import { Redis as UpstashRest } from '@upstash/redis';
 import IORedis from 'ioredis';
 
@@ -9,20 +9,37 @@ let client: any = null;
 let mode: Mode = null;
 let resolved = false;
 
+function findRest(): { url: string; token: string } | null {
+  const env = process.env as Record<string, string | undefined>;
+  const keys = Object.keys(env);
+  const urlKey = keys.find((k) => /REST(_API)?_URL$/.test(k) && (env[k] || '').startsWith('http'));
+  const tokKey = keys.find((k) => /REST(_API)?_TOKEN$/.test(k) && !/READ_ONLY/.test(k) && env[k]);
+  if (urlKey && tokKey) return { url: env[urlKey]!, token: env[tokKey]! };
+  return null;
+}
+
+function findNativeUrl(): string | null {
+  const env = process.env as Record<string, string | undefined>;
+  for (const k of ['REDIS_URL', 'KV_URL', 'STORAGE_URL', 'STORAGE_REDIS_URL', 'STORAGE_KV_URL']) {
+    if (env[k] && /^rediss?:\/\//.test(env[k]!)) return env[k]!;
+  }
+  const k = Object.keys(env).find((kk) => /^rediss?:\/\//.test(env[kk] || ''));
+  return k ? env[k]! : null;
+}
+
 function resolve() {
   if (resolved) return;
   resolved = true;
-  const restUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const restToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (restUrl && restToken) {
-    client = new UpstashRest({ url: restUrl, token: restToken });
+  const rest = findRest();
+  if (rest) {
+    client = new UpstashRest({ url: rest.url, token: rest.token });
     mode = 'rest';
     return;
   }
-  const url = process.env.REDIS_URL || process.env.KV_URL;
+  const url = findNativeUrl();
   if (url) {
     client = new IORedis(url, { maxRetriesPerRequest: 2, connectTimeout: 8000, enableOfflineQueue: true, lazyConnect: false });
-    client.on('error', () => {}); // évite un crash non géré
+    client.on('error', () => {});
     mode = 'native';
   }
 }
@@ -35,19 +52,14 @@ export function hasStore(): boolean {
 export async function getJSON<T = any>(key: string): Promise<T | null> {
   resolve();
   if (!client) return null;
-  if (mode === 'rest') {
-    return ((await client.get(key)) as T) ?? null; // Upstash REST désérialise le JSON
-  }
-  const raw = await client.get(key); // ioredis renvoie une chaîne
+  if (mode === 'rest') return ((await client.get(key)) as T) ?? null;
+  const raw = await client.get(key);
   return raw ? (JSON.parse(raw) as T) : null;
 }
 
 export async function setJSON(key: string, value: unknown): Promise<void> {
   resolve();
   if (!client) return;
-  if (mode === 'rest') {
-    await client.set(key, value as any); // Upstash REST sérialise le JSON
-    return;
-  }
+  if (mode === 'rest') { await client.set(key, value as any); return; }
   await client.set(key, JSON.stringify(value));
 }
