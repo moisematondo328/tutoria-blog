@@ -16,7 +16,7 @@ function json(data: unknown, status = 200) {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.BREVO_API_KEY;
+  const apiKey = process.env.BREVO_API_KEY || import.meta.env.BREVO_API_KEY;
   if (!apiKey) {
     // Variable pas encore configurée sur Vercel.
     return json({ success: false, error: 'config' }, 500);
