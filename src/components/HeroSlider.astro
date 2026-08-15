@@ -16,7 +16,7 @@ const fmt = (d: Date) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric
         <div class="content">
           <a class="cat" href={`/categorie/${p.data.categorySlug}/`}>{p.data.category}</a>
           <h2><a href={`/blog/${p.id}/`}>{p.data.title}</a></h2>
-          <div class="meta"><Icon name="author" size={15} /> {SITE.author} · <Icon name="calendar" size={15} /> {fmt(p.data.date)}</div>
+          <div class="meta">{SITE.author} · {fmt(p.data.date)}</div>
         </div>
       </article>
     ))}

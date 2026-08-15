@@ -1,11 +1,10 @@
 ---
 // Commentaires maison : le visiteur laisse un nom + un message (aucun compte).
 // Le commentaire part en modération ; il n'apparaît qu'après validation (page /moderation).
-import Icon from './Icon.astro';
 const pageId = Astro.url.pathname;
 ---
 <section class="comments" id="commentaires">
-  <h2 class="section-title"><Icon name="chat" size={22} /> Commentaires</h2>
+  <h2 class="section-title">Commentaires</h2>
 
   <div id="comments-list" data-page-id={pageId}>
     <p class="c-loading">Chargement des commentaires…</p>

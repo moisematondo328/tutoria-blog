@@ -2,7 +2,6 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Sidebar from '../../components/Sidebar.astro';
-import Icon from '../../components/Icon.astro';
 import Comments from '../../components/Comments.astro';
 import { SITE, readingTime, catSlugOf } from '../../consts';
 
@@ -48,10 +47,9 @@ const jsonLd = {
         <a class="badge-inline" href={`/categorie/${categorySlug}/`}>{category}</a>
         <h1>{title}</h1>
         <div class="meta">
-          <span><Icon name="author" /> {SITE.author}</span>
-          <span><Icon name="calendar" /> {dateStr}</span>
-          <span><Icon name="clock" /> {mins} min de lecture</span>
-          <span><Icon name="chat" /> 0 commentaire</span>
+          <span>Par {SITE.author}</span>
+          <span>{dateStr}</span>
+          <span>{mins} min de lecture</span>
         </div>
         {cover && <div class="cover"><img src={cover} alt={title} /></div>}
       </div>

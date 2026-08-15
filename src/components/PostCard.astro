@@ -21,9 +21,8 @@ const dateStr = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', mon
   <div class="body">
     <h3><a href={`/blog/${post.id}/`}>{title}</a></h3>
     <div class="meta">
-      <span class="a"><Icon name="author" /> {SITE.author}</span>
-      <span><Icon name="calendar" /> {dateStr}</span>
-      <span><Icon name="chat" /> 0</span>
+      <span class="a">{SITE.author}</span>
+      <span>{dateStr}</span>
     </div>
     <p class="excerpt">{excerpt}</p>
     <a class="more" href={`/blog/${post.id}/`}>En savoir plus <Icon name="arrowRight" /></a>

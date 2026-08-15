@@ -1,17 +1,16 @@
 ---
-// Newsletter reliée à Brevo via la fonction serveur /api/subscribe.
-// Le design (carte teal) reste 100 % Tutoria ; l'abonné arrive dans la liste Brevo.
-import Icon from './Icon.astro';
+// Newsletter reliée à Brevo via /api/subscribe. Design sobre, sans icône générique :
+// l'intitulé + le souligné jaune (motif de marque) portent l'identité.
 ---
 <div class="newsletter">
-  <div class="bell"><Icon name="bell" size={40} /></div>
-  <h4>Oh bonjour 👋</h4>
-  <p>Reçois nos meilleurs conseils directement dans ta boîte mail.</p>
+  <span class="nl-kicker">Newsletter</span>
+  <h4>Le meilleur de Tutoria, dans ta boîte mail.</h4>
+  <p>Santé, argent, développement personnel et tech : on t'envoie l'essentiel, sans le superflu.</p>
   <form class="nl-form" action="/api/subscribe" method="POST"
     data-success="✅ C'est fait, à très vite dans ta boîte mail !">
     <input type="email" name="email" placeholder="Ton adresse e-mail" required aria-label="Adresse e-mail" />
     <button type="submit">S'abonner</button>
-    <small class="nl-note">Pas de spam. Tu peux te désinscrire quand tu veux. Vois notre <a href="/confidentialite/">politique de confidentialité</a>.</small>
+    <small class="nl-note">Pas de spam. Tu te désinscris quand tu veux. Vois notre <a href="/confidentialite/">politique de confidentialité</a>.</small>
     <small class="form-msg"></small>
   </form>
 </div>
