@@ -1,5 +1,5 @@
 ---
-title: "Deuxième exemple (à remplacer par ta vidéo YouTube)"
-youtube: "https://www.youtube.com/watch?v=aqz-KE-bpKQ"
-order: 2
+title: La résilience face au regard des autres
+youtube: https://youtu.be/w-L-0s04naA
+order: 1
 ---
