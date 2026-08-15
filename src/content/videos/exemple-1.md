@@ -1,5 +1,5 @@
 ---
-title: "Exemple de vidéo (remplace-moi par la tienne)"
-youtube: "https://www.youtube.com/watch?v=jNQXAC9IVRw"
-order: 1
+title: André Motors - L'homme qui a mis Kinshasa en mouvement
+youtube: https://youtu.be/IvD2Zc1Dbh0
+order: 2
 ---
