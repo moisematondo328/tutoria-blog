@@ -62,24 +62,24 @@ export const POST: APIRoute = async ({ request }) => {
   const key = getGeminiKey();
   if (!key) return json({ ok: false, error: 'config' }, 500);
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: buildPrompt(topic) }] }],
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.75, maxOutputTokens: 4096 },
-      }),
-    });
-  } catch { return json({ ok: false, error: 'reseau' }, 502); }
-
-  if (!res.ok) {
-    const e = await res.text().catch(() => '');
-    return json({ ok: false, error: 'gemini', detail: e.slice(0, 200) }, 502);
+  // Repli sur plusieurs modèles : évite déprécation (404) et surcharge (503).
+  const MODELS = ['gemini-3.5-flash', 'gemini-flash-latest', 'gemini-3.6-flash'];
+  const reqBody = JSON.stringify({
+    contents: [{ parts: [{ text: buildPrompt(topic) }] }],
+    generationConfig: { responseMimeType: 'application/json', temperature: 0.75, maxOutputTokens: 4096 },
+  });
+  let data: any = null, lastErr = '';
+  for (const model of MODELS) {
+    let res: Response;
+    try {
+      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+        { method: 'POST', headers: { 'content-type': 'application/json' }, body: reqBody });
+    } catch { lastErr = 'reseau'; continue; }
+    if (res.ok) { data = await res.json(); break; }
+    lastErr = (await res.text().catch(() => '')).slice(0, 150);
+    if (res.status !== 404 && res.status !== 503) break; // erreur non récupérable (clé, quota…)
   }
-  const data = await res.json();
+  if (!data) return json({ ok: false, error: 'gemini', detail: lastErr }, 502);
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
   let art: any;
   try { art = JSON.parse(text); } catch { return json({ ok: false, error: 'parse', raw: text.slice(0, 300) }, 502); }
