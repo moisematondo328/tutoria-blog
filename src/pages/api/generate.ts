@@ -41,9 +41,13 @@ STRUCTURE :
 Pour CHAQUE section, tu fournis aussi de quoi fabriquer sa carte-image :
 - "kicker" : un libellé TRÈS COURT EN MAJUSCULES (1 à 2 mots, il s'affiche dans une petite pastille). Si l'article est une liste d'étapes/astuces, mets "ÉTAPE 1", "ÉTAPE 2"… dans l'ordre. Sinon un libellé thématique court (ex : "LE PRINCIPE", "À RETENIR", "L'ERREUR", "LES APPLIS").
 - "cardTitle" : un titre TRÈS court (2 à 4 mots) qui résume la section (ex : "Créer une routine").
-- "imageQuery" : mots-clés EN ANGLAIS pour une PHOTO pertinente. RÈGLE : décris une SCÈNE CONCRÈTE ET PHOTOGRAPHIABLE (une personne, un objet, un lieu réel), JAMAIS un concept abstrait. Privilégie des personnes noires / un contexte africain quand c'est logique. Bon : "african woman checking smartphone". Mauvais : "justice", "success", "freedom" (renvoient des photos au hasard, souvent hors charte). 3 à 5 mots.
+- "imageQuery" : mots-clés EN ANGLAIS pour une VRAIE PHOTO (jamais un rendu 3D ni une illustration). RÈGLES :
+  1) mets TOUJOURS une PERSONNE en train de faire l'action PRÉCISE de CETTE section (un objet seul comme "smartphone", "sim card", "money" renvoie des rendus 3D moches et hors sujet) ;
+  2) sois SPÉCIFIQUE au contenu de la section, pas générique (chaque section doit avoir une image différente et parlante) ;
+  3) personnes noires / contexte africain quand c'est logique.
+  Ex. section "applis anti-spam" -> "african woman checking app on phone". Ex. section "recours juridique" -> "worried woman talking to lawyer". À ÉVITER absolument : "smartphone", "sim card", "justice", "success". 4 à 6 mots.
 
-En plus, fournis "coverQuery" : les mots-clés EN ANGLAIS (scène concrète, mêmes règles) pour la PHOTO DE COUVERTURE, la plus représentative du sujet global de l'article.
+En plus, fournis "coverQuery" : mots-clés EN ANGLAIS pour la PHOTO DE COUVERTURE (une personne, scène concrète et lumineuse, la plus représentative du sujet global). Mêmes règles.
 
 RUBRIQUE : choisis EXACTEMENT une valeur parmi : ${CATEGORIES.map((c) => `"${c}"`).join(', ')}.
 
