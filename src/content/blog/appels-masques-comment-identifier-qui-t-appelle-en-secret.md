@@ -3,7 +3,7 @@ title: "Appels masqués : comment identifier qui t'appelle en secret"
 date: "2026-08-16 15:17:05"
 category: "Technologie Émergente"
 excerpt: "Marre des appels anonymes ? Découvre des astuces et applications gratuites pour démasquer facilement les numéros masqués sur ton téléphone."
-cover: ""
+cover: "/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-1.webp"
 draft: false
 ---
 
@@ -11,11 +11,15 @@ Ton téléphone sonne. L'écran affiche numéro privé ou appel masqué. Tu hés
 
 ## Pourquoi et comment les numéros sont masqués
 
+<figure class="wp-block-image size-full"><img src="/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-1.webp" alt="Comment ça marche" loading="lazy"/></figure>
+
 Le masquage d'un numéro est une option gratuite proposée par la majorité des opérateurs télécoms. En tapant un code simple comme le #31# avant un numéro de téléphone, n'importe qui peut cacher son identité lors d'un appel sortant. 
 
 Mais sache que ce masquage n'est pas absolu. Ton opérateur téléphonique, lui, connaît toujours la source réelle de l'appel. La technologie utilisée pour acheminer la communication garde une trace numérique de chaque connexion. Tu as donc des moyens techniques pour contourner ce filtre et identifier l'appelant.
 
 ## Les applications gratuites pour lever le voile
+
+<figure class="wp-block-image size-full"><img src="/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-2.webp" alt="Applis gratuites" loading="lazy"/></figure>
 
 Plusieurs applications mobiles analysent les bases de données mondiales pour identifier les appelants en temps réel. Elles comparent le signal entrant avec des millions de numéros enregistrés.
 
@@ -29,6 +33,8 @@ Pour que ces applications fonctionnent correctement, tu dois disposer d'une conn
 
 ## Les solutions de ton opérateur mobile
 
+<figure class="wp-block-image size-full"><img src="/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-3.webp" alt="Côté opérateur" loading="lazy"/></figure>
+
 Dans plusieurs pays d'Afrique, les opérateurs comme MTN, Orange, Moov ou Airtel proposent des services spécifiques pour gérer les appels masqués.
 
 Tu peux utiliser le renvoi d'appel vers un service d'identification externe. Si tu rejettes l'appel masqué, ton téléphone le transfère vers un numéro spécial qui démasque l'identité de l'appelant et te renvoie l'information par SMS. Renseigne-toi auprès du service client de ton opérateur pour connaître les codes USSD actifs dans ton pays pour ce service.
@@ -37,6 +43,8 @@ Une autre méthode consiste à demander un relevé de compte détaillé de tes c
 
 ## La voie légale pour les cas graves
 
+<figure class="wp-block-image size-full"><img src="/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-4.webp" alt="La voie légale" loading="lazy"/></figure>
+
 Si les appels masqués deviennent du harcèlement quotidien, les applications gratuites ne suffisent plus. Tu dois agir sur le plan juridique.
 
 Note précisément les heures et les dates de chaque appel masqué reçu. Rends-toi ensuite au commissariat de police ou à la gendarmerie la plus proche pour déposer une plainte officielle. 
@@ -44,6 +52,8 @@ Note précisément les heures et les dates de chaque appel masqué reçu. Rends-
 Avec cette plainte, la police peut demander une réquisition judiciaire directement auprès de ton opérateur. L'opérateur est alors légalement obligé de fournir l'identité exacte et l'adresse du propriétaire de la ligne émettrice. C'est une procédure sérieuse qui calme immédiatement les harceleurs.
 
 ## Bloquer automatiquement les appels masqués
+
+<figure class="wp-block-image size-full"><img src="/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-5.webp" alt="Bloquer les appels" loading="lazy"/></figure>
 
 Tu peux aussi décider de ne plus jamais être dérangé par ces appels anonymes. Ton smartphone possède une option intégrée pour les bloquer automatiquement.
 
