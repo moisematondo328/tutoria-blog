@@ -57,8 +57,13 @@ Les articles `draft: true` sont exclus partout (filtre `({data}) => !data.draft`
 
 ## Back-office `/admin` (privé, `noindex`) — le cœur de l'automatisation
 Un seul mot de passe (`ADMIN_SECRET`). Trois onglets :
-- **Créer** : sujet → l'IA **Gemini** rédige un article (à la voix Tutoria, anti-AI-slop) →
-  relecture/édition → **Publier** écrit le `.md` sur GitHub (`/api/publish`) → Vercel déploie.
+- **Créer** : sujet → l'IA **Gemini** rédige un article découpé en sections (voix Tutoria,
+  anti-AI-slop) → relecture/édition → **Publier** : pour CHAQUE section, une **carte-image à
+  la charte** est fabriquée (photo **Pexels** + voile teal + kicker jaune « ÉTAPE X » + titre
+  blanc + barre jaune, via `sharp` + police Poppins embarquée, cf. `src/lib/card.ts`) puis
+  insérée après son titre ; l'article `.md` + toutes ses images partent en **un seul commit**
+  GitHub (`/api/publish`, Git Data API) → Vercel déploie. Sans `PEXELS_API_KEY`, repli en
+  texte seul (aucune image, pas d'erreur).
 - **Diffusion** : envoie un article aux abonnés (campagne Brevo) ; interrupteur **auto**
   (cron quotidien `vercel.json` → `/api/cron-broadcast`, n'envoie que les articles publiés
   APRÈS activation) ; recherche + pagination.
@@ -81,6 +86,8 @@ Un seul mot de passe (`ADMIN_SECRET`). Trois onglets :
 - `GEMINI_API_KEY` — rédaction IA (format `AIza…`).
 - `GITHUB_TOKEN` — publication d'articles (droit *contents* sur `moisematondo328/tutoria-blog`) ;
   `GITHUB_REPO` optionnel pour changer de dépôt.
+- `PEXELS_API_KEY` — banque photo pour les cartes-images des articles générés. Absente = articles
+  publiés en texte seul (repli propre).
 
 ## Docs de référence
 `docs/01-app-spec.md` · `02-brand-brief.md` · `03-data-dictionary.md` · `04-feature-backlog.md`
