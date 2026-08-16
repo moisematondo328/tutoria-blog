@@ -17,6 +17,10 @@
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^5.6.0",
     "ioredis": "^5.11.1",
-    "rehype-external-links": "^3.0.0"
+    "rehype-external-links": "^3.0.0",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "subset-font": "^2.5.0"
   }
 }

@@ -7,6 +7,7 @@ import vercel from '@astrojs/vercel';
 // /api/subscribe (newsletter Brevo), /api/comments + /api/moderate (commentaires maison).
 export default defineConfig({
   site: 'https://tutoria-blog.vercel.app',
-  adapter: vercel(),
+  // maxDuration élevé : /api/publish compose plusieurs images (Pexels + sharp) puis commit.
+  adapter: vercel({ maxDuration: 60 }),
   integrations: [sitemap({ filter: (page) => !/\/(admin|moderation)/.test(page) })],
 });

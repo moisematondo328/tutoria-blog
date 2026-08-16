@@ -32,24 +32,31 @@ INTERDICTIONS STRICTES (sinon l'article est rejeté) :
 - Pas d'emoji. Pas de langue de bois. Pas de remplissage.
 - Écris comme un humain qui explique à un ami, pas comme une IA.
 
-STRUCTURE de l'article (corps en Markdown) :
+STRUCTURE :
 - Une intro courte qui accroche (2 à 4 phrases, pose le problème concret).
-- 3 à 5 sections avec des sous-titres "## ...".
-- Des exemples concrets, listes à puces quand utile.
+- 3 à 5 SECTIONS. Chaque section a un titre, un contenu (Markdown, exemples concrets, listes si utile), et sert à ILLUSTRER (une image sera posée après le titre).
 - Une conclusion actionnable (que faire maintenant).
-- Longueur : 600 à 900 mots. Pas de titre H1 dans le corps (le titre est à part).
+- Longueur totale : 600 à 900 mots. Pas de titre H1.
+
+Pour CHAQUE section, tu fournis aussi de quoi fabriquer sa carte-image :
+- "kicker" : un libellé COURT EN MAJUSCULES pour la carte. Si l'article est une liste d'étapes/astuces, mets "ÉTAPE 1", "ÉTAPE 2"… dans l'ordre. Sinon un libellé thématique court (ex : "LE PRINCIPE", "À RETENIR", "L'ERREUR").
+- "cardTitle" : un titre TRÈS court (2 à 4 mots) qui résume la section (ex : "Créer une routine").
+- "imageQuery" : 2 à 4 mots-clés EN ANGLAIS pour trouver une photo pertinente (pense au contexte africain quand c'est utile, ex : "african woman phone money").
 
 RUBRIQUE : choisis EXACTEMENT une valeur parmi : ${CATEGORIES.map((c) => `"${c}"`).join(', ')}.
 
 SUJET : "${topic}"
 
-Réponds UNIQUEMENT en JSON valide, sans texte autour, avec ce format :
+Réponds UNIQUEMENT en JSON valide, sans texte autour :
 {
-  "title": "un titre accrocheur mais honnête (pas putaclic), 50-70 caractères",
-  "excerpt": "un résumé SEO d'1 à 2 phrases (max 160 caractères)",
-  "category": "une des 4 rubriques exactes ci-dessus",
-  "body": "le corps de l'article en Markdown",
-  "imageQuery": "2 à 4 mots-clés en anglais pour trouver une image d'illustration"
+  "title": "titre accrocheur mais honnête, 50-70 caractères",
+  "excerpt": "résumé SEO d'1 à 2 phrases (max 160 caractères)",
+  "category": "une des 4 rubriques exactes",
+  "intro": "intro en Markdown (sans titre)",
+  "sections": [
+    { "heading": "titre de la section", "kicker": "ÉTAPE 1", "cardTitle": "2 à 4 mots", "imageQuery": "english keywords", "content": "contenu de la section en Markdown, sans le titre" }
+  ],
+  "conclusion": "conclusion en Markdown (peut commencer par '## ...')"
 }`;
 }
 
@@ -86,15 +93,29 @@ export const POST: APIRoute = async ({ request }) => {
 
   // garde-fous : rubrique valide + purge de tout tiret cadratin résiduel
   if (!CATEGORIES.includes(art.category)) art.category = 'Développement Personnel';
-  const clean = (s: string) => String(s || '').replace(/[—–]/g, ', ');
+  const clean = (s: any) => String(s || '').replace(/[—–]/g, ', ');
+
+  const rawSections = Array.isArray(art.sections) ? art.sections : [];
+  // Corps Markdown = intro + (## titre + contenu) par section + conclusion.
+  let body = clean(art.intro).trim();
+  for (const s of rawSections) {
+    body += `\n\n## ${clean(s.heading).trim()}\n\n${clean(s.content).trim()}`;
+  }
+  if (art.conclusion) body += `\n\n${clean(art.conclusion).trim()}`;
+
   return json({
     ok: true,
     article: {
       title: clean(art.title).slice(0, 120),
       excerpt: clean(art.excerpt).slice(0, 200),
       category: art.category,
-      body: clean(art.body),
-      imageQuery: (art.imageQuery || '').toString().slice(0, 80),
+      body: body.trim(),
+      sections: rawSections.map((s: any) => ({
+        heading: clean(s.heading).trim().slice(0, 120),
+        kicker: clean(s.kicker).trim().toUpperCase().slice(0, 22),
+        cardTitle: clean(s.cardTitle).trim().slice(0, 42),
+        imageQuery: (s.imageQuery || '').toString().slice(0, 80),
+      })),
     },
   });
 };
