@@ -1,7 +1,7 @@
 ---
 // Tableau de bord privé Tutoria News (non listé, non indexé).
-// Tout-en-un : Diffusion des articles aux abonnés + Modération des commentaires.
-// Protégé par le SECRET (variable ADMIN_SECRET côté serveur) saisi ici.
+// Tout-en-un : Diffusion (manuelle + automatique) + Modération.
+// Protégé par le SECRET (variable ADMIN_SECRET) saisi ici.
 ---
 <html lang="fr">
 <head>
@@ -10,82 +10,154 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Tableau de bord — Tutoria News</title>
   <style>
-    :root { --teal:#0E8074; --teal-d:#0b6e64; --yellow:#FDD200; --ink:#23302e; --muted:#6b7a78; --line:#e7edeb; }
+    :root { --teal:#0E8074; --teal-d:#0b6e64; --teal-l:#12a594; --yellow:#FDD200; --yellow-d:#e9be00;
+            --ink:#23302e; --muted:#6b7a78; --line:#e6ece9; --bg:#eef3f1; --card:#ffffff;
+            --shadow:0 6px 22px rgba(12,40,37,.07); --radius:16px;
+            --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
     * { box-sizing:border-box; }
-    body { font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; max-width:860px; margin:0 auto; padding:26px 18px 60px; color:var(--ink); background:#f6f8f7; }
-    header { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-    h1 { color:var(--teal); margin:0 0 2px; font-size:26px; }
-    h1 span { color:var(--yellow); }
-    .sub { color:var(--muted); font-size:14px; }
-    .bar { display:flex; gap:10px; margin:18px 0 20px; flex-wrap:wrap; }
-    input[type=password] { flex:1; min-width:220px; padding:11px 13px; border:1px solid #cfe0dc; border-radius:10px; font-size:15px; }
-    button { border:0; border-radius:10px; padding:11px 16px; font-weight:700; cursor:pointer; font-size:14px; }
-    .primary { background:var(--teal); color:#fff; } .primary:hover { background:var(--teal-d); }
-    .tabs { display:flex; gap:8px; border-bottom:2px solid var(--line); margin-bottom:20px; }
-    .tab { background:none; color:var(--muted); border-radius:10px 10px 0 0; padding:12px 18px; font-weight:700; }
-    .tab.active { color:var(--teal); box-shadow:inset 0 -3px 0 var(--teal); }
+    body { font-family:var(--font); margin:0; background:var(--bg); color:var(--ink); }
+    .wrap { max-width:920px; margin:0 auto; padding:24px 18px 70px; }
+    a { color:var(--teal); }
+    button { font-family:var(--font); border:0; border-radius:10px; font-weight:700; cursor:pointer; font-size:14px; }
+    button:disabled { opacity:.55; cursor:default; }
+
+    /* Connexion */
+    .login { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .login-card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:34px 30px; width:min(380px,100%); text-align:center; }
+    .brand { font-size:26px; font-weight:800; color:var(--teal); }
+    .brand span { color:var(--yellow); }
+    .login-card p { color:var(--muted); font-size:14px; margin:6px 0 22px; }
+    .field { width:100%; padding:12px 14px; border:1px solid #cfe0dc; border-radius:11px; font-size:15px; margin-bottom:12px; }
+    .field:focus { outline:2px solid var(--teal); border-color:var(--teal); }
+    .btn-primary { background:var(--teal); color:#fff; padding:12px 18px; width:100%; }
+    .btn-primary:hover { background:var(--teal-d); }
+    .err { color:#c0392b; font-size:13px; font-weight:600; min-height:1em; margin-top:8px; }
+
+    /* Topbar */
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:22px; }
+    .topbar .brand { font-size:22px; }
+    .topbar .right { display:flex; align-items:center; gap:16px; }
+    .logout { background:none; color:var(--muted); font-size:13px; }
+    .logout:hover { color:var(--ink); }
+
+    /* KPIs */
+    .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+    .kpi { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 20px; }
+    .kpi .n { font-size:30px; font-weight:800; color:var(--teal); line-height:1; }
+    .kpi .l { font-size:12.5px; color:var(--muted); margin-top:7px; text-transform:uppercase; letter-spacing:.06em; }
+    @media(max-width:560px){ .kpis{ grid-template-columns:repeat(3,1fr); gap:8px; } .kpi{ padding:14px 12px; } .kpi .n{ font-size:22px; } .kpi .l{ font-size:10.5px; } }
+
+    /* Tabs */
+    .tabs { display:flex; gap:6px; margin-bottom:18px; }
+    .tab { background:none; color:var(--muted); padding:11px 18px; border-radius:11px; }
+    .tab.active { background:var(--teal); color:#fff; }
+    .pending-dot { display:inline-block; min-width:18px; padding:0 5px; height:18px; line-height:18px; border-radius:999px; background:var(--yellow); color:var(--teal-d); font-size:11px; font-weight:800; margin-left:7px; }
     .panel { display:none; } .panel.active { display:block; }
-    .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px; }
+
+    /* Cartes */
+    .card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; margin-bottom:13px; }
     .row { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
-    .meta { font-size:13px; color:var(--muted); margin-top:4px; }
-    .title { font-weight:700; font-size:16px; }
-    .badge { font-size:12px; font-weight:700; padding:3px 9px; border-radius:999px; background:#e8f3f0; color:var(--teal-d); }
+    .title { font-weight:700; font-size:15.5px; }
+    .meta { font-size:12.5px; color:var(--muted); margin-top:4px; }
+    .badge { font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; }
     .badge.sent { background:#eaf7ec; color:#2e7d32; }
-    .send { background:var(--yellow); color:var(--teal-d); }
+    .send { background:var(--yellow); color:var(--teal-d); padding:10px 16px; white-space:nowrap; }
+    .send:hover { background:var(--yellow-d); }
     .send.again { background:#eef4f2; color:var(--teal-d); }
-    .txt { white-space:pre-wrap; line-height:1.5; }
-    .actions { margin-top:12px; display:flex; gap:10px; }
-    .ok { background:var(--teal); color:#fff; } .no { background:#e5484d; color:#fff; }
-    .msg { font-weight:600; margin:8px 0; min-height:1.1em; }
+    .txt { white-space:pre-wrap; line-height:1.55; margin-top:2px; }
+    .cactions { margin-top:12px; display:flex; gap:9px; }
+    .approve { background:var(--teal); color:#fff; padding:9px 15px; } .approve:hover{ background:var(--teal-d); }
+    .delete { background:#fdecec; color:#c0392b; padding:9px 15px; } .delete:hover{ background:#f9d9d9; }
+    .msg { font-weight:600; color:var(--teal-d); margin:2px 0 14px; min-height:1.1em; font-size:14px; }
     .empty { color:var(--muted); }
-    .links { margin-top:26px; padding-top:16px; border-top:1px solid var(--line); font-size:14px; }
-    .links a { color:var(--teal); font-weight:600; text-decoration:none; margin-right:18px; }
+
+    /* Interrupteur auto */
+    .auto { background:linear-gradient(180deg,#eff6f4,#ffffff); border:1px solid var(--line); }
+    .auto .row { align-items:flex-start; }
+    .auto h3 { margin:0 0 4px; font-size:15.5px; color:var(--ink); }
+    .auto p { margin:0; font-size:13px; color:var(--muted); max-width:520px; line-height:1.5; }
+    .switch { position:relative; width:52px; height:30px; flex:0 0 auto; }
+    .switch input { display:none; }
+    .slider { position:absolute; inset:0; background:#cdd9d5; border-radius:999px; transition:.2s; }
+    .slider::before { content:""; position:absolute; width:24px; height:24px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
+    .switch input:checked + .slider { background:var(--teal); }
+    .switch input:checked + .slider::before { transform:translateX(22px); }
+    .auto-state { font-size:12px; font-weight:800; margin-top:8px; }
+    .auto-state.on { color:var(--teal-d); } .auto-state.off { color:var(--muted); }
+
+    .links { margin-top:28px; padding-top:16px; border-top:1px solid var(--line); font-size:14px; }
+    .links a { font-weight:600; text-decoration:none; margin-right:20px; }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>Tutoria <span>News</span></h1>
-      <div class="sub">Ton tableau de bord privé</div>
+  <!-- Écran de connexion -->
+  <div class="login" id="login">
+    <div class="login-card">
+      <div class="brand">Tutoria <span>News</span></div>
+      <p>Tableau de bord privé</p>
+      <input class="field" id="secret" type="password" placeholder="Mot de passe" autocomplete="current-password" />
+      <button class="btn-primary" id="loginBtn">Se connecter</button>
+      <div class="err" id="loginErr"></div>
     </div>
-  </header>
-
-  <div class="bar">
-    <input id="secret" type="password" placeholder="Mot de passe de modération" />
-    <button class="primary" id="load">Se connecter</button>
   </div>
 
-  <div id="app" style="display:none">
-    <div class="tabs">
-      <button class="tab active" data-tab="diffusion">📣 Diffusion</button>
-      <button class="tab" data-tab="moderation">💬 Modération</button>
+  <!-- Tableau de bord -->
+  <div class="wrap" id="app" style="display:none">
+    <div class="topbar">
+      <div class="brand">Tutoria <span>News</span></div>
+      <div class="right">
+        <span class="meta" style="margin:0">Tableau de bord</span>
+        <button class="logout" id="logout">Déconnexion</button>
+      </div>
     </div>
 
+    <div class="kpis">
+      <div class="kpi"><div class="n" id="kpi-subs">—</div><div class="l">Abonnés</div></div>
+      <div class="kpi"><div class="n" id="kpi-pending">—</div><div class="l">À modérer</div></div>
+      <div class="kpi"><div class="n" id="kpi-arts">—</div><div class="l">Articles</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="diffusion">Diffusion</button>
+      <button class="tab" data-tab="moderation">Modération <span class="pending-dot" id="tab-pending" style="display:none">0</span></button>
+    </div>
+
+    <!-- Diffusion -->
     <section class="panel active" id="panel-diffusion">
-      <p class="empty" style="margin-top:0">Envoie un article à tous tes abonnés. Un article déjà diffusé peut être renvoyé.</p>
+      <div class="card auto">
+        <div class="row">
+          <div>
+            <h3>Diffusion automatique</h3>
+            <p>Envoie chaque <b>nouvel</b> article aux abonnés dès sa publication. Tes anciens articles ne sont jamais renvoyés.</p>
+            <div class="auto-state off" id="auto-state">Désactivée</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="auto-toggle" /><span class="slider"></span></label>
+        </div>
+      </div>
       <div class="msg" id="diff-msg"></div>
       <div id="diff-list"></div>
     </section>
 
+    <!-- Modération -->
     <section class="panel" id="panel-moderation">
       <div class="msg" id="mod-msg"></div>
       <div id="mod-list"></div>
     </section>
 
     <div class="links">
-      <a href="https://app.pagescms.org/" target="_blank" rel="noopener">✍️ Écrire un article (Pages CMS)</a>
-      <a href="/" target="_blank" rel="noopener">🌐 Voir le site</a>
+      <a href="https://app.pagescms.org/" target="_blank" rel="noopener">Écrire un article (Pages CMS)</a>
+      <a href="/" target="_blank" rel="noopener">Voir le site</a>
     </div>
   </div>
 
   <script is:inline>
     const $ = (s) => document.querySelector(s);
     const secretEl = $('#secret');
-    try { const s = localStorage.getItem('mod_secret'); if (s) secretEl.value = s; } catch (e) {}
     const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m]));
     const fdate = (d) => new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+    const secret = () => secretEl.value.trim();
+    try { const s = localStorage.getItem('mod_secret'); if (s) secretEl.value = s; } catch (e) {}
 
-    // onglets
     document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
       document.querySelectorAll('.panel').forEach((x) => x.classList.remove('active'));
@@ -94,72 +166,92 @@
     }));
 
     async function connect() {
-      const secret = secretEl.value.trim();
-      if (!secret) return;
-      try { localStorage.setItem('mod_secret', secret); } catch (e) {}
-      const r = await fetch('/api/broadcast?secret=' + encodeURIComponent(secret));
-      if (r.status === 401) { $('#diff-msg').textContent = 'Mot de passe incorrect.'; return; }
+      if (!secret()) return;
+      const r = await fetch('/api/broadcast?secret=' + encodeURIComponent(secret()));
+      if (r.status === 401) { $('#loginErr').textContent = 'Mot de passe incorrect.'; return; }
+      try { localStorage.setItem('mod_secret', secret()); } catch (e) {}
+      $('#login').style.display = 'none';
       $('#app').style.display = 'block';
-      loadDiffusion(); loadModeration();
+      const d = await r.json();
+      renderDiffusion(d);
+      loadModeration();
     }
 
-    // --- Diffusion ---
-    async function loadDiffusion() {
-      const secret = secretEl.value.trim();
-      const r = await fetch('/api/broadcast?secret=' + encodeURIComponent(secret));
-      const d = await r.json();
+    function renderDiffusion(d) {
       const arts = (d && d.articles) || [];
+      $('#kpi-subs').textContent = (d && typeof d.subscribers === 'number') ? d.subscribers : '—';
+      $('#kpi-arts').textContent = arts.length;
+      const t = $('#auto-toggle'); t.checked = !!(d && d.auto);
+      setAutoLabel(t.checked);
       $('#diff-list').innerHTML = arts.map((a) => `
-        <div class="card" data-slug="${esc(a.slug)}">
+        <div class="card">
           <div class="row">
             <div>
               <div class="title">${esc(a.title)}</div>
-              <div class="meta">${fdate(a.date)} ${a.sent ? '&middot; <span class="badge sent">déjà diffusé</span>' : ''}</div>
+              <div class="meta">${fdate(a.date)} ${a.sent ? '&nbsp;<span class="badge sent">déjà diffusé</span>' : ''}</div>
             </div>
             <button class="send ${a.sent ? 'again' : ''}" data-slug="${esc(a.slug)}">${a.sent ? 'Renvoyer' : 'Envoyer aux abonnés'}</button>
           </div>
         </div>`).join('') || '<p class="empty">Aucun article publié.</p>';
     }
-    $('#diff-list').addEventListener('click', async (e) => {
-      const btn = e.target.closest('button.send'); if (!btn) return;
-      const slug = btn.dataset.slug;
-      if (!confirm('Envoyer cet article à TOUS tes abonnés ?')) return;
-      btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Envoi…';
-      $('#diff-msg').textContent = '';
+    function setAutoLabel(on) {
+      const el = $('#auto-state');
+      el.textContent = on ? 'Activée' : 'Désactivée';
+      el.className = 'auto-state ' + (on ? 'on' : 'off');
+    }
+
+    $('#auto-toggle').addEventListener('change', async (e) => {
+      const on = e.target.checked;
+      setAutoLabel(on);
       const r = await fetch('/api/broadcast', { method:'POST', headers:{'content-type':'application/json'},
-        body: JSON.stringify({ secret: secretEl.value.trim(), slug }) });
-      const d = await r.json().catch(() => ({}));
-      if (d.ok) { $('#diff-msg').textContent = '✔ Article envoyé aux abonnés.'; loadDiffusion(); }
-      else { btn.disabled = false; btn.textContent = orig; $('#diff-msg').textContent = 'Échec : ' + (d.error || 'réessaie') + '.'; }
+        body: JSON.stringify({ secret: secret(), action:'setAuto', value: on }) });
+      if (!r.ok) { e.target.checked = !on; setAutoLabel(!on); $('#diff-msg').textContent = 'Impossible de changer le réglage.'; }
+      else { $('#diff-msg').textContent = on ? 'Diffusion automatique activée. Seuls les prochains articles seront envoyés.' : 'Diffusion automatique désactivée.'; }
     });
 
-    // --- Modération ---
+    $('#diff-list').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button.send'); if (!btn) return;
+      if (!confirm('Envoyer cet article à TOUS tes abonnés ?')) return;
+      btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Envoi…'; $('#diff-msg').textContent = '';
+      const r = await fetch('/api/broadcast', { method:'POST', headers:{'content-type':'application/json'},
+        body: JSON.stringify({ secret: secret(), slug: btn.dataset.slug }) });
+      const d = await r.json().catch(() => ({}));
+      if (d.ok) { $('#diff-msg').textContent = 'Article envoyé aux abonnés.'; refreshDiffusion(); }
+      else { btn.disabled = false; btn.textContent = orig; $('#diff-msg').textContent = 'Échec : ' + (d.error || 'réessaie') + '.'; }
+    });
+    async function refreshDiffusion() {
+      const r = await fetch('/api/broadcast?secret=' + encodeURIComponent(secret()));
+      renderDiffusion(await r.json());
+    }
+
     async function loadModeration() {
-      const secret = secretEl.value.trim();
-      const r = await fetch('/api/moderate?secret=' + encodeURIComponent(secret));
+      const r = await fetch('/api/moderate?secret=' + encodeURIComponent(secret()));
       const d = await r.json();
       const pend = (d && d.pending) || [];
-      $('#mod-msg').textContent = pend.length ? (pend.length + ' commentaire(s) en attente') : '';
+      $('#kpi-pending').textContent = pend.length;
+      const dot = $('#tab-pending'); dot.textContent = pend.length; dot.style.display = pend.length ? 'inline-block' : 'none';
+      $('#mod-msg').textContent = pend.length ? '' : '';
       $('#mod-list').innerHTML = pend.map((c) => `
         <div class="card" data-page="${encodeURIComponent(c.pageId)}" data-id="${c.id}">
-          <div class="meta"><b>${esc(c.name)}</b> &middot; ${new Date(c.date).toLocaleString('fr-FR')} &middot; ${esc(c.pageId)}</div>
+          <div class="meta"><b style="color:var(--ink)">${esc(c.name)}</b> &middot; ${new Date(c.date).toLocaleString('fr-FR')} &middot; ${esc(c.pageId)}</div>
           <div class="txt">${esc(c.text)}</div>
-          <div class="actions">
-            <button class="ok" data-a="approve">✅ Approuver</button>
-            <button class="no" data-a="delete">🗑️ Supprimer</button>
+          <div class="cactions">
+            <button class="approve" data-a="approve">Approuver</button>
+            <button class="delete" data-a="delete">Supprimer</button>
           </div>
-        </div>`).join('') || '<p class="empty">Rien en attente. 👌</p>';
+        </div>`).join('') || '<p class="empty">Rien en attente.</p>';
     }
     $('#mod-list').addEventListener('click', async (e) => {
       const btn = e.target.closest('button[data-a]'); if (!btn) return;
       const card = btn.closest('.card'); btn.disabled = true;
       const r = await fetch('/api/moderate', { method:'POST', headers:{'content-type':'application/json'},
-        body: JSON.stringify({ secret: secretEl.value.trim(), action: btn.dataset.a, pageId: decodeURIComponent(card.dataset.page), id: card.dataset.id }) });
-      if (r.ok) { card.remove(); } else { btn.disabled = false; $('#mod-msg').textContent = 'Erreur.'; }
+        body: JSON.stringify({ secret: secret(), action: btn.dataset.a, pageId: decodeURIComponent(card.dataset.page), id: card.dataset.id }) });
+      if (r.ok) { card.remove(); loadModeration(); } else { btn.disabled = false; }
     });
 
-    $('#load').addEventListener('click', connect);
+    $('#loginBtn').addEventListener('click', connect);
     secretEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') connect(); });
+    $('#logout').addEventListener('click', () => { try { localStorage.removeItem('mod_secret'); } catch (e) {} location.reload(); });
     if (secretEl.value) connect();
   </script>
 </body>
