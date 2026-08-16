@@ -1,0 +1,166 @@
+---
+// Tableau de bord privé Tutoria News (non listé, non indexé).
+// Tout-en-un : Diffusion des articles aux abonnés + Modération des commentaires.
+// Protégé par le SECRET (variable ADMIN_SECRET côté serveur) saisi ici.
+---
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Tableau de bord — Tutoria News</title>
+  <style>
+    :root { --teal:#0E8074; --teal-d:#0b6e64; --yellow:#FDD200; --ink:#23302e; --muted:#6b7a78; --line:#e7edeb; }
+    * { box-sizing:border-box; }
+    body { font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; max-width:860px; margin:0 auto; padding:26px 18px 60px; color:var(--ink); background:#f6f8f7; }
+    header { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    h1 { color:var(--teal); margin:0 0 2px; font-size:26px; }
+    h1 span { color:var(--yellow); }
+    .sub { color:var(--muted); font-size:14px; }
+    .bar { display:flex; gap:10px; margin:18px 0 20px; flex-wrap:wrap; }
+    input[type=password] { flex:1; min-width:220px; padding:11px 13px; border:1px solid #cfe0dc; border-radius:10px; font-size:15px; }
+    button { border:0; border-radius:10px; padding:11px 16px; font-weight:700; cursor:pointer; font-size:14px; }
+    .primary { background:var(--teal); color:#fff; } .primary:hover { background:var(--teal-d); }
+    .tabs { display:flex; gap:8px; border-bottom:2px solid var(--line); margin-bottom:20px; }
+    .tab { background:none; color:var(--muted); border-radius:10px 10px 0 0; padding:12px 18px; font-weight:700; }
+    .tab.active { color:var(--teal); box-shadow:inset 0 -3px 0 var(--teal); }
+    .panel { display:none; } .panel.active { display:block; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:14px; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    .meta { font-size:13px; color:var(--muted); margin-top:4px; }
+    .title { font-weight:700; font-size:16px; }
+    .badge { font-size:12px; font-weight:700; padding:3px 9px; border-radius:999px; background:#e8f3f0; color:var(--teal-d); }
+    .badge.sent { background:#eaf7ec; color:#2e7d32; }
+    .send { background:var(--yellow); color:var(--teal-d); }
+    .send.again { background:#eef4f2; color:var(--teal-d); }
+    .txt { white-space:pre-wrap; line-height:1.5; }
+    .actions { margin-top:12px; display:flex; gap:10px; }
+    .ok { background:var(--teal); color:#fff; } .no { background:#e5484d; color:#fff; }
+    .msg { font-weight:600; margin:8px 0; min-height:1.1em; }
+    .empty { color:var(--muted); }
+    .links { margin-top:26px; padding-top:16px; border-top:1px solid var(--line); font-size:14px; }
+    .links a { color:var(--teal); font-weight:600; text-decoration:none; margin-right:18px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Tutoria <span>News</span></h1>
+      <div class="sub">Ton tableau de bord privé</div>
+    </div>
+  </header>
+
+  <div class="bar">
+    <input id="secret" type="password" placeholder="Mot de passe de modération" />
+    <button class="primary" id="load">Se connecter</button>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="tabs">
+      <button class="tab active" data-tab="diffusion">📣 Diffusion</button>
+      <button class="tab" data-tab="moderation">💬 Modération</button>
+    </div>
+
+    <section class="panel active" id="panel-diffusion">
+      <p class="empty" style="margin-top:0">Envoie un article à tous tes abonnés. Un article déjà diffusé peut être renvoyé.</p>
+      <div class="msg" id="diff-msg"></div>
+      <div id="diff-list"></div>
+    </section>
+
+    <section class="panel" id="panel-moderation">
+      <div class="msg" id="mod-msg"></div>
+      <div id="mod-list"></div>
+    </section>
+
+    <div class="links">
+      <a href="https://app.pagescms.org/" target="_blank" rel="noopener">✍️ Écrire un article (Pages CMS)</a>
+      <a href="/" target="_blank" rel="noopener">🌐 Voir le site</a>
+    </div>
+  </div>
+
+  <script is:inline>
+    const $ = (s) => document.querySelector(s);
+    const secretEl = $('#secret');
+    try { const s = localStorage.getItem('mod_secret'); if (s) secretEl.value = s; } catch (e) {}
+    const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m]));
+    const fdate = (d) => new Date(d).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+
+    // onglets
+    document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach((x) => x.classList.remove('active'));
+      t.classList.add('active');
+      $('#panel-' + t.dataset.tab).classList.add('active');
+    }));
+
+    async function connect() {
+      const secret = secretEl.value.trim();
+      if (!secret) return;
+      try { localStorage.setItem('mod_secret', secret); } catch (e) {}
+      const r = await fetch('/api/broadcast?secret=' + encodeURIComponent(secret));
+      if (r.status === 401) { $('#diff-msg').textContent = 'Mot de passe incorrect.'; return; }
+      $('#app').style.display = 'block';
+      loadDiffusion(); loadModeration();
+    }
+
+    // --- Diffusion ---
+    async function loadDiffusion() {
+      const secret = secretEl.value.trim();
+      const r = await fetch('/api/broadcast?secret=' + encodeURIComponent(secret));
+      const d = await r.json();
+      const arts = (d && d.articles) || [];
+      $('#diff-list').innerHTML = arts.map((a) => `
+        <div class="card" data-slug="${esc(a.slug)}">
+          <div class="row">
+            <div>
+              <div class="title">${esc(a.title)}</div>
+              <div class="meta">${fdate(a.date)} ${a.sent ? '&middot; <span class="badge sent">déjà diffusé</span>' : ''}</div>
+            </div>
+            <button class="send ${a.sent ? 'again' : ''}" data-slug="${esc(a.slug)}">${a.sent ? 'Renvoyer' : 'Envoyer aux abonnés'}</button>
+          </div>
+        </div>`).join('') || '<p class="empty">Aucun article publié.</p>';
+    }
+    $('#diff-list').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button.send'); if (!btn) return;
+      const slug = btn.dataset.slug;
+      if (!confirm('Envoyer cet article à TOUS tes abonnés ?')) return;
+      btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Envoi…';
+      $('#diff-msg').textContent = '';
+      const r = await fetch('/api/broadcast', { method:'POST', headers:{'content-type':'application/json'},
+        body: JSON.stringify({ secret: secretEl.value.trim(), slug }) });
+      const d = await r.json().catch(() => ({}));
+      if (d.ok) { $('#diff-msg').textContent = '✔ Article envoyé aux abonnés.'; loadDiffusion(); }
+      else { btn.disabled = false; btn.textContent = orig; $('#diff-msg').textContent = 'Échec : ' + (d.error || 'réessaie') + '.'; }
+    });
+
+    // --- Modération ---
+    async function loadModeration() {
+      const secret = secretEl.value.trim();
+      const r = await fetch('/api/moderate?secret=' + encodeURIComponent(secret));
+      const d = await r.json();
+      const pend = (d && d.pending) || [];
+      $('#mod-msg').textContent = pend.length ? (pend.length + ' commentaire(s) en attente') : '';
+      $('#mod-list').innerHTML = pend.map((c) => `
+        <div class="card" data-page="${encodeURIComponent(c.pageId)}" data-id="${c.id}">
+          <div class="meta"><b>${esc(c.name)}</b> &middot; ${new Date(c.date).toLocaleString('fr-FR')} &middot; ${esc(c.pageId)}</div>
+          <div class="txt">${esc(c.text)}</div>
+          <div class="actions">
+            <button class="ok" data-a="approve">✅ Approuver</button>
+            <button class="no" data-a="delete">🗑️ Supprimer</button>
+          </div>
+        </div>`).join('') || '<p class="empty">Rien en attente. 👌</p>';
+    }
+    $('#mod-list').addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-a]'); if (!btn) return;
+      const card = btn.closest('.card'); btn.disabled = true;
+      const r = await fetch('/api/moderate', { method:'POST', headers:{'content-type':'application/json'},
+        body: JSON.stringify({ secret: secretEl.value.trim(), action: btn.dataset.a, pageId: decodeURIComponent(card.dataset.page), id: card.dataset.id }) });
+      if (r.ok) { card.remove(); } else { btn.disabled = false; $('#mod-msg').textContent = 'Erreur.'; }
+    });
+
+    $('#load').addEventListener('click', connect);
+    secretEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') connect(); });
+    if (secretEl.value) connect();
+  </script>
+</body>
+</html>

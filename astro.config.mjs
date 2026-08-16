@@ -8,5 +8,5 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   site: 'https://tutoria-blog.vercel.app',
   adapter: vercel(),
-  integrations: [sitemap({ filter: (page) => !page.includes('/moderation') })],
+  integrations: [sitemap({ filter: (page) => !/\/(admin|moderation)/.test(page) })],
 });

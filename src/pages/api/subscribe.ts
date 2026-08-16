@@ -1,10 +1,8 @@
 import type { APIRoute } from 'astro';
+import { getBrevoKey, BREVO_LIST_ID } from '../../lib/brevo';
 
 // Cette route tourne à la demande (fonction serveur), pas au build.
 export const prerender = false;
-
-// La liste Brevo qui reçoit les abonnés (liste #3 « Tutoria News »).
-const BREVO_LIST_ID = 3;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -13,17 +11,6 @@ function json(data: unknown, status = 200) {
     status,
     headers: { 'content-type': 'application/json' },
   });
-}
-
-// Trouve la clé Brevo : d'abord par son nom, sinon par son format (xkeysib-…),
-// quel que soit le nom de la variable d'environnement.
-function getBrevoKey(): string | undefined {
-  const direct = process.env.BREVO_API_KEY || import.meta.env.BREVO_API_KEY;
-  if (direct) return direct;
-  for (const v of Object.values(process.env)) {
-    if (typeof v === 'string' && v.startsWith('xkeysib-')) return v;
-  }
-  return undefined;
 }
 
 // E-mail de bienvenue (transactionnel Brevo), depuis l'expéditeur vérifié Tutoria News.
