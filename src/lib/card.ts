@@ -3,8 +3,28 @@
 //  - composeCover : couverture d'aperçu (paysage, bicolore, vignette ronde, pictogramme, SANS texte)
 //  - fetchPhoto   : récupère une photo Pexels en évitant les doublons (par id)
 import sharp from 'sharp';
+import opentype from 'opentype.js';
 import { FREDOKA_B64 } from './fredoka';
 import { PICTO_B64 } from './picto';
+import { PLAYFAIR_B64 } from './playfair';
+
+// Police des TITRES = Playfair Display 900 Italic (comme la signature du logo). Rendue en
+// tracés SVG via opentype.js (resvg ne la charge pas en @font-face).
+let TITLE_FONT: any = null;
+try { const _b = Buffer.from(PLAYFAIR_B64, 'base64'); TITLE_FONT = opentype.parse(_b.buffer.slice(_b.byteOffset, _b.byteOffset + _b.byteLength)); } catch { TITLE_FONT = null; }
+function titlePaths(text: string, size: number, cx: number, baseline: number, fill = '#ffffff'): string {
+  if (!TITLE_FONT) return '';
+  const s = size / TITLE_FONT.unitsPerEm;
+  let w = 0; for (const ch of text) w += TITLE_FONT.charToGlyph(ch).advanceWidth * s;
+  let x = cx - w / 2, out = '';
+  for (const ch of text) {
+    const g = TITLE_FONT.charToGlyph(ch);
+    const d = g.getPath(x, baseline, size).toPathData(2);
+    if (d && d.length > 2) out += `<path d="${d}" fill="${fill}"/>`;
+    x += g.advanceWidth * s;
+  }
+  return out;
+}
 
 export function getPexelsKey(): string | undefined {
   return process.env.PEXELS_API_KEY || import.meta.env.PEXELS_API_KEY;
@@ -72,9 +92,10 @@ export async function composeCard(photo: Buffer, kicker: string, cardTitle: stri
     const bw = Math.round(w + 56), bx = Math.round(500 - bw / 2), by = kickerBase - 35;
     kickerSvg = `<rect x="${bx}" y="${by}" width="${bw}" height="52" rx="26" fill="#FDD200"/><text x="500" y="${kickerBase}" text-anchor="middle" class="k">${esc(kick)}</text>`;
   }
-  const titleSvg = lines.map((ln, i) => `<text x="500" y="${titleY[i]}" text-anchor="middle" class="t">${esc(ln)}</text>`).join('');
-  // NB: font-weight:800 obligatoire dans @font-face ET les classes, sinon resvg ignore la police embarquée.
-  const svg = `<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg"><defs><style>@font-face{font-family:'F';src:url(data:font/ttf;base64,${FREDOKA_B64}) format('truetype');font-weight:800;} .k{font-family:'F';font-weight:800;font-size:30px;fill:#0B4A44;} .t{font-family:'F';font-weight:800;font-size:${tSize}px;fill:#ffffff;}</style><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E8074" stop-opacity="0.06"/><stop offset="0.45" stop-color="#0E8074" stop-opacity="0.26"/><stop offset="1" stop-color="#0E8074" stop-opacity="0.94"/></linearGradient></defs><rect width="1000" height="1000" fill="url(#g)"/>${kickerSvg}${titleSvg}<rect x="0" y="976" width="1000" height="24" fill="#FDD200"/></svg>`;
+  // Titre en tracés Playfair (serif italique) ; kicker en Fredoka via @font-face.
+  const titleSvg = lines.map((ln, i) => titlePaths(ln, tSize, 500, titleY[i])).join('');
+  // NB: font-weight:800 obligatoire dans @font-face ET la classe, sinon resvg ignore la police embarquée.
+  const svg = `<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg"><defs><style>@font-face{font-family:'F';src:url(data:font/ttf;base64,${FREDOKA_B64}) format('truetype');font-weight:800;} .k{font-family:'F';font-weight:800;font-size:30px;fill:#0B4A44;}</style><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E8074" stop-opacity="0.06"/><stop offset="0.45" stop-color="#0E8074" stop-opacity="0.26"/><stop offset="1" stop-color="#0E8074" stop-opacity="0.94"/></linearGradient></defs><rect width="1000" height="1000" fill="url(#g)"/>${kickerSvg}${titleSvg}<rect x="0" y="976" width="1000" height="24" fill="#FDD200"/></svg>`;
   try {
     return await sharp(photo).resize(1000, 1000, { fit: 'cover', position: 'attention' }).composite([{ input: Buffer.from(svg) }]).webp({ quality: 86 }).toBuffer();
   } catch { return null; }
