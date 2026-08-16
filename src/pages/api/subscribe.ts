@@ -26,6 +26,40 @@ function getBrevoKey(): string | undefined {
   return undefined;
 }
 
+// E-mail de bienvenue (transactionnel Brevo), depuis l'expéditeur vérifié Tutoria News.
+async function sendWelcome(email: string, apiKey: string): Promise<void> {
+  const html = `
+  <div style="background:#f1f7f6;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#23302e;">
+    <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e7edeb;">
+      <div style="background:#0E8074;padding:26px 28px;text-align:center;">
+        <div style="font-size:26px;font-weight:800;color:#fff;">Tutoria<span style="color:#FDD200;"> News</span></div>
+        <div style="color:#bfe4dd;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:6px;">Explorez &middot; Apprenez &middot; Partagez</div>
+      </div>
+      <div style="padding:30px 28px;">
+        <h1 style="margin:0 0 12px;font-size:22px;color:#0E8074;">Bienvenue !</h1>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Merci de rejoindre <b>Tutoria News</b>. Tu vas recevoir l'essentiel sur ta <b>santé</b>, ton <b>argent</b>, ton <b>développement personnel</b> et la <b>tech</b> &mdash; des conseils clairs, faciles à appliquer.</p>
+        <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">Notre promesse tient en trois mots : <b>tu lis, tu comprends, tu appliques.</b></p>
+        <div style="text-align:center;margin:26px 0 6px;">
+          <a href="https://tutoria-blog.vercel.app/articles/" style="display:inline-block;background:#FDD200;color:#0b6e64;text-decoration:none;font-weight:700;padding:13px 26px;border-radius:999px;font-size:15px;">Lire nos derniers articles</a>
+        </div>
+      </div>
+      <div style="padding:16px 28px 22px;border-top:1px solid #e7edeb;text-align:center;color:#6b7a78;font-size:12px;">
+        Tu reçois ce message car tu t'es inscrit à la newsletter Tutoria News.<br>Tu peux te désinscrire à tout moment.
+      </div>
+    </div>
+  </div>`;
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'api-key': apiKey, 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({
+      sender: { name: 'Tutoria News', email: 'tutorianews@gmail.com' },
+      to: [{ email }],
+      subject: 'Bienvenue chez Tutoria News',
+      htmlContent: html,
+    }),
+  });
+}
+
 export const POST: APIRoute = async ({ request }) => {
   const apiKey = getBrevoKey();
   if (!apiKey) {
@@ -66,6 +100,12 @@ export const POST: APIRoute = async ({ request }) => {
     }),
   });
 
+  // 201 = nouveau contact -> on envoie le mail de bienvenue (sans bloquer si l'envoi échoue).
+  if (res.status === 201) {
+    await sendWelcome(email, apiKey).catch(() => {});
+    return json({ success: true, welcomed: true });
+  }
+  // 204 = contact déjà présent, mis à jour -> pas de mail (évite le spam de réinscription).
   if (res.ok || res.status === 204) {
     return json({ success: true });
   }
