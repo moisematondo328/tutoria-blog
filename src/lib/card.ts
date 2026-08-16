@@ -91,30 +91,22 @@ export async function fetchBrightPhoto(key: string, query: string, exclude: Set<
   } catch { return null; }
 }
 
-// Couverture 1200x1000 SANS texte, style de référence : deux zones teal séparées par une COURBE
-// (liseré vert), vignette ronde N&B nette, pictogramme Tutoria en cercle blanc. Pas de barre jaune.
+// Couverture 1200x800 SANS texte, style "split marque" : panneau teal à gauche (pictogramme
+// Tutoria) + couture jaune + photo couleur à droite. Robuste (indépendant de la luminosité).
 export async function composeCover(photo: Buffer): Promise<Buffer | null> {
-  const W = 1200, H = 1000, D = 380, CX = 560, CY = 520;
-  const CURVE = 'M 690 0 C 560 340, 780 660, 600 1000';
-  const LEFT = 'M0 0 L 690 0 C 560 340 780 660 600 1000 L 0 1000 Z';
-  const RIGHT = 'M 690 0 L 1200 0 L 1200 1000 L 600 1000 C 780 660 560 340 690 0 Z';
+  const W = 1200, H = 800, SPLIT = Math.round(W * 0.4), BS = 220;
   try {
-    // base N&B contrastée, puis voile teal fort (multiply) : droite teal profond, gauche teal moyen
-    const gray = await sharp(photo).resize(W, H, { fit: 'cover', position: 'attention' }).grayscale().normalise().toColourspace('srgb').toBuffer();
-    const rightVeil = Buffer.from(`<svg width="${W}" height="${H}"><path d="${RIGHT}" fill="#0B4A44" fill-opacity="0.62"/></svg>`);
-    const leftVeil = Buffer.from(`<svg width="${W}" height="${H}"><path d="${LEFT}" fill="#12897B" fill-opacity="0.6"/></svg>`);
-    const img = await sharp(gray).composite([{ input: rightVeil, blend: 'multiply' }, { input: leftVeil, blend: 'multiply' }]).toBuffer();
-    const g2 = await sharp(photo).resize(D, D, { fit: 'cover', position: 'attention' }).grayscale().normalise().toBuffer();
-    const cmask = Buffer.from(`<svg width="${D}" height="${D}"><circle cx="${D / 2}" cy="${D / 2}" r="${D / 2}" fill="#fff"/></svg>`);
-    const inset = await sharp(g2).composite([{ input: cmask, blend: 'dest-in' }]).png().toBuffer();
-    const strokes = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"><path d="${CURVE}" fill="none" stroke="#A7E6C6" stroke-width="6"/><circle cx="${CX}" cy="${CY}" r="${D / 2 + 9}" fill="none" stroke="#0E8074" stroke-width="11"/><circle cx="${CX}" cy="${CY}" r="${D / 2 + 17}" fill="none" stroke="#A7E6C6" stroke-width="3"/></svg>`;
-    const pic = await sharp(Buffer.from(PICTO_B64, 'base64')).resize(128, 128).toBuffer();
-    const badge = await sharp(Buffer.from(`<svg width="180" height="180"><circle cx="90" cy="90" r="82" fill="#fff"/></svg>`)).composite([{ input: pic, left: 26, top: 26 }]).png().toBuffer();
-    return await sharp(img).composite([
-      { input: inset, left: CX - D / 2, top: CY - D / 2 },
-      { input: Buffer.from(strokes) },
-      { input: badge, left: W - 210, top: 44 },
-    ]).webp({ quality: 88 }).toBuffer();
+    const rightPhoto = await sharp(photo).resize(W - SPLIT, H, { fit: 'cover', position: 'attention' }).toBuffer();
+    const pic = await sharp(Buffer.from(PICTO_B64, 'base64')).resize(Math.round(BS * 0.72), Math.round(BS * 0.72)).toBuffer();
+    const badge = await sharp(Buffer.from(`<svg width="${BS}" height="${BS}"><circle cx="${BS / 2}" cy="${BS / 2}" r="${BS / 2 - 2}" fill="#fff"/></svg>`))
+      .composite([{ input: pic, left: Math.round(BS * 0.14), top: Math.round(BS * 0.14) }]).png().toBuffer();
+    const seam = Buffer.from(`<svg width="10" height="${H}"><rect width="10" height="${H}" fill="#FDD200"/></svg>`);
+    return await sharp({ create: { width: W, height: H, channels: 3, background: '#0E8074' } })
+      .composite([
+        { input: rightPhoto, left: SPLIT, top: 0 },
+        { input: seam, left: SPLIT - 5, top: 0 },
+        { input: badge, left: Math.round(SPLIT / 2 - BS / 2), top: Math.round(H / 2 - BS / 2) },
+      ]).webp({ quality: 90 }).toBuffer();
   } catch { return null; }
 }
 
