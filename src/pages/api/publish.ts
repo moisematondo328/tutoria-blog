@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { fetchPhoto, composeCard, composeCover, getPexelsKey } from '../../lib/card';
+import { fetchPhoto, fetchBrightPhoto, composeCard, composeCover, getPexelsKey } from '../../lib/card';
 
 export const prerender = false;
 
@@ -91,7 +91,7 @@ export const POST: APIRoute = async ({ request }) => {
   // 1) Couverture d'aperçu (paysage, SANS texte, photo distincte des sections)
   if (pexelsKey && !cover) {
     const cq = (b.coverQuery || title).toString();
-    const cp = await fetchPhoto(pexelsKey, cq, 'landscape', usedIds);
+    const cp = await fetchBrightPhoto(pexelsKey, cq, usedIds);
     if (cp) {
       usedIds.add(cp.id);
       const cbuf = await composeCover(cp.buf);

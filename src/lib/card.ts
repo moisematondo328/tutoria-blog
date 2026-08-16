@@ -66,29 +66,54 @@ export async function composeCard(photo: Buffer, kicker: string, cardTitle: stri
   } catch { return null; }
 }
 
-// Couverture 1200x800 SANS texte : panneau teal courbe + photo, vignette ronde N&B (anneau teal+jaune),
-// pictogramme Tutoria en cercle blanc, barre jaune. Reprend le style de la couverture de référence.
-export async function composeCover(photo: Buffer): Promise<Buffer | null> {
-  const W = 1200, H = 800, D = 360, CX = 470, CY = 400;
+// Récupère la photo la PLUS LUMINEUSE parmi plusieurs candidats (une couverture sombre rend mal).
+export async function fetchBrightPhoto(key: string, query: string, exclude: Set<number>): Promise<{ buf: Buffer; id: number } | null> {
   try {
-    const base = await sharp(photo).resize(W, H, { fit: 'cover', position: 'attention' }).toBuffer();
-    const overlay = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"><defs>
-      <linearGradient id="bot" x1="0" y1="0" x2="0" y2="1"><stop offset="0.4" stop-color="#0B4A44" stop-opacity="0"/><stop offset="1" stop-color="#0B4A44" stop-opacity="0.92"/></linearGradient>
-      <linearGradient id="lft" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0E8074" stop-opacity="0.92"/><stop offset="1" stop-color="#0E8074" stop-opacity="0.30"/></linearGradient>
-      </defs><path d="M0 0 L560 0 C480 260 640 520 520 800 L0 800 Z" fill="url(#lft)"/><rect width="${W}" height="${H}" fill="url(#bot)"/></svg>`;
-    const gray = await sharp(photo).resize(D, D, { fit: 'cover', position: 'attention' }).grayscale().toBuffer();
-    const mask = Buffer.from(`<svg width="${D}" height="${D}"><circle cx="${D / 2}" cy="${D / 2}" r="${D / 2}" fill="#fff"/></svg>`);
-    const inset = await sharp(gray).composite([{ input: mask, blend: 'dest-in' }]).png().toBuffer();
-    const ring = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"><circle cx="${CX}" cy="${CY}" r="${D / 2 + 8}" fill="none" stroke="#0E8074" stroke-width="10"/><path d="M ${CX} ${CY - (D / 2 + 8)} A ${D / 2 + 8} ${D / 2 + 8} 0 0 1 ${CX + (D / 2 + 8)} ${CY}" fill="none" stroke="#FDD200" stroke-width="10" stroke-linecap="round"/></svg>`;
+    const r = await fetch('https://api.pexels.com/v1/search?query=' + encodeURIComponent(query) + '&per_page=10&orientation=landscape', { headers: { Authorization: key } });
+    if (!r.ok) return null;
+    const j = await r.json();
+    const cand: any[] = (Array.isArray(j.photos) ? j.photos : []).filter((p: any) => !exclude.has(p.id)).slice(0, 6);
+    if (!cand.length) return null;
+    let best: any = null, bestL = -1;
+    for (const p of cand) {
+      try {
+        const im = await fetch(p.src?.small || p.src?.medium); // petite image pour évaluer vite
+        if (!im.ok) continue;
+        const st = await sharp(Buffer.from(await im.arrayBuffer())).stats();
+        const L = (st.channels[0].mean + st.channels[1].mean + st.channels[2].mean) / 3;
+        if (L > bestL) { bestL = L; best = p; }
+      } catch { /* ignore ce candidat */ }
+    }
+    if (!best) best = cand[0];
+    const full = await fetch(best.src?.large2x || best.src?.landscape || best.src?.large);
+    if (!full.ok) return null;
+    return { buf: Buffer.from(await full.arrayBuffer()), id: best.id };
+  } catch { return null; }
+}
+
+// Couverture 1200x1000 SANS texte, style de référence : deux zones teal séparées par une COURBE
+// (liseré vert), vignette ronde N&B nette, pictogramme Tutoria en cercle blanc. Pas de barre jaune.
+export async function composeCover(photo: Buffer): Promise<Buffer | null> {
+  const W = 1200, H = 1000, D = 380, CX = 560, CY = 520;
+  const CURVE = 'M 690 0 C 560 340, 780 660, 600 1000';
+  const LEFT = 'M0 0 L 690 0 C 560 340 780 660 600 1000 L 0 1000 Z';
+  const RIGHT = 'M 690 0 L 1200 0 L 1200 1000 L 600 1000 C 780 660 560 340 690 0 Z';
+  try {
+    // base N&B contrastée, puis voile teal fort (multiply) : droite teal profond, gauche teal moyen
+    const gray = await sharp(photo).resize(W, H, { fit: 'cover', position: 'attention' }).grayscale().normalise().toColourspace('srgb').toBuffer();
+    const rightVeil = Buffer.from(`<svg width="${W}" height="${H}"><path d="${RIGHT}" fill="#0B4A44" fill-opacity="0.62"/></svg>`);
+    const leftVeil = Buffer.from(`<svg width="${W}" height="${H}"><path d="${LEFT}" fill="#12897B" fill-opacity="0.6"/></svg>`);
+    const img = await sharp(gray).composite([{ input: rightVeil, blend: 'multiply' }, { input: leftVeil, blend: 'multiply' }]).toBuffer();
+    const g2 = await sharp(photo).resize(D, D, { fit: 'cover', position: 'attention' }).grayscale().normalise().toBuffer();
+    const cmask = Buffer.from(`<svg width="${D}" height="${D}"><circle cx="${D / 2}" cy="${D / 2}" r="${D / 2}" fill="#fff"/></svg>`);
+    const inset = await sharp(g2).composite([{ input: cmask, blend: 'dest-in' }]).png().toBuffer();
+    const strokes = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg"><path d="${CURVE}" fill="none" stroke="#A7E6C6" stroke-width="6"/><circle cx="${CX}" cy="${CY}" r="${D / 2 + 9}" fill="none" stroke="#0E8074" stroke-width="11"/><circle cx="${CX}" cy="${CY}" r="${D / 2 + 17}" fill="none" stroke="#A7E6C6" stroke-width="3"/></svg>`;
     const pic = await sharp(Buffer.from(PICTO_B64, 'base64')).resize(128, 128).toBuffer();
     const badge = await sharp(Buffer.from(`<svg width="180" height="180"><circle cx="90" cy="90" r="82" fill="#fff"/></svg>`)).composite([{ input: pic, left: 26, top: 26 }]).png().toBuffer();
-    const bar = `<svg width="${W}" height="${H}"><rect x="0" y="${H - 18}" width="${W}" height="18" fill="#FDD200"/></svg>`;
-    return await sharp(base).composite([
-      { input: Buffer.from(overlay) },
+    return await sharp(img).composite([
       { input: inset, left: CX - D / 2, top: CY - D / 2 },
-      { input: Buffer.from(ring) },
-      { input: badge, left: W - 210, top: 40 },
-      { input: Buffer.from(bar) },
+      { input: Buffer.from(strokes) },
+      { input: badge, left: W - 210, top: 44 },
     ]).webp({ quality: 88 }).toBuffer();
   } catch { return null; }
 }
