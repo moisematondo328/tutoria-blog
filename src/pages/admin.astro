@@ -80,6 +80,11 @@
     .art-title { font-weight:700; font-size:15px; line-height:1.3; }
     .art-meta { font-size:12.5px; color:var(--muted); margin-top:5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .send { flex:0 0 auto; }
+    .search { width:100%; padding:12px 15px; border:1px solid var(--line); border-radius:12px; font-size:14.5px; background:var(--card); margin-bottom:14px; }
+    .search:focus { outline:2px solid var(--teal); border-color:var(--teal); }
+    .more-btn { background:#eef4f2; color:var(--teal-d); padding:11px 22px; }
+    .more-btn:hover { background:#e2eeea; }
+    .diff-count { font-size:12.5px; color:var(--muted); margin-bottom:10px; }
 
     /* Cartes commentaires (Modération) */
     .cmt { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; margin-bottom:12px; }
@@ -154,8 +159,10 @@
           <label class="switch"><input type="checkbox" id="auto-toggle" /><span class="slider"></span></label>
         </div>
       </div>
+      <input id="diff-search" class="search" type="search" placeholder="Rechercher un article par titre…" />
       <div class="msg" id="diff-msg"></div>
       <div id="diff-list"></div>
+      <div style="text-align:center;margin-top:8px"><button id="diff-more" class="more-btn" style="display:none">Afficher plus</button></div>
     </section>
 
     <!-- Modération -->
@@ -197,13 +204,24 @@
       loadModeration();
     }
 
+    let ALL = [];
+    let shown = 12;
+    const STEP = 12;
+
     function renderDiffusion(d) {
-      const arts = (d && d.articles) || [];
+      ALL = (d && d.articles) || [];
       $('#kpi-subs').textContent = (d && typeof d.subscribers === 'number') ? d.subscribers : '—';
-      $('#kpi-arts').textContent = arts.length;
+      $('#kpi-arts').textContent = ALL.length;
       const t = $('#auto-toggle'); t.checked = !!(d && d.auto);
       setAutoLabel(t.checked);
-      $('#diff-list').innerHTML = arts.map((a) => {
+      renderList();
+    }
+
+    function renderList() {
+      const q = ($('#diff-search').value || '').toLowerCase().trim();
+      const filtered = q ? ALL.filter((a) => a.title.toLowerCase().includes(q)) : ALL;
+      const view = q ? filtered : filtered.slice(0, shown);
+      const rows = view.map((a) => {
         const thumb = a.cover
           ? `<div class="art-thumb" style="background-image:url('${esc(a.cover)}')"></div>`
           : `<div class="art-thumb ph">${esc((a.title || 'T').trim().charAt(0))}</div>`;
@@ -216,8 +234,15 @@
           </div>
           <button class="send ${a.sent ? 'again' : ''}" data-slug="${esc(a.slug)}">${a.sent ? 'Renvoyer' : 'Envoyer aux abonnés'}</button>
         </div>`;
-      }).join('') || '<p class="empty">Aucun article publié pour l’instant.</p>';
+      }).join('');
+      const count = q
+        ? `<div class="diff-count">${filtered.length} résultat(s) pour « ${esc(q)} »</div>`
+        : `<div class="diff-count">${ALL.length} article(s) · ${view.length} affiché(s)</div>`;
+      $('#diff-list').innerHTML = rows ? count + rows : '<p class="empty">Aucun article ne correspond à ta recherche.</p>';
+      $('#diff-more').style.display = (!q && filtered.length > shown) ? 'inline-block' : 'none';
     }
+    $('#diff-search').addEventListener('input', () => { shown = STEP; renderList(); });
+    $('#diff-more').addEventListener('click', () => { shown += STEP; renderList(); });
     function setAutoLabel(on) {
       const el = $('#auto-state');
       el.textContent = on ? 'Activée' : 'Désactivée';
