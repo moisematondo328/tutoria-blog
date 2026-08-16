@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { fetchPhoto, fetchBrightPhoto, composeCard, composeCover, getPexelsKey } from '../../lib/card';
+import { fetchPhoto, fetchBrightPhoto, fetchPhotoById, composeCard, composeCover, getPexelsKey } from '../../lib/card';
 
 export const prerender = false;
 
@@ -88,10 +88,10 @@ export const POST: APIRoute = async ({ request }) => {
   const usedIds = new Set<number>(); // anti-doublon : chaque visuel a une photo différente
   const figures: string[] = [];
 
-  // 1) Couverture d'aperçu (paysage, SANS texte, photo distincte des sections)
+  // 1) Couverture d'aperçu (SANS texte). Photo choisie dans /admin (coverPhotoId) sinon auto.
   if (pexelsKey && !cover) {
     const cq = (b.coverQuery || title).toString();
-    const cp = await fetchBrightPhoto(pexelsKey, cq, usedIds);
+    const cp = b.coverPhotoId ? await fetchPhotoById(pexelsKey, b.coverPhotoId) : await fetchBrightPhoto(pexelsKey, cq, usedIds);
     if (cp) {
       usedIds.add(cp.id);
       const cbuf = await composeCover(cp.buf);
@@ -107,7 +107,9 @@ export const POST: APIRoute = async ({ request }) => {
   if (pexelsKey && sections.length) {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
-      const p = await fetchPhoto(pexelsKey, (s.imageQuery || s.cardTitle || s.heading || '').toString(), 'square', usedIds);
+      const p = s.photoId
+        ? await fetchPhotoById(pexelsKey, s.photoId)
+        : await fetchPhoto(pexelsKey, (s.imageQuery || s.cardTitle || s.heading || '').toString(), 'square', usedIds);
       if (!p) { figures[i] = ''; continue; }
       usedIds.add(p.id);
       const cbuf = await composeCard(p.buf, (s.kicker || '').toString(), (s.cardTitle || s.heading || '').toString());

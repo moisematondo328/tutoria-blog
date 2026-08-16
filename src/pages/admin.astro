@@ -98,6 +98,21 @@
     .chk { display:flex; align-items:center; gap:9px; margin:16px 0 4px; font-size:14px; color:var(--muted); }
     .pub-row { display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap; }
 
+    /* Sélecteur d'images (aperçu + choix par partie) */
+    .imgrow { border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:10px; background:var(--card); }
+    .imgrow-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+    .imgrow-tag { font-weight:700; font-size:12px; color:var(--teal); background:rgba(14,128,116,.10); padding:3px 9px; border-radius:999px; white-space:nowrap; }
+    .imgq { flex:1; min-width:160px; padding:8px 11px; border:1px solid var(--line); border-radius:9px; font-size:13px; font-family:var(--font); background:var(--bg); color:var(--ink); }
+    .imgq:focus { outline:2px solid var(--teal); border-color:var(--teal); }
+    .imgbtn { background:var(--bg); color:var(--ink); border:1px solid var(--line); padding:8px 12px; font-size:12.5px; font-weight:700; }
+    .imgbtn:hover { border-color:var(--teal); color:var(--teal); }
+    .thumbs { display:flex; gap:8px; overflow-x:auto; padding:3px 1px 6px; }
+    .thumb { flex:0 0 auto; width:96px; height:96px; border-radius:9px; overflow:hidden; cursor:pointer; border:3px solid transparent; position:relative; background:var(--bg); }
+    .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb.sel { border-color:var(--jaune, #FDD200); box-shadow:0 0 0 2px var(--teal); }
+    .thumb.sel::after { content:"✓"; position:absolute; top:2px; right:5px; color:#0B4A44; font-weight:800; font-size:14px; text-shadow:0 0 3px #FDD200; }
+    .thumbs-empty { font-size:12.5px; color:var(--muted); padding:6px 2px; }
+
     /* Cartes commentaires (Modération) */
     .cmt { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; margin-bottom:12px; }
     .cmt-top { display:flex; align-items:center; gap:12px; }
@@ -183,6 +198,10 @@
           <textarea id="d-excerpt" class="ta" rows="2"></textarea>
           <label class="lbl">Image à la une <span class="hint" id="d-imgq"></span></label>
           <input id="d-cover" class="fld" type="text" placeholder="/uploads/2026/…/image.webp ou une URL (optionnel)" />
+          <div id="img-picker" style="display:none">
+            <label class="lbl">Illustrations <span class="hint">clique sur une vignette pour choisir la photo de chaque partie ; modifie la recherche si besoin</span></label>
+            <div id="img-rows"></div>
+          </div>
           <label class="lbl">Contenu de l'article (Markdown)</label>
           <textarea id="d-body" class="ta mono" rows="16"></textarea>
           <label class="chk"><input type="checkbox" id="d-draft" /> Publier en brouillon (non visible sur le site)</label>
@@ -359,6 +378,54 @@
     // --- Créer (usine à articles) ---
     let genSections = []; // sections renvoyées par Gemini (pour fabriquer les cartes à la publication)
     let genCoverQuery = ''; // requête photo pour la couverture
+    let genCoverPhotoId = null; // photo de couverture choisie à la main
+
+    function elc(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+    async function fetchCandidates(query, orientation) {
+      try {
+        const r = await fetch('/api/photos', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ secret: secret(), query, orientation }) });
+        const d = await r.json().catch(() => ({}));
+        return (d.ok && Array.isArray(d.photos)) ? d.photos : [];
+      } catch (e) { return []; }
+    }
+    function renderThumbs(strip, photos, selectedId, onPick) {
+      strip.innerHTML = '';
+      if (!photos.length) { strip.appendChild(elc('div', 'thumbs-empty', 'Aucune photo trouvée. Modifie la recherche.')); return; }
+      for (const p of photos) {
+        const t = elc('div', 'thumb', '<img src="' + p.thumb + '" alt="" loading="lazy"/>');
+        if (String(p.id) === String(selectedId)) t.classList.add('sel');
+        t.addEventListener('click', () => { Array.from(strip.children).forEach((c) => c.classList && c.classList.remove('sel')); t.classList.add('sel'); onPick(p.id); });
+        strip.appendChild(t);
+      }
+    }
+    function makeImgRow(tag, query, orientation, onPick) {
+      const row = elc('div', 'imgrow');
+      const head = elc('div', 'imgrow-head');
+      const q = elc('input', 'imgq'); q.type = 'text'; q.value = query || '';
+      const btn = elc('button', 'imgbtn', 'Chercher'); btn.type = 'button';
+      head.appendChild(elc('span', 'imgrow-tag', tag)); head.appendChild(q); head.appendChild(btn);
+      const strip = elc('div', 'thumbs'); strip.appendChild(elc('div', 'thumbs-empty', 'Chargement…'));
+      row.appendChild(head); row.appendChild(strip);
+      let selected = null;
+      const load = async () => {
+        strip.innerHTML = ''; strip.appendChild(elc('div', 'thumbs-empty', 'Chargement…'));
+        const ph = await fetchCandidates(q.value.trim(), orientation);
+        renderThumbs(strip, ph, selected, (id) => { selected = id; onPick(id); });
+      };
+      btn.addEventListener('click', load);
+      q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); load(); } });
+      load();
+      return row;
+    }
+    function buildImagePicker() {
+      const rows = $('#img-rows'); rows.innerHTML = ''; genCoverPhotoId = null;
+      rows.appendChild(makeImgRow('Couverture', genCoverQuery, 'landscape', (id) => { genCoverPhotoId = id; }));
+      genSections.forEach((s, i) => {
+        genSections[i].photoId = null;
+        rows.appendChild(makeImgRow(s.kicker || ('Partie ' + (i + 1)), s.imageQuery || s.cardTitle || '', 'square', (id) => { genSections[i].photoId = id; }));
+      });
+      $('#img-picker').style.display = 'block';
+    }
     $('#gen-btn').addEventListener('click', async () => {
       const topic = $('#gen-topic').value.trim();
       if (topic.length < 4) { $('#gen-msg').textContent = 'Donne un sujet un peu plus précis.'; return; }
@@ -376,9 +443,10 @@
           genSections = Array.isArray(a.sections) ? a.sections : [];
           genCoverQuery = a.coverQuery || '';
           $('#d-imgq').textContent = genSections.length
-            ? ('· ' + genSections.length + ' illustration' + (genSections.length > 1 ? 's' : '') + ' seront créées à la charte')
+            ? ('· ' + genSections.length + ' illustration' + (genSections.length > 1 ? 's' : '') + ' à la charte, choisis les photos ci-dessous')
             : '';
           $('#draft-form').style.display = 'block';
+          if (genSections.length) buildImagePicker(); else $('#img-picker').style.display = 'none';
           $('#gen-msg').textContent = 'Brouillon prêt. Relis, ajuste, puis publie.';
         } else if (d.error === 'config') { $('#gen-msg').textContent = 'La clé Gemini n’est pas encore configurée sur le site.'; }
         else { $('#gen-msg').textContent = 'La génération a échoué : ' + (d.error || 'réessaie') + '.'; }
@@ -387,7 +455,7 @@
     });
 
     $('#pub-btn').addEventListener('click', async () => {
-      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked, sections: genSections, coverQuery: genCoverQuery };
+      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked, sections: genSections, coverQuery: genCoverQuery, coverPhotoId: genCoverPhotoId };
       if (payload.title.length < 4 || payload.body.length < 40) { $('#pub-msg').textContent = 'Titre et contenu requis.'; return; }
       const btn = $('#pub-btn'); btn.disabled = true; const o = btn.textContent; btn.textContent = 'Publication…';
       try {

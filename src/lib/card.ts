@@ -28,6 +28,20 @@ export async function fetchPhoto(key: string, query: string, orientation: 'squar
   } catch { return null; }
 }
 
+// Récupère une photo Pexels précise par son id (choix manuel depuis /admin).
+export async function fetchPhotoById(key: string, id: number | string): Promise<{ buf: Buffer; id: number } | null> {
+  try {
+    const r = await fetch('https://api.pexels.com/v1/photos/' + id, { headers: { Authorization: key } });
+    if (!r.ok) return null;
+    const p = await r.json();
+    const src = p.src?.large2x || p.src?.large || p.src?.landscape || p.src?.original;
+    if (!src) return null;
+    const img = await fetch(src);
+    if (!img.ok) return null;
+    return { buf: Buffer.from(await img.arrayBuffer()), id: p.id };
+  } catch { return null; }
+}
+
 function titleLines(title: string): string[] {
   const t = title.trim();
   if (t.length <= 17) return [t];
