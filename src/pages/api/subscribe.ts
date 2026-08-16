@@ -36,9 +36,11 @@ async function sendWelcome(email: string, apiKey: string): Promise<void> {
         <div style="color:#bfe4dd;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:6px;">Explorez &middot; Apprenez &middot; Partagez</div>
       </div>
       <div style="padding:30px 28px;">
-        <h1 style="margin:0 0 12px;font-size:22px;color:#0E8074;">Bienvenue !</h1>
-        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Merci de rejoindre <b>Tutoria News</b>. Tu vas recevoir l'essentiel sur ta <b>santé</b>, ton <b>argent</b>, ton <b>développement personnel</b> et la <b>tech</b> &mdash; des conseils clairs, faciles à appliquer.</p>
-        <p style="margin:0 0 24px;font-size:15px;line-height:1.6;">Notre promesse tient en trois mots : <b>tu lis, tu comprends, tu appliques.</b></p>
+        <h1 style="margin:0 0 14px;font-size:22px;color:#0E8074;">Content de t'avoir avec nous !</h1>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Tu viens de rejoindre <b>Tutoria News</b>, et c'est une belle décision. Ici, on prend les vrais sujets de ta vie (ta <b>santé</b>, ton <b>argent</b>, ton <b>développement personnel</b>, la <b>tech</b>) et on te les explique simplement, pour que tu puisses agir dès aujourd'hui.</p>
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">À chaque message, tu repars avec du concret : une idée, une astuce ou une méthode prête à l'emploi. Jamais de blabla, que de l'utile.</p>
+        <p style="margin:0 0 22px;font-size:15px;line-height:1.6;">Notre façon de faire tient en trois mots : <b>tu lis, tu comprends, tu appliques.</b></p>
+        <p style="margin:0 0 4px;font-size:15px;line-height:1.6;">En attendant le prochain rendez-vous, découvre ce qu'on a déjà écrit pour toi.</p>
         <div style="text-align:center;margin:26px 0 6px;">
           <a href="https://tutoria-blog.vercel.app/articles/" style="display:inline-block;background:#FDD200;color:#0b6e64;text-decoration:none;font-weight:700;padding:13px 26px;border-radius:999px;font-size:15px;">Lire nos derniers articles</a>
         </div>
