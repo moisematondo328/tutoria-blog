@@ -69,7 +69,27 @@
     .approve { background:var(--teal); color:#fff; padding:9px 15px; } .approve:hover{ background:var(--teal-d); }
     .delete { background:#fdecec; color:#c0392b; padding:9px 15px; } .delete:hover{ background:#f9d9d9; }
     .msg { font-weight:600; color:var(--teal-d); margin:2px 0 14px; min-height:1.1em; font-size:14px; }
-    .empty { color:var(--muted); }
+    .empty { color:var(--muted); background:var(--card); border:1px dashed var(--line); border-radius:var(--radius); padding:26px; text-align:center; }
+
+    /* Liste d'articles (Diffusion) */
+    .art { display:flex; align-items:center; gap:16px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:12px 14px; margin-bottom:11px; transition:border-color .15s, transform .15s; }
+    .art:hover { border-color:#cfe0dc; transform:translateY(-1px); }
+    .art-thumb { flex:0 0 auto; width:78px; height:56px; border-radius:11px; background:#dfeae7 center/cover no-repeat; }
+    .art-thumb.ph { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--teal),var(--teal-l)); color:#fff; font-weight:800; font-size:22px; }
+    .art-main { flex:1 1 auto; min-width:0; }
+    .art-title { font-weight:700; font-size:15px; line-height:1.3; }
+    .art-meta { font-size:12.5px; color:var(--muted); margin-top:5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .send { flex:0 0 auto; }
+
+    /* Cartes commentaires (Modération) */
+    .cmt { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; margin-bottom:12px; }
+    .cmt-top { display:flex; align-items:center; gap:12px; }
+    .avatar { flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--teal-l)); color:#fff; font-weight:800; font-size:17px; display:flex; align-items:center; justify-content:center; text-transform:uppercase; }
+    .cmt-name { font-weight:700; font-size:15px; }
+    .cmt-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
+    .cmt-sub a { color:var(--teal); text-decoration:none; font-weight:600; }
+    .cmt-sub a:hover { text-decoration:underline; }
+    .cmt-text { margin:13px 0 4px; padding:10px 0 10px 15px; border-left:3px solid var(--yellow); color:var(--ink); line-height:1.55; white-space:pre-wrap; }
 
     /* Interrupteur auto */
     .auto { background:linear-gradient(180deg,#eff6f4,#ffffff); border:1px solid var(--line); }
@@ -183,16 +203,20 @@
       $('#kpi-arts').textContent = arts.length;
       const t = $('#auto-toggle'); t.checked = !!(d && d.auto);
       setAutoLabel(t.checked);
-      $('#diff-list').innerHTML = arts.map((a) => `
-        <div class="card">
-          <div class="row">
-            <div>
-              <div class="title">${esc(a.title)}</div>
-              <div class="meta">${fdate(a.date)} ${a.sent ? '&nbsp;<span class="badge sent">déjà diffusé</span>' : ''}</div>
-            </div>
-            <button class="send ${a.sent ? 'again' : ''}" data-slug="${esc(a.slug)}">${a.sent ? 'Renvoyer' : 'Envoyer aux abonnés'}</button>
+      $('#diff-list').innerHTML = arts.map((a) => {
+        const thumb = a.cover
+          ? `<div class="art-thumb" style="background-image:url('${esc(a.cover)}')"></div>`
+          : `<div class="art-thumb ph">${esc((a.title || 'T').trim().charAt(0))}</div>`;
+        return `
+        <div class="art">
+          ${thumb}
+          <div class="art-main">
+            <div class="art-title">${esc(a.title)}</div>
+            <div class="art-meta">${fdate(a.date)}${a.sent ? ' <span class="badge sent">déjà diffusé</span>' : ''}</div>
           </div>
-        </div>`).join('') || '<p class="empty">Aucun article publié.</p>';
+          <button class="send ${a.sent ? 'again' : ''}" data-slug="${esc(a.slug)}">${a.sent ? 'Renvoyer' : 'Envoyer aux abonnés'}</button>
+        </div>`;
+      }).join('') || '<p class="empty">Aucun article publié pour l’instant.</p>';
     }
     function setAutoLabel(on) {
       const el = $('#auto-state');
@@ -232,18 +256,29 @@
       const dot = $('#tab-pending'); dot.textContent = pend.length; dot.style.display = pend.length ? 'inline-block' : 'none';
       $('#mod-msg').textContent = pend.length ? '' : '';
       $('#mod-list').innerHTML = pend.map((c) => `
-        <div class="card" data-page="${encodeURIComponent(c.pageId)}" data-id="${c.id}">
-          <div class="meta"><b style="color:var(--ink)">${esc(c.name)}</b> &middot; ${new Date(c.date).toLocaleString('fr-FR')} &middot; ${esc(c.pageId)}</div>
-          <div class="txt">${esc(c.text)}</div>
+        <div class="cmt" data-page="${encodeURIComponent(c.pageId)}" data-id="${c.id}">
+          <div class="cmt-top">
+            <div class="avatar">${esc((c.name || '?').trim().charAt(0))}</div>
+            <div>
+              <div class="cmt-name">${esc(c.name)}</div>
+              <div class="cmt-sub">${new Date(c.date).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' })} &middot; sur <a href="${esc(c.pageId)}" target="_blank" rel="noopener">${esc(articleLabel(c.pageId))}</a></div>
+            </div>
+          </div>
+          <div class="cmt-text">${esc(c.text)}</div>
           <div class="cactions">
             <button class="approve" data-a="approve">Approuver</button>
             <button class="delete" data-a="delete">Supprimer</button>
           </div>
-        </div>`).join('') || '<p class="empty">Rien en attente.</p>';
+        </div>`).join('') || '<p class="empty">Aucun commentaire en attente. Tout est à jour.</p>';
+    }
+    function articleLabel(pageId) {
+      const seg = String(pageId).replace(/\/+$/, '').split('/').pop() || 'article';
+      const s = seg.replace(/-/g, ' ').trim();
+      return s.charAt(0).toUpperCase() + s.slice(1);
     }
     $('#mod-list').addEventListener('click', async (e) => {
       const btn = e.target.closest('button[data-a]'); if (!btn) return;
-      const card = btn.closest('.card'); btn.disabled = true;
+      const card = btn.closest('.cmt'); btn.disabled = true;
       const r = await fetch('/api/moderate', { method:'POST', headers:{'content-type':'application/json'},
         body: JSON.stringify({ secret: secret(), action: btn.dataset.a, pageId: decodeURIComponent(card.dataset.page), id: card.dataset.id }) });
       if (r.ok) { card.remove(); loadModeration(); } else { btn.disabled = false; }
