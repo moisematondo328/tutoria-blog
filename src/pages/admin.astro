@@ -358,6 +358,7 @@
 
     // --- Créer (usine à articles) ---
     let genSections = []; // sections renvoyées par Gemini (pour fabriquer les cartes à la publication)
+    let genCoverQuery = ''; // requête photo pour la couverture
     $('#gen-btn').addEventListener('click', async () => {
       const topic = $('#gen-topic').value.trim();
       if (topic.length < 4) { $('#gen-msg').textContent = 'Donne un sujet un peu plus précis.'; return; }
@@ -373,6 +374,7 @@
           $('#d-excerpt').value = a.excerpt || '';
           $('#d-body').value = a.body || '';
           genSections = Array.isArray(a.sections) ? a.sections : [];
+          genCoverQuery = a.coverQuery || '';
           $('#d-imgq').textContent = genSections.length
             ? ('· ' + genSections.length + ' illustration' + (genSections.length > 1 ? 's' : '') + ' seront créées à la charte')
             : '';
@@ -385,7 +387,7 @@
     });
 
     $('#pub-btn').addEventListener('click', async () => {
-      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked, sections: genSections };
+      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked, sections: genSections, coverQuery: genCoverQuery };
       if (payload.title.length < 4 || payload.body.length < 40) { $('#pub-msg').textContent = 'Titre et contenu requis.'; return; }
       const btn = $('#pub-btn'); btn.disabled = true; const o = btn.textContent; btn.textContent = 'Publication…';
       try {

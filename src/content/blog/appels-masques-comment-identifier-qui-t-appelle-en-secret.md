@@ -3,7 +3,7 @@ title: "Appels masqués : comment identifier qui t'appelle en secret"
 date: "2026-08-16 15:17:05"
 category: "Technologie Émergente"
 excerpt: "Marre des appels anonymes ? Découvre des astuces et applications gratuites pour démasquer facilement les numéros masqués sur ton téléphone."
-cover: "/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-1.webp"
+cover: "/uploads/2026/08/appels-masques-comment-identifier-qui-t-appelle-en-secret-cover.webp"
 draft: false
 ---
 

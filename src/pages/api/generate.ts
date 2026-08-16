@@ -39,9 +39,11 @@ STRUCTURE :
 - Longueur totale : 600 à 900 mots. Pas de titre H1.
 
 Pour CHAQUE section, tu fournis aussi de quoi fabriquer sa carte-image :
-- "kicker" : un libellé COURT EN MAJUSCULES pour la carte. Si l'article est une liste d'étapes/astuces, mets "ÉTAPE 1", "ÉTAPE 2"… dans l'ordre. Sinon un libellé thématique court (ex : "LE PRINCIPE", "À RETENIR", "L'ERREUR").
+- "kicker" : un libellé TRÈS COURT EN MAJUSCULES (1 à 2 mots, il s'affiche dans une petite pastille). Si l'article est une liste d'étapes/astuces, mets "ÉTAPE 1", "ÉTAPE 2"… dans l'ordre. Sinon un libellé thématique court (ex : "LE PRINCIPE", "À RETENIR", "L'ERREUR", "LES APPLIS").
 - "cardTitle" : un titre TRÈS court (2 à 4 mots) qui résume la section (ex : "Créer une routine").
-- "imageQuery" : 2 à 4 mots-clés EN ANGLAIS pour trouver une photo pertinente (pense au contexte africain quand c'est utile, ex : "african woman phone money").
+- "imageQuery" : mots-clés EN ANGLAIS pour une PHOTO pertinente. RÈGLE : décris une SCÈNE CONCRÈTE ET PHOTOGRAPHIABLE (une personne, un objet, un lieu réel), JAMAIS un concept abstrait. Privilégie des personnes noires / un contexte africain quand c'est logique. Bon : "african woman checking smartphone". Mauvais : "justice", "success", "freedom" (renvoient des photos au hasard, souvent hors charte). 3 à 5 mots.
+
+En plus, fournis "coverQuery" : les mots-clés EN ANGLAIS (scène concrète, mêmes règles) pour la PHOTO DE COUVERTURE, la plus représentative du sujet global de l'article.
 
 RUBRIQUE : choisis EXACTEMENT une valeur parmi : ${CATEGORIES.map((c) => `"${c}"`).join(', ')}.
 
@@ -52,6 +54,7 @@ Réponds UNIQUEMENT en JSON valide, sans texte autour :
   "title": "titre accrocheur mais honnête, 50-70 caractères",
   "excerpt": "résumé SEO d'1 à 2 phrases (max 160 caractères)",
   "category": "une des 4 rubriques exactes",
+  "coverQuery": "english keywords (scène concrète pour la couverture)",
   "intro": "intro en Markdown (sans titre)",
   "sections": [
     { "heading": "titre de la section", "kicker": "ÉTAPE 1", "cardTitle": "2 à 4 mots", "imageQuery": "english keywords", "content": "contenu de la section en Markdown, sans le titre" }
@@ -109,6 +112,7 @@ export const POST: APIRoute = async ({ request }) => {
       title: clean(art.title).slice(0, 120),
       excerpt: clean(art.excerpt).slice(0, 200),
       category: art.category,
+      coverQuery: (art.coverQuery || '').toString().slice(0, 80),
       body: body.trim(),
       sections: rawSections.map((s: any) => ({
         heading: clean(s.heading).trim().slice(0, 120),

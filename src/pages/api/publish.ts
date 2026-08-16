@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { makeCard, getPexelsKey } from '../../lib/card';
+import { fetchPhoto, composeCard, composeCover, getPexelsKey } from '../../lib/card';
 
 export const prerender = false;
 
@@ -83,23 +83,38 @@ export const POST: APIRoute = async ({ request }) => {
   const { ts, y, m } = now();
   const dir = `public/uploads/${y}/${m}`;
 
-  // 1) Composer une carte par section (en parallèle) via Pexels
   const files: { path: string; base64: string }[] = [];
   const pexelsKey = getPexelsKey();
+  const usedIds = new Set<number>(); // anti-doublon : chaque visuel a une photo différente
   const figures: string[] = [];
+
+  // 1) Couverture d'aperçu (paysage, SANS texte, photo distincte des sections)
+  if (pexelsKey && !cover) {
+    const cq = (b.coverQuery || title).toString();
+    const cp = await fetchPhoto(pexelsKey, cq, 'landscape', usedIds);
+    if (cp) {
+      usedIds.add(cp.id);
+      const cbuf = await composeCover(cp.buf);
+      if (cbuf) {
+        const cf = `${slug}-cover.webp`;
+        files.push({ path: `${dir}/${cf}`, base64: cbuf.toString('base64') });
+        cover = `/uploads/${y}/${m}/${cf}`;
+      }
+    }
+  }
+
+  // 2) Une carte par section, chacune avec une photo différente (séquentiel pour l'anti-doublon)
   if (pexelsKey && sections.length) {
-    const cards = await Promise.all(sections.map((s: any, i: number) =>
-      makeCard(pexelsKey, (s.kicker || `PARTIE ${i + 1}`).toString(), (s.cardTitle || s.heading || '').toString(), (s.imageQuery || s.cardTitle || '').toString())
-        .then((buf) => ({ buf, i, alt: (s.cardTitle || s.heading || '').toString() }))
-        .catch(() => ({ buf: null, i, alt: '' }))
-    ));
-    for (const c of cards) {
-      if (c.buf) {
-        const fname = `${slug}-${c.i + 1}.webp`;
-        files.push({ path: `${dir}/${fname}`, base64: c.buf.toString('base64') });
-        figures[c.i] = `<figure class="wp-block-image size-full"><img src="/uploads/${y}/${m}/${fname}" alt="${fmEsc(c.alt)}" loading="lazy"/></figure>`;
-        if (!cover && c.i === 0) cover = `/uploads/${y}/${m}/${fname}`; // 1re carte = couverture si vide
-      } else figures[c.i] = '';
+    for (let i = 0; i < sections.length; i++) {
+      const s = sections[i];
+      const p = await fetchPhoto(pexelsKey, (s.imageQuery || s.cardTitle || s.heading || '').toString(), 'square', usedIds);
+      if (!p) { figures[i] = ''; continue; }
+      usedIds.add(p.id);
+      const cbuf = await composeCard(p.buf, (s.kicker || '').toString(), (s.cardTitle || s.heading || '').toString());
+      if (!cbuf) { figures[i] = ''; continue; }
+      const fname = `${slug}-${i + 1}.webp`;
+      files.push({ path: `${dir}/${fname}`, base64: cbuf.toString('base64') });
+      figures[i] = `<figure class="wp-block-image size-full"><img src="/uploads/${y}/${m}/${fname}" alt="${fmEsc((s.cardTitle || s.heading || '').toString())}" loading="lazy"/></figure>`;
     }
   }
 
