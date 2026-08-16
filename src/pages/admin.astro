@@ -86,6 +86,18 @@
     .more-btn:hover { background:#e2eeea; }
     .diff-count { font-size:12.5px; color:var(--muted); margin-bottom:10px; }
 
+    /* Créer (usine à articles) */
+    .lbl { display:block; font-weight:700; font-size:13px; color:var(--ink); margin:14px 0 6px; }
+    .lbl:first-child { margin-top:0; }
+    .hint { font-weight:500; color:var(--muted); font-size:12px; }
+    .fld { width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:11px; font-size:14.5px; font-family:var(--font); background:var(--card); color:var(--ink); }
+    .ta { width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:12px; font-size:14.5px; font-family:var(--font); background:var(--card); color:var(--ink); resize:vertical; }
+    .ta.mono { font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; font-size:13px; line-height:1.55; }
+    .fld:focus, .ta:focus { outline:2px solid var(--teal); border-color:var(--teal); }
+    .primary { background:var(--teal); color:#fff; padding:12px 20px; } .primary:hover { background:var(--teal-d); }
+    .chk { display:flex; align-items:center; gap:9px; margin:16px 0 4px; font-size:14px; color:var(--muted); }
+    .pub-row { display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap; }
+
     /* Cartes commentaires (Modération) */
     .cmt { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 18px; margin-bottom:12px; }
     .cmt-top { display:flex; align-items:center; gap:12px; }
@@ -143,12 +155,47 @@
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-tab="diffusion">Diffusion</button>
+      <button class="tab active" data-tab="creer">Créer</button>
+      <button class="tab" data-tab="diffusion">Diffusion</button>
       <button class="tab" data-tab="moderation">Modération <span class="pending-dot" id="tab-pending" style="display:none">0</span></button>
     </div>
 
+    <!-- Créer (usine à articles) -->
+    <section class="panel active" id="panel-creer">
+      <div class="card">
+        <label class="lbl">Sujet de l'article</label>
+        <textarea id="gen-topic" class="ta" rows="2" placeholder="Ex : Comment se constituer un fonds d'urgence quand on a un petit salaire"></textarea>
+        <button class="primary" id="gen-btn" style="margin-top:12px">Générer l'article avec l'IA</button>
+        <div class="msg" id="gen-msg"></div>
+      </div>
+      <div id="draft-form" style="display:none">
+        <div class="card">
+          <label class="lbl">Titre</label>
+          <input id="d-title" class="fld" type="text" />
+          <label class="lbl">Rubrique</label>
+          <select id="d-cat" class="fld">
+            <option>Santé &amp; Bien-être</option>
+            <option>Développement Personnel</option>
+            <option>Finance &amp; Investissement</option>
+            <option>Technologie Émergente</option>
+          </select>
+          <label class="lbl">Résumé (pour le SEO et les cartes)</label>
+          <textarea id="d-excerpt" class="ta" rows="2"></textarea>
+          <label class="lbl">Image à la une <span class="hint" id="d-imgq"></span></label>
+          <input id="d-cover" class="fld" type="text" placeholder="/uploads/2026/…/image.webp ou une URL (optionnel)" />
+          <label class="lbl">Contenu de l'article (Markdown)</label>
+          <textarea id="d-body" class="ta mono" rows="16"></textarea>
+          <label class="chk"><input type="checkbox" id="d-draft" /> Publier en brouillon (non visible sur le site)</label>
+          <div class="pub-row">
+            <button class="primary" id="pub-btn">Publier l'article</button>
+            <span class="msg" id="pub-msg" style="margin:0"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Diffusion -->
-    <section class="panel active" id="panel-diffusion">
+    <section class="panel" id="panel-diffusion">
       <div class="card auto">
         <div class="row">
           <div>
@@ -307,6 +354,47 @@
       const r = await fetch('/api/moderate', { method:'POST', headers:{'content-type':'application/json'},
         body: JSON.stringify({ secret: secret(), action: btn.dataset.a, pageId: decodeURIComponent(card.dataset.page), id: card.dataset.id }) });
       if (r.ok) { card.remove(); loadModeration(); } else { btn.disabled = false; }
+    });
+
+    // --- Créer (usine à articles) ---
+    $('#gen-btn').addEventListener('click', async () => {
+      const topic = $('#gen-topic').value.trim();
+      if (topic.length < 4) { $('#gen-msg').textContent = 'Donne un sujet un peu plus précis.'; return; }
+      const btn = $('#gen-btn'); btn.disabled = true; const o = btn.textContent; btn.textContent = 'Rédaction en cours…';
+      $('#gen-msg').textContent = 'L’IA rédige ton article, patiente quelques secondes…';
+      try {
+        const r = await fetch('/api/generate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ secret: secret(), topic }) });
+        const d = await r.json().catch(() => ({}));
+        if (d.ok && d.article) {
+          const a = d.article;
+          $('#d-title').value = a.title || '';
+          $('#d-cat').value = a.category || 'Développement Personnel';
+          $('#d-excerpt').value = a.excerpt || '';
+          $('#d-body').value = a.body || '';
+          $('#d-imgq').textContent = a.imageQuery ? ('· idée d’image : ' + a.imageQuery) : '';
+          $('#draft-form').style.display = 'block';
+          $('#gen-msg').textContent = 'Brouillon prêt. Relis, ajuste, puis publie.';
+        } else if (d.error === 'config') { $('#gen-msg').textContent = 'La clé Gemini n’est pas encore configurée sur le site.'; }
+        else { $('#gen-msg').textContent = 'La génération a échoué : ' + (d.error || 'réessaie') + '.'; }
+      } catch (e) { $('#gen-msg').textContent = 'Connexion perdue, réessaie.'; }
+      btn.disabled = false; btn.textContent = o;
+    });
+
+    $('#pub-btn').addEventListener('click', async () => {
+      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked };
+      if (payload.title.length < 4 || payload.body.length < 40) { $('#pub-msg').textContent = 'Titre et contenu requis.'; return; }
+      const btn = $('#pub-btn'); btn.disabled = true; const o = btn.textContent; btn.textContent = 'Publication…';
+      try {
+        const r = await fetch('/api/publish', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+        const d = await r.json().catch(() => ({}));
+        if (d.ok) {
+          $('#pub-msg').innerHTML = d.draft
+            ? 'Enregistré en brouillon. Le site se met à jour (1 à 2 min).'
+            : 'Publié. En ligne dans 1 à 2 min : <a href="' + d.url + '" target="_blank" rel="noopener">voir l’article</a>';
+        } else if (d.error === 'config') { $('#pub-msg').textContent = 'L’accès GitHub n’est pas configuré sur le site.'; }
+        else { $('#pub-msg').textContent = 'Publication impossible : ' + (d.error || 'réessaie') + '.'; }
+      } catch (e) { $('#pub-msg').textContent = 'Connexion perdue, réessaie.'; }
+      btn.disabled = false; btn.textContent = o;
     });
 
     $('#loginBtn').addEventListener('click', connect);

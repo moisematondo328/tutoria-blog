@@ -7,7 +7,9 @@ Blog éducatif **Tutoria News** (média francophone, Afrique). Site **statique A
 depuis un backup WordPress, déployé sur **Vercel**. Voir `docs/01-app-spec.md`.
 
 ## Stack
-- **Astro 5** (statique / SSG), TypeScript léger.
+- **Astro 5** (statique / SSG par défaut), TypeScript léger.
+- **Fonctions serveur** via l'adaptateur `@astrojs/vercel` : les routes `src/pages/api/*`
+  et `admin` portent `export const prerender = false` (le reste du site reste statique).
 - Contenu = **Markdown** dans `src/content/blog/` (content collections, `src/content.config.ts`).
 - Images = **WebP** dans `public/uploads/AAAA/MM/`.
 - Déploiement = **Vercel** (auto-deploy à chaque push sur `main`).
@@ -22,8 +24,13 @@ npm run preview   # prévisualiser le build
 
 ## Structure
 - `src/pages/` — routes : `index`, `articles`, `livres`, `contact`, `a-propos`, `404`,
-  `blog/[slug]`, `categorie/[slug]`.
-- `src/components/` — Header, Footer, HeroSlider, PostCard, Sidebar, Newsletter, Giscus, Icon.
+  `blog/[slug]`, `categorie/[slug]`, `rss.xml` (flux RSS), `admin` (back-office privé),
+  `moderation` (redirige vers `/admin`).
+- `src/pages/api/` — fonctions serveur : `subscribe` (newsletter Brevo + mail de bienvenue),
+  `comments` + `moderate` (commentaires maison), `broadcast` + `cron-broadcast` (diffusion
+  des articles aux abonnés), `generate` (rédaction IA Gemini), `publish` (crée l'article via GitHub).
+- `src/lib/` — `store.ts` (Redis, agnostique au préfixe), `brevo.ts` (clé + campagnes + gabarit e-mail).
+- `src/components/` — Header, Footer, HeroSlider, PostCard, Sidebar, Newsletter, Comments, Icon.
 - `src/layouts/BaseLayout.astro` — <head> (SEO, GA4, Search Console), header/footer, et le
   **script global** (`astro:page-load`) qui pilote : horloge, rotateur, menu, mode sombre,
   slider, révélations au scroll, formulaires Web3Forms, Giscus, page_view GA4.
@@ -48,9 +55,32 @@ Les articles `draft: true` sont exclus partout (filtre `({data}) => !data.draft`
 - ⚠️ **Connexion du fondateur lente/instable** : un gros push échoue (HTTP 408). Pousser en
   **micro-paquets ~900 Ko** (voir `docs/06-error-log.md`). Images toujours en WebP compressé.
 
+## Back-office `/admin` (privé, `noindex`) — le cœur de l'automatisation
+Un seul mot de passe (`ADMIN_SECRET`). Trois onglets :
+- **Créer** : sujet → l'IA **Gemini** rédige un article (à la voix Tutoria, anti-AI-slop) →
+  relecture/édition → **Publier** écrit le `.md` sur GitHub (`/api/publish`) → Vercel déploie.
+- **Diffusion** : envoie un article aux abonnés (campagne Brevo) ; interrupteur **auto**
+  (cron quotidien `vercel.json` → `/api/cron-broadcast`, n'envoie que les articles publiés
+  APRÈS activation) ; recherche + pagination.
+- **Modération** : commentaires en attente (approuver / supprimer).
+
 ## Intégrations
-Formulaires (Web3Forms), commentaires (Giscus), back-office (Pages CMS `.pages.yml`), analytics
-(GA4 + Vercel), SEO (Search Console + sitemap). Détail : `docs/05-integrations.md`.
+- **Contact** : Web3Forms (formulaire de la page contact).
+- **Newsletter** : Brevo (liste #3) via `/api/subscribe` + **e-mail de bienvenue** transactionnel
+  (expéditeur vérifié `tutorianews@gmail.com`). Popup d'incitation.
+- **Commentaires** : système **maison** (fini Giscus) — stockage **Upstash/Vercel KV** (Redis),
+  sans compte visiteur, pré-modérés.
+- **Diffusion** : campagnes Brevo + flux **RSS** (`/rss.xml`).
+- **Contenu** : Pages CMS (`.pages.yml`) OU l'onglet **Créer** de `/admin` (IA).
+- **Analytics/SEO** : GA4 + Vercel, Search Console + sitemap. Détail : `docs/05-integrations.md`.
+
+## Variables d'environnement (Vercel → Settings → Environment Variables)
+- `ADMIN_SECRET` — mot de passe du back-office `/admin`.
+- `BREVO_API_KEY` — newsletter + mails (format `xkeysib-…`, retrouvée aussi par format).
+- Base **Redis/Upstash** connectée (préfixe `KV`) → `KV_REST_API_URL/TOKEN` (ou `REDIS_URL`).
+- `GEMINI_API_KEY` — rédaction IA (format `AIza…`).
+- `GITHUB_TOKEN` — publication d'articles (droit *contents* sur `moisematondo328/tutoria-blog`) ;
+  `GITHUB_REPO` optionnel pour changer de dépôt.
 
 ## Docs de référence
 `docs/01-app-spec.md` · `02-brand-brief.md` · `03-data-dictionary.md` · `04-feature-backlog.md`
