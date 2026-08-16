@@ -15,8 +15,19 @@ function json(data: unknown, status = 200) {
   });
 }
 
+// Trouve la clé Brevo : d'abord par son nom, sinon par son format (xkeysib-…),
+// quel que soit le nom de la variable d'environnement.
+function getBrevoKey(): string | undefined {
+  const direct = process.env.BREVO_API_KEY || import.meta.env.BREVO_API_KEY;
+  if (direct) return direct;
+  for (const v of Object.values(process.env)) {
+    if (typeof v === 'string' && v.startsWith('xkeysib-')) return v;
+  }
+  return undefined;
+}
+
 export const POST: APIRoute = async ({ request }) => {
-  const apiKey = process.env.BREVO_API_KEY || import.meta.env.BREVO_API_KEY;
+  const apiKey = getBrevoKey();
   if (!apiKey) {
     // Variable pas encore configurée sur Vercel.
     return json({ success: false, error: 'config' }, 500);
