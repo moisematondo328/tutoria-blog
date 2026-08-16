@@ -67,8 +67,15 @@ export const POST: APIRoute = async ({ request }) => {
   let cover = (b.cover || '').toString().trim();
   let body = (b.body || '').toString();
   const draft = !!b.draft;
-  const sections = Array.isArray(b.sections) ? b.sections : [];
+  let sections: any[] = Array.isArray(b.sections) ? b.sections : [];
   if (title.length < 4 || body.trim().length < 40) return json({ ok: false, error: 'champs' }, 400);
+
+  // Repli : pas de métadonnées de sections (page admin ancienne, article manuel…) ->
+  // on dérive une carte par titre "## …" du corps (kicker vide, requête = le titre).
+  if (!sections.length) {
+    const heads = (body.match(/^##\s+(.+)$/gm) || []).map((h: string) => h.replace(/^##\s+/, '').trim());
+    sections = heads.map((h: string) => ({ kicker: '', cardTitle: h.length > 42 ? h.slice(0, 40).trim() : h, imageQuery: h }));
+  }
 
   const repo = REPO();
   let slug = slugify(title);
@@ -99,7 +106,7 @@ export const POST: APIRoute = async ({ request }) => {
   // 2) Insérer chaque figure après le titre de section correspondant (par ordre)
   if (figures.length) {
     let idx = 0;
-    body = body.replace(/^##\s+.+$/gm, (line) => {
+    body = body.replace(/^##\s+.+$/gm, (line: string) => {
       const fig = figures[idx]; idx++;
       return fig ? `${line}\n\n${fig}` : line;
     });
