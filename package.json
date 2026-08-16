@@ -21,6 +21,7 @@
     "sharp": "^0.34.5"
   },
   "devDependencies": {
+    "@fontsource/fredoka-one": "^5.3.0",
     "subset-font": "^2.5.0"
   }
 }
