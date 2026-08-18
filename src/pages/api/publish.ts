@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { fetchPhoto, fetchBrightPhoto, fetchPhotoById, composeCard, composeCover, getPexelsKey } from '../../lib/card';
+import { fetchPhoto, fetchBrightPhoto, fetchPhotoById, fetchPhotoFromUrl, composeCard, composeCover, getPexelsKey } from '../../lib/card';
 
 export const prerender = false;
 
@@ -88,12 +88,14 @@ export const POST: APIRoute = async ({ request }) => {
   const usedIds = new Set<number>(); // anti-doublon : chaque visuel a une photo différente
   const figures: string[] = [];
 
-  // 1) Couverture d'aperçu (SANS texte). Photo choisie dans /admin (coverPhotoId) sinon auto.
-  if (pexelsKey && !cover) {
+  // 1) Couverture d'aperçu (SANS texte). Photo choisie dans /admin (coverPhotoUrl) sinon auto.
+  if (!cover && (b.coverPhotoUrl || pexelsKey)) {
     const cq = (b.coverQuery || title).toString();
-    const cp = b.coverPhotoId ? await fetchPhotoById(pexelsKey, b.coverPhotoId) : await fetchBrightPhoto(pexelsKey, cq, usedIds);
+    let cp: { buf: Buffer; id?: number } | null = null;
+    if (b.coverPhotoUrl) cp = await fetchPhotoFromUrl(b.coverPhotoUrl.toString());
+    else if (pexelsKey) cp = b.coverPhotoId ? await fetchPhotoById(pexelsKey, b.coverPhotoId) : await fetchBrightPhoto(pexelsKey, cq, usedIds);
     if (cp) {
-      usedIds.add(cp.id);
+      if (cp.id) usedIds.add(cp.id);
       const cbuf = await composeCover(cp.buf);
       if (cbuf) {
         const cf = `${slug}-cover.webp`;
@@ -103,15 +105,15 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
-  // 2) Une carte par section, chacune avec une photo différente (séquentiel pour l'anti-doublon)
-  if (pexelsKey && sections.length) {
+  // 2) Une carte par section : photo choisie (photoUrl) sinon recherche auto (anti-doublon).
+  if (sections.length && (pexelsKey || sections.some((s: any) => s.photoUrl))) {
     for (let i = 0; i < sections.length; i++) {
       const s = sections[i];
-      const p = s.photoId
-        ? await fetchPhotoById(pexelsKey, s.photoId)
-        : await fetchPhoto(pexelsKey, (s.imageQuery || s.cardTitle || s.heading || '').toString(), 'square', usedIds);
+      let p: { buf: Buffer; id?: number } | null = null;
+      if (s.photoUrl) p = await fetchPhotoFromUrl(s.photoUrl.toString());
+      else if (pexelsKey) p = s.photoId ? await fetchPhotoById(pexelsKey, s.photoId) : await fetchPhoto(pexelsKey, (s.imageQuery || s.cardTitle || s.heading || '').toString(), 'square', usedIds);
       if (!p) { figures[i] = ''; continue; }
-      usedIds.add(p.id);
+      if (p.id) usedIds.add(p.id);
       const cbuf = await composeCard(p.buf, (s.kicker || '').toString(), (s.cardTitle || s.heading || '').toString());
       if (!cbuf) { figures[i] = ''; continue; }
       const fname = `${slug}-${i + 1}.webp`;

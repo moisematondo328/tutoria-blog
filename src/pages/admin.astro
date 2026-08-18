@@ -111,6 +111,7 @@
     .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
     .thumb.sel { border-color:var(--jaune, #FDD200); box-shadow:0 0 0 2px var(--teal); }
     .thumb.sel::after { content:"✓"; position:absolute; top:2px; right:5px; color:#0B4A44; font-weight:800; font-size:14px; text-shadow:0 0 3px #FDD200; }
+    .thumb-src { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,.55); color:#fff; font-size:9px; text-transform:capitalize; text-align:center; padding:1px 0; letter-spacing:.3px; }
     .thumbs-empty { font-size:12.5px; color:var(--muted); padding:6px 2px; }
 
     /* Cartes commentaires (Modération) */
@@ -378,7 +379,7 @@
     // --- Créer (usine à articles) ---
     let genSections = []; // sections renvoyées par Gemini (pour fabriquer les cartes à la publication)
     let genCoverQuery = ''; // requête photo pour la couverture
-    let genCoverPhotoId = null; // photo de couverture choisie à la main
+    let genCoverPhotoUrl = null; // photo de couverture choisie à la main (URL directe)
 
     function elc(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
     async function fetchCandidates(query, orientation) {
@@ -388,13 +389,13 @@
         return (d.ok && Array.isArray(d.photos)) ? d.photos : [];
       } catch (e) { return []; }
     }
-    function renderThumbs(strip, photos, selectedId, onPick) {
+    function renderThumbs(strip, photos, selectedUrl, onPick) {
       strip.innerHTML = '';
       if (!photos.length) { strip.appendChild(elc('div', 'thumbs-empty', 'Aucune photo trouvée. Modifie la recherche.')); return; }
       for (const p of photos) {
-        const t = elc('div', 'thumb', '<img src="' + p.thumb + '" alt="" loading="lazy"/>');
-        if (String(p.id) === String(selectedId)) t.classList.add('sel');
-        t.addEventListener('click', () => { Array.from(strip.children).forEach((c) => c.classList && c.classList.remove('sel')); t.classList.add('sel'); onPick(p.id); });
+        const t = elc('div', 'thumb', '<img src="' + p.thumb + '" alt="" loading="lazy"/><span class="thumb-src">' + (p.source || '') + '</span>');
+        if (p.url === selectedUrl) t.classList.add('sel');
+        t.addEventListener('click', () => { Array.from(strip.children).forEach((c) => c.classList && c.classList.remove('sel')); t.classList.add('sel'); onPick(p); });
         strip.appendChild(t);
       }
     }
@@ -410,7 +411,7 @@
       const load = async () => {
         strip.innerHTML = ''; strip.appendChild(elc('div', 'thumbs-empty', 'Chargement…'));
         const ph = await fetchCandidates(q.value.trim(), orientation);
-        renderThumbs(strip, ph, selected, (id) => { selected = id; onPick(id); });
+        renderThumbs(strip, ph, selected, (p) => { selected = p.url; onPick(p); });
       };
       btn.addEventListener('click', load);
       q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); load(); } });
@@ -418,11 +419,11 @@
       return row;
     }
     function buildImagePicker() {
-      const rows = $('#img-rows'); rows.innerHTML = ''; genCoverPhotoId = null;
-      rows.appendChild(makeImgRow('Couverture', genCoverQuery, 'landscape', (id) => { genCoverPhotoId = id; }));
+      const rows = $('#img-rows'); rows.innerHTML = ''; genCoverPhotoUrl = null;
+      rows.appendChild(makeImgRow('Couverture', genCoverQuery, 'landscape', (p) => { genCoverPhotoUrl = p.url; }));
       genSections.forEach((s, i) => {
-        genSections[i].photoId = null;
-        rows.appendChild(makeImgRow(s.kicker || ('Partie ' + (i + 1)), s.imageQuery || s.cardTitle || '', 'square', (id) => { genSections[i].photoId = id; }));
+        genSections[i].photoUrl = null;
+        rows.appendChild(makeImgRow(s.kicker || ('Partie ' + (i + 1)), s.imageQuery || s.cardTitle || '', 'square', (p) => { genSections[i].photoUrl = p.url; }));
       });
       $('#img-picker').style.display = 'block';
     }
@@ -455,7 +456,7 @@
     });
 
     $('#pub-btn').addEventListener('click', async () => {
-      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked, sections: genSections, coverQuery: genCoverQuery, coverPhotoId: genCoverPhotoId };
+      const payload = { secret: secret(), title: $('#d-title').value.trim(), category: $('#d-cat').value, excerpt: $('#d-excerpt').value.trim(), cover: $('#d-cover').value.trim(), body: $('#d-body').value.trim(), draft: $('#d-draft').checked, sections: genSections, coverQuery: genCoverQuery, coverPhotoUrl: genCoverPhotoUrl };
       if (payload.title.length < 4 || payload.body.length < 40) { $('#pub-msg').textContent = 'Titre et contenu requis.'; return; }
       const btn = $('#pub-btn'); btn.disabled = true; const o = btn.textContent; btn.textContent = 'Publication…';
       try {

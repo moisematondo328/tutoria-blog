@@ -88,6 +88,8 @@ Un seul mot de passe (`ADMIN_SECRET`). Trois onglets :
   `GITHUB_REPO` optionnel pour changer de dépôt.
 - `PEXELS_API_KEY` — banque photo pour les cartes-images des articles générés. Absente = articles
   publiés en texte seul (repli propre).
+- `PIXABAY_API_KEY` — 2e banque photo (format `NNNNNNNN-hex…`). Le sélecteur d'images de `/admin`
+  (`/api/photos`) mélange Pexels + Pixabay ; les images IA de Pixabay sont filtrées (`isAiGenerated`).
 
 ## Docs de référence
 `docs/01-app-spec.md` · `02-brand-brief.md` · `03-data-dictionary.md` · `04-feature-backlog.md`

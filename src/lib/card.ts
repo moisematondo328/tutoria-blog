@@ -49,6 +49,49 @@ function measureText(text: string, size: number): number {
 export function getPexelsKey(): string | undefined {
   return process.env.PEXELS_API_KEY || import.meta.env.PEXELS_API_KEY;
 }
+export function getPixabayKey(): string | undefined {
+  const direct = process.env.PIXABAY_API_KEY || import.meta.env.PIXABAY_API_KEY;
+  if (direct) return direct;
+  for (const v of Object.values(process.env)) if (typeof v === 'string' && /^\d{7,9}-[a-f0-9]{20,32}$/.test(v)) return v;
+  return undefined;
+}
+
+export interface PhotoCand { source: 'pexels' | 'pixabay'; id: number; thumb: string; url: string; alt: string; }
+
+// Candidats Pexels pour le sélecteur /admin.
+export async function searchPexels(key: string, query: string, orientation: 'square' | 'landscape'): Promise<PhotoCand[]> {
+  try {
+    const r = await fetch('https://api.pexels.com/v1/search?query=' + encodeURIComponent(query) + '&per_page=12&orientation=' + orientation, { headers: { Authorization: key } });
+    if (!r.ok) return [];
+    const j = await r.json();
+    return (Array.isArray(j.photos) ? j.photos : []).map((p: any): PhotoCand => ({
+      source: 'pexels', id: p.id, thumb: p.src?.medium || p.src?.small || p.src?.tiny,
+      url: p.src?.large2x || p.src?.large || p.src?.original, alt: (p.alt || '').toString().slice(0, 80),
+    }));
+  } catch { return []; }
+}
+
+// Candidats Pixabay (photos réelles uniquement : on écarte les images générées par IA).
+export async function searchPixabay(key: string, query: string, orientation: 'square' | 'landscape'): Promise<PhotoCand[]> {
+  try {
+    const orient = orientation === 'landscape' ? 'horizontal' : 'all';
+    const r = await fetch('https://pixabay.com/api/?key=' + key + '&q=' + encodeURIComponent(query) + '&image_type=photo&orientation=' + orient + '&safesearch=true&per_page=15');
+    if (!r.ok) return [];
+    const j = await r.json();
+    return (Array.isArray(j.hits) ? j.hits : [])
+      .filter((h: any) => !h.isAiGenerated && !h.isLowQuality)
+      .slice(0, 12)
+      .map((h: any): PhotoCand => ({
+        source: 'pixabay', id: h.id, thumb: h.previewURL || h.webformatURL,
+        url: h.largeImageURL || h.webformatURL, alt: (h.tags || '').toString().slice(0, 80),
+      }));
+  } catch { return []; }
+}
+
+// Télécharge une photo depuis son URL directe (photo choisie à la main dans /admin).
+export async function fetchPhotoFromUrl(url: string): Promise<{ buf: Buffer } | null> {
+  try { const r = await fetch(url); if (!r.ok) return null; return { buf: Buffer.from(await r.arrayBuffer()) }; } catch { return null; }
+}
 
 // Récupère une photo pertinente en sautant les id déjà utilisés (anti-doublon).
 export async function fetchPhoto(key: string, query: string, orientation: 'square' | 'landscape', exclude: Set<number>): Promise<{ buf: Buffer; id: number } | null> {
