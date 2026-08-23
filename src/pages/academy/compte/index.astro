@@ -10,7 +10,6 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
       <div>
         <h1 id="hello"></h1>
         <span class="em" id="email"></span>
-        <span class="ac-plan-badge" id="plan" hidden></span>
       </div>
     </div>
     <div class="ac-dash-grid">
@@ -18,9 +17,17 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
       <div class="ac-stat"><b id="s-courses">0</b><span>cours en cours</span></div>
       <div class="ac-stat"><b id="s-since">—</b><span>membre depuis</span></div>
     </div>
+
+    <div class="ac-dash-accomp">
+      <div>
+        <span class="ac-eyebrow">Mon accompagnement</span>
+        <p id="accomp-state">Tu apprends en autonomie pour l'instant. Quand tu veux qu'un expert te suive vraiment, demande un accompagnement.</p>
+      </div>
+      <a class="ac-btn ac-btn-yellow" href="/academy/accompagnement/">Demander un accompagnement</a>
+    </div>
+
     <div class="ac-dash-actions">
       <a class="ac-btn ac-btn-primary" href="/academy/#catalogue">Continuer l'apprentissage</a>
-      <a class="ac-btn ac-btn-yellow" id="upgrade" href="/academy/premium/" hidden>Passer à Premium</a>
       <button class="ac-btn ac-btn-ghost" id="logout" type="button">Se déconnecter</button>
     </div>
   </div>
@@ -49,12 +56,6 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     document.getElementById('email').textContent = user.email;
     if (!user.verified) document.getElementById('verify').hidden = false;
     if (user.createdAt) document.getElementById('s-since').textContent = new Date(user.createdAt).getFullYear();
-    const premium = user.plan === 'premium';
-    const plan = document.getElementById('plan');
-    plan.textContent = premium ? '★ Premium' : 'Découverte (gratuit)';
-    plan.classList.toggle('is-premium', premium);
-    plan.hidden = false;
-    if (!premium) document.getElementById('upgrade').hidden = false;
 
     try {
       const pr = await fetch('/api/progress'); const pd = await pr.json();

@@ -44,9 +44,8 @@ const lessonSlug = slugOf(lesson.id);
     <button class="ac-plan-toggle" id="ac-plan" type="button" aria-label="Afficher le plan du cours">☰ Plan du cours</button>
     <AcademyTree courses={pillarCourses} currentCourse={course.id} currentLesson={lessonSlug} pillarName={pillar?.name} />
 
-    <article class="ac-article" data-premium={lesson.data.premium ? '1' : '0'}>
+    <article class="ac-article">
       <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href={`/academy/#${pillar?.slug}`}>{course.data.category}</a> › <a href={`/academy/${course.id}/`}>{course.data.title}</a> › <span>{lesson.data.title}</span></div>
-      {lesson.data.premium && <span class="ac-premium-tag">★ Premium</span>}
 
       <div class="ac-rownav">
         {prev ? <a href={`/academy/${course.id}/${slugOf(prev.id)}/`}>‹ Précédent</a> : <span></span>}
@@ -59,17 +58,6 @@ const lessonSlug = slugOf(lesson.id);
 
       <h1>{lesson.data.title}</h1>
       <div class="ac-prose-wrap"><div class="prose"><Content /></div></div>
-
-      {lesson.data.premium && (
-        <div class="ac-lock" id="ac-lock" hidden>
-          <div class="ac-lock-card">
-            <div class="ac-lock-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-            <h3>La suite est réservée à Premium</h3>
-            <p>Cette leçon fait partie d'un parcours complet. Passe à Premium pour la débloquer, avec toutes les leçons des 4 domaines et leurs fiches PDF.</p>
-            <a class="ac-btn ac-btn-primary" href="/academy/premium/">Débloquer avec Premium</a>
-          </div>
-        </div>
-      )}
 
       <div class="ac-done" data-course={course.id} data-lesson={lessonSlug}>
         <button class="ac-done-btn" id="ac-done" type="button" hidden>Marquer comme terminé</button>
@@ -170,17 +158,6 @@ const lessonSlug = slugOf(lesson.id);
 
     let me = null;
     try { me = (await (await fetch('/api/auth/me')).json()).user; } catch {}
-    const isPremiumUser = !!me && me.plan === 'premium';
-
-    // Paywall : verrouille la leçon premium pour les non-abonnés
-    if (article.dataset.premium === '1' && !isPremiumUser) {
-      article.classList.add('is-locked');
-      const lock = document.getElementById('ac-lock');
-      if (lock) lock.hidden = false;
-      document.querySelector('.ac-quiz')?.style.setProperty('display', 'none');
-      document.querySelector('.ac-done')?.style.setProperty('display', 'none');
-      return; // pas de progression sur une leçon verrouillée
-    }
 
     // Progression
     const wrap = document.querySelector('.ac-done');

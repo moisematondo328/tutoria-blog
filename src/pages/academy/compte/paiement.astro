@@ -1,18 +1,16 @@
 ---
 import AcademyLayout from '../../../layouts/AcademyLayout.astro';
-import { getPlan, PAY_METHODS } from '../../../lib/plans';
-
-const plan = getPlan('premium');
+import { ACCOMP, PAY_METHODS } from '../../../lib/plans';
 ---
 
-<AcademyLayout title="Paiement" description="Active ton abonnement Premium Tutoria Academy.">
-  <div class="ac-pay" id="pay" hidden
-    data-monthly={plan.monthly} data-yearly={plan.yearly}>
+<AcademyLayout title="Réserver un accompagnement" description="Réserve ton accompagnement avec un expert Tutoria.">
+  <div class="ac-pay" id="pay" hidden>
     <div class="ac-pay-main">
-      <div class="ac-crumb"><a href="/academy/premium/">Premium</a> › <span>Paiement</span></div>
-      <h1 class="ac-display">Finalise ton abonnement</h1>
+      <div class="ac-crumb"><a href="/academy/accompagnement/">Accompagnement</a> › <span>Réservation</span></div>
+      <h1 class="ac-display">Réserve ton accompagnement</h1>
+      <p class="ac-pay-intro">Dernière étape avant que l'expert de ton domaine te prenne en charge.</p>
 
-      <h2 class="ac-pay-h">Comment veux-tu payer ?</h2>
+      <h2 class="ac-pay-h">Comment veux-tu régler ?</h2>
       <div class="ac-pay-methods" id="methods">
         {PAY_METHODS.map((m, i) => (
           <label class={`ac-pay-m${i === 0 ? ' on' : ''}`}>
@@ -25,31 +23,33 @@ const plan = getPlan('premium');
       <div class="ac-pay-fields" id="fields"></div>
 
       <div class="ac-msg err" id="msg"></div>
-      <button class="ac-auth-btn ac-pay-btn" id="paybtn" type="button">Payer</button>
-      <p class="ac-pay-note">Paiement sécurisé. Tu peux résilier à tout moment depuis ton compte.</p>
+      <button class="ac-auth-btn ac-pay-btn" id="paybtn" type="button">Réserver</button>
+      <p class="ac-pay-note">Paiement sécurisé. Tu peux arrêter ton suivi à tout moment depuis ton compte.</p>
 
       <div class="ac-pay-done" id="done" hidden>
         <div class="ac-pay-done-ic">✓</div>
-        <h2>Presque prêt</h2>
-        <p>Le paiement en ligne (Mobile Money et carte) est en cours d'activation sur Tutoria Academy. Ta demande est notée : on te prévient par e-mail dès qu'il est ouvert, et ton accès Premium sera débloqué aussitôt.</p>
-        <a class="ac-btn ac-btn-primary" href="/academy/compte/">Revenir à mon compte</a>
+        <h2>Ta demande est enregistrée</h2>
+        <p>Le paiement en ligne (Mobile Money et carte) finit d'être activé. Ta réservation est notée : l'expert de ton domaine te contacte pour démarrer, et ton espace d'accompagnement s'ouvre dans ton compte dès que le règlement est confirmé.</p>
+        <a class="ac-btn ac-btn-primary" href="/academy/compte/">Aller à mon compte</a>
       </div>
     </div>
 
     <aside class="ac-pay-summary">
       <h3>Ton récap</h3>
-      <div class="ac-pay-row"><span>Abonnement</span><b>Premium</b></div>
-      <div class="ac-pay-row"><span>Formule</span><b id="sum-cycle">Mensuel</b></div>
-      <div class="ac-pay-row total"><span>À payer</span><b id="sum-total">$5</b></div>
+      <div class="ac-pay-row"><span>Prestation</span><b>Accompagnement</b></div>
+      <div class="ac-pay-row"><span>Formule</span><b id="sum-format">Suivi mensuel</b></div>
+      <div class="ac-pay-row total"><span>À régler</span><b id="sum-total">$49</b></div>
       <p class="ac-pay-hint" id="sum-hint">Renouvelé chaque mois. Sans engagement.</p>
       <ul class="ac-pay-inc">
-        <li>Toutes les leçons premium</li>
-        <li>Parcours complets + fiches PDF</li>
-        <li>Nouveaux cours en priorité</li>
+        <li>Un expert dédié à ton domaine</li>
+        <li>Objectifs et plan d'action</li>
+        <li>Espace d'accompagnement dans ton compte</li>
       </ul>
     </aside>
   </div>
   <div class="ac-pay" id="loading"><p style="color:var(--ac-muted)">Chargement…</p></div>
+
+  <script type="application/json" id="ac-formats" set:html={JSON.stringify(ACCOMP.formats)}></script>
 </AcademyLayout>
 
 <style>
@@ -57,7 +57,8 @@ const plan = getPlan('premium');
   .ac-crumb { font-size: .84rem; color: var(--ac-muted); margin-bottom: 12px; }
   .ac-crumb a { color: var(--ac-muted); text-decoration: none; } .ac-crumb a:hover { color: var(--ac-teal); }
   .ac-crumb span { color: var(--ac-ink); }
-  .ac-pay-main > h1 { font-size: 2rem; letter-spacing: -.02em; margin: 0 0 22px; }
+  .ac-pay-main > h1 { font-size: 2rem; letter-spacing: -.02em; margin: 0 0 6px; }
+  .ac-pay-intro { color: var(--ac-ink-soft); margin: 0 0 22px; }
   .ac-pay-h { font-family: var(--ac-display); font-weight: 700; font-size: 1.1rem; margin: 0 0 12px; }
   .ac-pay-methods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
   .ac-pay-m { display: flex; align-items: center; gap: 11px; border: 1.5px solid var(--ac-line); border-radius: 13px; padding: 13px 15px; cursor: pointer; background: var(--ac-surface); transition: border-color .15s; }
@@ -85,7 +86,7 @@ const plan = getPlan('premium');
   .ac-pay-done { text-align: center; padding: 20px 0; }
   .ac-pay-done-ic { width: 56px; height: 56px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
   .ac-pay-done h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.5rem; margin: 0 0 8px; }
-  .ac-pay-done p { color: var(--ac-ink-soft); max-width: 44ch; margin: 0 auto 20px; line-height: 1.6; }
+  .ac-pay-done p { color: var(--ac-ink-soft); max-width: 46ch; margin: 0 auto 20px; line-height: 1.6; }
   @media (max-width: 780px) { .ac-pay { grid-template-columns: 1fr; } .ac-pay-summary { position: static; order: -1; } .ac-pay-methods { grid-template-columns: 1fr; } }
 </style>
 
@@ -99,16 +100,18 @@ const plan = getPlan('premium');
     pay.dataset.bound = '1';
     const loading = document.getElementById('loading');
 
+    let formats = [];
+    try { formats = JSON.parse(document.getElementById('ac-formats').textContent); } catch {}
     const params = new URLSearchParams(location.search);
-    let cycle = params.get('cycle') === 'yearly' ? 'yearly' : 'monthly';
-    const price = { monthly: Number(pay.dataset.monthly), yearly: Number(pay.dataset.yearly) };
+    const wanted = params.get('format') || 'mensuel';
+    const fmt = formats.find((f) => f.id === wanted) || formats.find((f) => f.id === 'mensuel') || formats[0];
 
-    const renderSummary = () => {
-      document.getElementById('sum-cycle').textContent = cycle === 'yearly' ? 'Annuel' : 'Mensuel';
-      document.getElementById('sum-total').textContent = '$' + price[cycle];
-      document.getElementById('sum-hint').textContent = cycle === 'yearly' ? 'Renouvelé chaque année. Sans engagement.' : 'Renouvelé chaque mois. Sans engagement.';
-      document.getElementById('paybtn').textContent = 'Payer $' + price[cycle];
-    };
+    if (fmt) {
+      document.getElementById('sum-format').textContent = fmt.label;
+      document.getElementById('sum-total').textContent = '$' + fmt.price;
+      document.getElementById('sum-hint').textContent = fmt.per.includes('mois') ? 'Renouvelé chaque mois. Sans engagement.' : 'Paiement unique.';
+      document.getElementById('paybtn').textContent = 'Régler $' + fmt.price;
+    }
 
     const fields = document.getElementById('fields');
     const renderFields = (kind, hint) => {
@@ -136,27 +139,20 @@ const plan = getPlan('premium');
     const msg = document.getElementById('msg');
     paybtn.addEventListener('click', () => {
       msg.classList.remove('show');
-      const sel = methods.querySelector('input[name="method"]:checked');
       const inputs = Array.from(fields.querySelectorAll('input'));
       if (inputs.some((i) => !i.value.trim())) { msg.textContent = 'Remplis les informations de paiement.'; msg.classList.add('show'); return; }
       // Traitement réel branché à l'étape back (fournisseur Mobile Money / carte).
-      document.querySelector('.ac-pay-main > h1').style.display = 'none';
-      document.querySelector('.ac-pay-h').style.display = 'none';
-      document.getElementById('methods').style.display = 'none';
+      ['h1', '.ac-pay-intro', '.ac-pay-h', '#methods', '.ac-pay-note'].forEach((s) => { const el = document.querySelector('.ac-pay-main ' + s) || document.querySelector(s); if (el) el.style.display = 'none'; });
       fields.style.display = 'none';
       paybtn.style.display = 'none';
-      document.querySelector('.ac-pay-note').style.display = 'none';
       document.getElementById('done').hidden = false;
     });
 
-    // Récap + champs : indépendants de l'authentification
     const first = document.querySelector('input[name="method"]:checked');
     renderFields(first.dataset.kind, first.dataset.hint);
-    renderSummary();
 
-    // Exige d'être connecté (sinon redirige vers la connexion)
     fetch('/api/auth/me').then((r) => r.json()).then((d) => {
-      if (!d.user) { location.href = '/academy/compte/connexion/?next=/academy/premium/'; return; }
+      if (!d.user) { location.href = '/academy/compte/connexion/?next=/academy/accompagnement/'; return; }
       loading.hidden = true; pay.hidden = false;
     }).catch(() => { loading.hidden = true; pay.hidden = false; });
   }

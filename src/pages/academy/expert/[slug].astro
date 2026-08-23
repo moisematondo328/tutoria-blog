@@ -26,6 +26,7 @@ const initials = expert.name.split(' ').map((w) => w[0]).slice(0, 2).join('');
       <h1 class="ac-display">{expert.name}</h1>
       <p class="ac-exp-role">{expert.role}</p>
       <p class="ac-exp-bio">{expert.bio}</p>
+      <a class="ac-btn ac-btn-primary ac-exp-cta" href="/academy/accompagnement/">Être accompagné par {expert.name.split(' ')[0]}</a>
     </div>
   </section>
 
@@ -56,6 +57,7 @@ const initials = expert.name.split(' ').map((w) => w[0]).slice(0, 2).join('');
   .ac-exp-pill { display: inline-block; background: color-mix(in srgb, var(--c) 14%, var(--ac-surface)); color: var(--c); font-weight: 700; font-size: .78rem; padding: 4px 12px; border-radius: 999px; text-decoration: none; }
   .ac-exp-head h1 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 2.2rem; margin: 10px 0 4px; }
   .ac-exp-role { color: var(--ac-teal); font-weight: 700; margin: 0 0 8px; }
-  .ac-exp-bio { color: var(--ac-ink-soft); font-size: 1.05rem; line-height: 1.55; margin: 0; max-width: 60ch; }
+  .ac-exp-bio { color: var(--ac-ink-soft); font-size: 1.05rem; line-height: 1.55; margin: 0 0 18px; max-width: 60ch; }
+  .ac-exp-cta { }
   @media (max-width: 620px) { .ac-exp-head { flex-direction: column; align-items: flex-start; } }
 </style>

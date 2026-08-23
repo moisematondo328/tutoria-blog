@@ -89,7 +89,7 @@ const path = Astro.url.pathname;
           </div>
           <a href="/academy/" class={path === '/academy/' || path.match(/^\/academy\/[^/]+\/?$/) && !path.startsWith('/academy/articles') && !path.startsWith('/academy/outils') && !path.startsWith('/academy/recherche') && !path.startsWith('/academy/expert') ? 'cur' : ''}>Cours</a>
           <a href="/academy/articles/" class={path.startsWith('/academy/articles') ? 'cur' : ''}>Articles</a>
-          <a href="/academy/premium/" class={path.startsWith('/academy/premium') ? 'cur ac-nav-pro' : 'ac-nav-pro'}>Premium</a>
+          <a href="/academy/accompagnement/" class={path.startsWith('/academy/accompagnement') ? 'cur ac-nav-pro' : 'ac-nav-pro'}>Accompagnement</a>
         </nav>
         <form class="ac-search" action="/academy/recherche/" role="search">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
@@ -106,7 +106,7 @@ const path = Astro.url.pathname;
         </div>
         <a href="/academy/">Tous les cours</a>
         <a href="/academy/articles/">Articles</a>
-        <a class="pro" href="/academy/premium/">Premium</a>
+        <a class="pro" href="/academy/accompagnement/">Accompagnement</a>
         <a href="/academy/outils/">Outils</a>
         <a href="/academy/recherche/">Rechercher</a>
         <a href="/academy/compte/">Mon compte</a>
@@ -131,7 +131,7 @@ const path = Astro.url.pathname;
         <div>
           <h4>Academy</h4>
           <a href="/academy/">Tous les cours</a>
-          <a href="/academy/premium/">Premium</a>
+          <a href="/academy/accompagnement/">Accompagnement</a>
           <a href="/academy/articles/">Articles</a>
           <a href="/academy/outils/">Outils</a>
           <a href="/academy/a-propos/">À propos</a>

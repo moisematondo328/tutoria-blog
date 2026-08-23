@@ -50,12 +50,23 @@ export const PLANS: Plan[] = [
 
 export const getPlan = (id: PlanId): Plan => PLANS.find((p) => p.id === id) || PLANS[0];
 
-// Accompagnement expert : offre sur mesure (hors abonnement), gérée au cas par cas.
-export const COACHING = {
-  name: 'Accompagnement expert',
+// Accompagnement expert : le PRODUIT payant. Le contenu (cours, leçons, outils) reste gratuit.
+// On monétise l'accompagnement humain, demandé volontairement.
+export interface AccompFormat { id: string; label: string; price: number; per: string; desc: string; highlight?: boolean; }
+export const ACCOMP = {
+  name: 'Accompagnement',
   tagline: 'Un expert de ton domaine, rien que pour toi.',
-  blurb: 'Sessions personnalisées avec l\'expert du pilier : objectifs, plan d\'action, suivi. Tarif selon le format.',
-  cta: 'Parler à un expert',
+  blurb: "Les cours sont gratuits. Quand tu veux aller plus loin avec quelqu'un qui te suit vraiment, tu demandes un accompagnement : un expert du domaine te guide, à ton rythme.",
+  cta: 'Demander un accompagnement',
+  steps: [
+    { t: 'Tu demandes', d: "Tu dis ton domaine et ton objectif. Aucune obligation, aucun paiement à ce stade." },
+    { t: 'Tu t\'inscris et tu réserves', d: 'Tu crées ton compte et tu règles ton accompagnement. C\'est ce qui déclenche le suivi.' },
+    { t: 'Ton espace d\'accompagnement', d: 'L\'expert te retrouve dans ton compte : objectifs, plan d\'action, points réguliers.' },
+  ],
+  formats: [
+    { id: 'seance', label: 'Séance découverte', price: 15, per: 'la séance', desc: 'Un échange ciblé de 45 min pour débloquer un point précis.' },
+    { id: 'mensuel', label: 'Suivi mensuel', price: 49, per: 'par mois', desc: 'Un accompagnement régulier : objectifs, plan d\'action, points chaque semaine.', highlight: true },
+  ] as AccompFormat[],
 };
 
 // Moyens de paiement proposés (front). Le traitement réel sera configuré ensuite.

@@ -1,0 +1,117 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { ACCOMP } from '../../../lib/plans';
+import { PILLARS, EXPERTS } from '../../../consts';
+
+const expertsOf = (name: string) => EXPERTS.filter((e) => e.pillar === name);
+const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+---
+
+<AcademyLayout title="Accompagnement" description="Les cours sont gratuits. Va plus loin avec un expert qui te suit vraiment.">
+  <section class="ac-ac-hero">
+    <div>
+      <span class="ac-eyebrow">Accompagnement</span>
+      <h1 class="ac-display">Va plus loin, <span class="em">avec quelqu'un à tes côtés</span></h1>
+      <p>Tous les cours, les outils et les fiches PDF restent <b>gratuits</b>. L'accompagnement, c'est l'étape d'après : quand tu veux progresser vraiment, un expert de ton domaine te suit, à ton rythme.</p>
+      <a class="ac-btn ac-btn-primary" href="/academy/compte/paiement/?type=accompagnement&format=mensuel">{ACCOMP.cta}</a>
+    </div>
+    <div class="ac-ac-illu" aria-hidden="true">
+      <svg viewBox="0 0 300 260" fill="none">
+        <path d="M40 220 C 120 220, 120 40, 200 40" stroke="var(--ac-line-strong)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+        <circle cx="40" cy="220" r="22" fill="var(--ac-teal-l)"/><text x="40" y="227" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque" font-weight="800" font-size="18">Toi</text>
+        <circle cx="200" cy="40" r="30" fill="var(--ac-teal)"/><text x="200" y="47" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque" font-weight="800" font-size="16">Expert</text>
+        <circle cx="128" cy="128" r="9" fill="var(--ac-surface)" stroke="var(--ac-yellow)" stroke-width="4"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="ac-ac-steps-wrap">
+    <h2 class="ac-display">Comment ça marche</h2>
+    <div class="ac-ac-steps">
+      {ACCOMP.steps.map((s, i) => (
+        <div class="ac-ac-step">
+          <span class="ac-ac-num">{i + 1}</span>
+          <div><b>{s.t}</b><p>{s.d}</p></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="ac-ac-formats">
+    <h2 class="ac-display">Deux façons d'être accompagné</h2>
+    <div class="ac-ac-fgrid">
+      {ACCOMP.formats.map((f) => (
+        <div class={`ac-ac-fcard${f.highlight ? ' hot' : ''}`}>
+          {f.highlight && <span class="ac-ac-tag">Le plus suivi</span>}
+          <h3>{f.label}</h3>
+          <div class="ac-ac-price"><b>${f.price}</b><span>{f.per}</span></div>
+          <p>{f.desc}</p>
+          <a class="ac-btn ac-btn-primary ac-ac-cta" href={`/academy/compte/paiement/?type=accompagnement&format=${f.id}`}>Réserver</a>
+        </div>
+      ))}
+    </div>
+    <p class="ac-ac-hint">Tu préfères d'abord en parler ? <a href="/academy/contact/">Écris-nous ton objectif</a>, on te répond.</p>
+  </section>
+
+  <section class="ac-ac-experts">
+    <h2 class="ac-display">Choisis l'expert de ton domaine</h2>
+    <div class="ac-ac-egrid">
+      {PILLARS.map((p) => expertsOf(p.name).map((e) => (
+        <a class="ac-ac-ecard" href={`/academy/expert/${e.slug}/`} style={`--c:${p.color}`}>
+          <span class="ac-ac-av">{initials(e.name)}</span>
+          <div>
+            <b>{e.name}</b>
+            <small>{e.role}</small>
+            <span class="ac-ac-dom">{p.name}</span>
+          </div>
+        </a>
+      )))}
+    </div>
+  </section>
+</AcademyLayout>
+
+<style>
+  .ac-ac-hero { display: grid; grid-template-columns: 1.2fr .8fr; gap: 40px; align-items: center; padding: 48px 0 20px; }
+  .ac-ac-hero h1 { font-size: clamp(2rem, 4.2vw, 2.9rem); letter-spacing: -.03em; margin: 12px 0 14px; }
+  .ac-ac-hero h1 .em { color: var(--ac-teal); }
+  .ac-ac-hero p { color: var(--ac-ink-soft); font-size: 1.08rem; line-height: 1.65; margin: 0 0 22px; max-width: 48ch; }
+  .ac-ac-illu svg { width: 100%; height: auto; }
+
+  .ac-ac-steps-wrap { margin: 40px 0; }
+  .ac-ac-steps-wrap h2 { font-size: 1.7rem; margin: 0 0 22px; }
+  .ac-ac-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ac-ac-step { display: flex; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; padding: 22px; }
+  .ac-ac-num { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-family: var(--ac-display); font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .ac-ac-step b { font-family: var(--ac-display); font-weight: 800; font-size: 1.12rem; }
+  .ac-ac-step p { margin: 6px 0 0; color: var(--ac-muted); font-size: .92rem; line-height: 1.5; }
+
+  .ac-ac-formats { margin: 52px 0; }
+  .ac-ac-formats h2 { font-size: 1.7rem; margin: 0 0 22px; }
+  .ac-ac-fgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; max-width: 720px; }
+  .ac-ac-fcard { position: relative; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; }
+  .ac-ac-fcard.hot { border: 2px solid var(--ac-teal); box-shadow: var(--ac-shadow); }
+  .ac-ac-tag { position: absolute; top: -12px; left: 24px; background: var(--ac-teal); color: #fff; font-weight: 700; font-size: .72rem; padding: 5px 12px; border-radius: 999px; }
+  .ac-ac-fcard h3 { font-family: var(--ac-display); font-weight: 800; font-size: 1.3rem; margin: 2px 0 8px; }
+  .ac-ac-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 12px; }
+  .ac-ac-price b { font-family: var(--ac-display); font-weight: 800; font-size: 2.2rem; color: var(--ac-teal); }
+  .ac-ac-price span { color: var(--ac-muted); font-weight: 600; }
+  .ac-ac-fcard p { color: var(--ac-ink-soft); font-size: .94rem; line-height: 1.5; margin: 0 0 20px; flex: 1; }
+  .ac-ac-cta { justify-content: center; }
+  .ac-ac-hint { margin: 16px 0 0; color: var(--ac-muted); font-size: .92rem; }
+  .ac-ac-hint a { color: var(--ac-teal); font-weight: 600; }
+
+  .ac-ac-experts { margin: 52px 0 40px; }
+  .ac-ac-experts h2 { font-size: 1.7rem; margin: 0 0 22px; }
+  .ac-ac-egrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ac-ac-ecard { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-left: 4px solid var(--c); border-radius: 14px; padding: 16px; text-decoration: none; color: inherit; transition: transform .14s, border-color .14s; }
+  .ac-ac-ecard:hover { transform: translateY(-3px); border-color: var(--c); }
+  .ac-ac-av { flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%; background: color-mix(in srgb, var(--c) 18%, var(--ac-surface)); color: var(--c); font-family: var(--ac-display); font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .ac-ac-ecard b { font-family: var(--ac-display); font-weight: 700; display: block; line-height: 1.2; }
+  .ac-ac-ecard small { color: var(--ac-muted); font-size: .82rem; display: block; margin: 2px 0 4px; }
+  .ac-ac-dom { font-size: .74rem; font-weight: 700; color: var(--c); }
+  @media (max-width: 860px) {
+    .ac-ac-hero { grid-template-columns: 1fr; } .ac-ac-illu { display: none; }
+    .ac-ac-steps, .ac-ac-egrid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 620px) { .ac-ac-fgrid { grid-template-columns: 1fr; } }
+</style>
