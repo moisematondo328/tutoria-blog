@@ -15,7 +15,7 @@ export const SOCIALS = {
 
 export const NAV = [
   { label: 'Accueil', href: '/' },
-  { label: 'Cours', href: '/cours/' },
+  { label: 'Academy', href: '/academy/' },
   { label: 'Articles', href: '/articles/' },
   { label: 'Livres', href: '/livres/' },
   { label: 'Contact', href: '/contact/' },

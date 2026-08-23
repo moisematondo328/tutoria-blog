@@ -1,0 +1,97 @@
+---
+import { getCollection, render } from 'astro:content';
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import AcademyTree from '../../../components/AcademyTree.astro';
+import { pillarByName } from '../../../consts';
+
+export async function getStaticPaths() {
+  const slugOf = (id: string) => id.split('/').pop() as string;
+  const allCourses = await getCollection('courses', ({ data }) => !data.draft);
+  const allLessons = await getCollection('lessons', ({ data }) => !data.draft);
+  const lessonsOf = (cid: string) =>
+    allLessons.filter((l) => l.data.course === cid).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+  return allCourses.map((course) => {
+    const pslug = pillarByName(course.data.category)?.slug;
+    const pillarCourses = allCourses
+      .filter((c) => pillarByName(c.data.category)?.slug === pslug)
+      .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+      .map((c) => ({ id: c.id, title: c.data.title, lessons: lessonsOf(c.id).map((l) => ({ slug: slugOf(l.id), title: l.data.title })) }));
+    return { params: { course: course.id }, props: { course, pillarCourses, lessons: lessonsOf(course.id) } };
+  });
+}
+
+const { course, pillarCourses, lessons } = Astro.props;
+const slugOf = (id: string) => id.split('/').pop() as string;
+const { Content } = await render(course);
+const pillar = pillarByName(course.data.category);
+const first = lessons[0];
+---
+
+<AcademyLayout title={course.data.title} description={course.data.excerpt} image={course.data.cover} wide={false}>
+  <div class="ac-reader">
+    <AcademyTree courses={pillarCourses} currentCourse={course.id} pillarName={pillar?.name} />
+
+    <article class="ac-article">
+      <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href={`/academy/#${pillar?.slug}`}>{course.data.category}</a> › <span>{course.data.title}</span></div>
+
+      <header class="ac-chead" style={`--c:${pillar?.color || 'var(--teal)'}`}>
+        <span class="ac-cat">{course.data.category}</span>
+        <h1>{course.data.title}</h1>
+        <p class="ac-cx">{course.data.excerpt}</p>
+        <div class="ac-cmeta">
+          <span>{course.data.level}</span>
+          <span>{lessons.length} leçon{lessons.length > 1 ? 's' : ''}</span>
+          {course.data.expert && <span>Animé par {course.data.expert}</span>}
+        </div>
+        {first && <a class="ac-begin" href={`/academy/${course.id}/${slugOf(first.id)}/`}>Commencer le cours ›</a>}
+      </header>
+
+      <div class="prose ac-cbody"><Content /></div>
+
+      <section class="ac-prog-list">
+        <h2>Programme</h2>
+        <ol>
+          {lessons.map((l, i) => (
+            <li>
+              <a href={`/academy/${course.id}/${slugOf(l.id)}/`}>
+                <span class="ac-pn">{i + 1}</span>
+                <span class="ac-pt">{l.data.title}</span>
+                {l.data.premium && <span class="ac-lock">Premium</span>}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    </article>
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-reader { display: grid; grid-template-columns: 300px 1fr; gap: 34px; align-items: start; padding-top: 22px; }
+  #ac-tree { position: sticky; top: 74px; max-height: calc(100vh - 96px); overflow-y: auto; }
+  .ac-article { min-width: 0; }
+  .ac-crumb { font-size: .84rem; color: var(--muted); margin-bottom: 16px; }
+  .ac-crumb a { color: var(--muted); text-decoration: none; }
+  .ac-crumb a:hover { color: var(--teal); }
+  .ac-crumb span { color: var(--ink); }
+  .ac-chead { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c); border-radius: 16px; padding: 24px 26px; margin-bottom: 24px; }
+  .ac-cat { display: inline-block; background: var(--c); color: #fff; font-weight: 700; font-size: .76rem; padding: 4px 12px; border-radius: 999px; }
+  .ac-chead h1 { margin: 12px 0 8px; font-size: 1.8rem; line-height: 1.2; }
+  .ac-cx { color: var(--muted); font-size: 1.05rem; line-height: 1.55; margin: 0 0 14px; }
+  .ac-cmeta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--teal); font-weight: 600; font-size: .9rem; margin-bottom: 18px; }
+  .ac-begin { display: inline-block; background: var(--teal); color: #fff; font-weight: 700; padding: 12px 26px; border-radius: 12px; text-decoration: none; }
+  .ac-begin:hover { background: var(--teal-d); }
+  .ac-cbody { margin-bottom: 26px; }
+  .ac-prog-list h2 { font-size: 1.3rem; margin: 0 0 14px; }
+  .ac-prog-list ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ac-prog-list a { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
+  .ac-prog-list a:hover { border-color: var(--teal); transform: translateX(3px); }
+  .ac-pn { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .ac-pt { flex: 1; font-weight: 600; }
+  .ac-lock { background: #FDD200; color: #0B4A44; font-weight: 700; font-size: .72rem; padding: 3px 9px; border-radius: 999px; }
+  @media (max-width: 860px) {
+    .ac-reader { grid-template-columns: 1fr; }
+    #ac-tree { position: static; max-height: none; display: none; margin-bottom: 18px; }
+    #ac-tree.mobile-open { display: block; }
+  }
+</style>

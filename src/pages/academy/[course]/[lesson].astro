@@ -1,0 +1,107 @@
+---
+import { getCollection, render } from 'astro:content';
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import AcademyTree from '../../../components/AcademyTree.astro';
+import { pillarByName } from '../../../consts';
+
+export async function getStaticPaths() {
+  const slugOf = (id: string) => id.split('/').pop() as string;
+  const allCourses = await getCollection('courses', ({ data }) => !data.draft);
+  const allLessons = await getCollection('lessons', ({ data }) => !data.draft);
+  const lessonsOf = (cid: string) =>
+    allLessons.filter((l) => l.data.course === cid).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+
+  const paths: any[] = [];
+  for (const course of allCourses) {
+    const pslug = pillarByName(course.data.category)?.slug;
+    const pillarCourses = allCourses
+      .filter((c) => pillarByName(c.data.category)?.slug === pslug)
+      .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+      .map((c) => ({ id: c.id, title: c.data.title, lessons: lessonsOf(c.id).map((l) => ({ slug: slugOf(l.id), title: l.data.title })) }));
+    const lessons = lessonsOf(course.id);
+    lessons.forEach((lesson, index) => {
+      paths.push({
+        params: { course: course.id, lesson: slugOf(lesson.id) },
+        props: { course, lesson, index, lessons, pillarCourses },
+      });
+    });
+  }
+  return paths;
+}
+
+const { course, lesson, index, lessons, pillarCourses } = Astro.props;
+const slugOf = (id: string) => id.split('/').pop() as string;
+const { Content } = await render(lesson);
+const pillar = pillarByName(course.data.category);
+const prev = index > 0 ? lessons[index - 1] : null;
+const next = index < lessons.length - 1 ? lessons[index + 1] : null;
+const pct = Math.round(((index + 1) / lessons.length) * 100);
+const lessonSlug = slugOf(lesson.id);
+---
+
+<AcademyLayout title={`${lesson.data.title} · ${course.data.title}`} description={course.data.excerpt} wide={false}>
+  <div class="ac-reader">
+    <AcademyTree courses={pillarCourses} currentCourse={course.id} currentLesson={lessonSlug} pillarName={pillar?.name} />
+
+    <article class="ac-article">
+      <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href={`/academy/#${pillar?.slug}`}>{course.data.category}</a> › <a href={`/academy/${course.id}/`}>{course.data.title}</a> › <span>{lesson.data.title}</span></div>
+
+      <div class="ac-rownav">
+        {prev ? <a href={`/academy/${course.id}/${slugOf(prev.id)}/`}>‹ Précédent</a> : <span></span>}
+        <button class="ac-dl" onclick="window.print()" title="Télécharger / imprimer cette leçon">⬇ Télécharger</button>
+        {next ? <a href={`/academy/${course.id}/${slugOf(next.id)}/`}>Suivant ›</a>
+              : <a href={`/academy/${course.id}/`}>Fin ✓</a>}
+      </div>
+
+      <div class="ac-prog"><span>Leçon {index + 1} / {lessons.length}</span><div class="ac-bar"><i style={`width:${pct}%`}></i></div></div>
+
+      <h1>{lesson.data.title}</h1>
+      <div class="prose"><Content /></div>
+
+      <nav class="ac-botnav">
+        {prev
+          ? <a class="p" href={`/academy/${course.id}/${slugOf(prev.id)}/`}><small>Précédent</small><b>{prev.data.title}</b></a>
+          : <span></span>}
+        {next
+          ? <a class="n" href={`/academy/${course.id}/${slugOf(next.id)}/`}><small>Suivant</small><b>{next.data.title}</b></a>
+          : <a class="n done" href={`/academy/${course.id}/`}><small>Terminé</small><b>Revoir le cours ✓</b></a>}
+      </nav>
+    </article>
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-reader { display: grid; grid-template-columns: 300px 1fr; gap: 34px; align-items: start; padding-top: 22px; }
+  #ac-tree { position: sticky; top: 74px; max-height: calc(100vh - 96px); overflow-y: auto; }
+  .ac-article { min-width: 0; }
+  .ac-crumb { font-size: .84rem; color: var(--muted); margin-bottom: 14px; }
+  .ac-crumb a { color: var(--muted); text-decoration: none; }
+  .ac-crumb a:hover { color: var(--teal); }
+  .ac-crumb span { color: var(--ink); }
+  .ac-rownav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .ac-rownav > a, .ac-dl { font-size: .86rem; font-weight: 700; text-decoration: none; color: var(--teal); background: var(--card); border: 1px solid var(--line); border-radius: 9px; padding: 7px 13px; cursor: pointer; font-family: inherit; }
+  .ac-rownav > a:hover, .ac-dl:hover { border-color: var(--teal); }
+  .ac-dl { color: var(--ink); }
+  .ac-prog { margin-bottom: 16px; }
+  .ac-prog span { font-size: .8rem; font-weight: 700; color: var(--teal); }
+  .ac-bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+  .ac-bar i { display: block; height: 100%; background: var(--teal-l); }
+  .ac-article h1 { font-size: 1.9rem; line-height: 1.18; margin: 6px 0 18px; }
+  .ac-botnav { display: flex; justify-content: space-between; gap: 14px; margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .ac-botnav a { display: flex; flex-direction: column; gap: 3px; max-width: 48%; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; text-decoration: none; color: var(--ink); transition: border-color .15s; }
+  .ac-botnav a:hover { border-color: var(--teal); }
+  .ac-botnav a.n { margin-left: auto; text-align: right; }
+  .ac-botnav small { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; }
+  .ac-botnav b { font-weight: 700; }
+  .ac-botnav a.done { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .ac-botnav a.done small { color: rgba(255,255,255,.8); }
+  @media (max-width: 860px) {
+    .ac-reader { grid-template-columns: 1fr; }
+    #ac-tree { position: static; max-height: none; display: none; margin-bottom: 18px; }
+    #ac-tree.mobile-open { display: block; }
+  }
+  @media print {
+    .ac-top, .ac-foot, #ac-tree, .ac-rownav, .ac-botnav, .ac-prog { display: none !important; }
+    .ac-reader { grid-template-columns: 1fr; }
+  }
+</style>
