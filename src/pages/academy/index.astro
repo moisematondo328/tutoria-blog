@@ -38,19 +38,38 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
       </div>
     </div>
     <div class="ac-h-illu" aria-hidden="true">
-      <svg viewBox="0 0 380 340" fill="none">
-        <path d="M70 40 C 200 40, 180 150, 300 150 C 180 150, 200 300, 70 300" stroke="var(--ac-line-strong)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
-        <g font-family="Poppins, sans-serif">
-          <circle cx="70" cy="40" r="26" fill="var(--ac-teal)"/><text x="70" y="48" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22">1</text>
-          <text x="106" y="45" fill="var(--ac-ink)" font-weight="700" font-size="17">Apprends</text>
-          <circle cx="300" cy="150" r="26" fill="var(--ac-yellow)"/><text x="300" y="158" text-anchor="middle" fill="#0A2621" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22">2</text>
-          <text x="264" y="155" text-anchor="end" fill="var(--ac-ink)" font-weight="700" font-size="17">Comprends</text>
-          <circle cx="70" cy="300" r="26" fill="var(--ac-teal-l)"/><text x="70" y="308" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22">3</text>
-          <text x="106" y="305" fill="var(--ac-ink)" font-weight="700" font-size="17">Applique</text>
-          <circle cx="200" cy="95" r="9" fill="var(--ac-surface)" stroke="var(--ac-teal)" stroke-width="3"/>
-          <circle cx="240" cy="225" r="9" fill="var(--ac-surface)" stroke="var(--ac-teal-l)" stroke-width="3"/>
-        </g>
+      <svg class="ac-hi-thread" viewBox="0 0 460 460" preserveAspectRatio="none">
+        <path d="M70 60 C 300 40, 180 230, 400 210 C 200 235, 300 430, 60 420" fill="none" stroke="var(--ac-line-strong)" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round"/>
       </svg>
+
+      <div class="ac-hi-card hi-budget">
+        <span class="hi-cap">Ton budget, clair</span>
+        <div class="hi-bar"><i style="width:50%;background:var(--ac-teal)"></i><i style="width:30%;background:var(--ac-yellow)"></i><i style="width:20%;background:var(--ac-teal-l)"></i></div>
+        <div class="hi-legend"><span>50% Besoins</span><span>30% Envies</span><span>20% Avenir</span></div>
+      </div>
+
+      <div class="ac-hi-card hi-code">
+        <div class="hi-dots"><i></i><i></i><i></i></div>
+        <pre><span class="k">const</span> toi = <span class="f">apprendre</span>();
+toi.<span class="f">comprendre</span>();
+toi.<span class="f">appliquer</span>();</pre>
+      </div>
+
+      <div class="ac-hi-card hi-streak">
+        <span class="hi-cap">Ta régularité</span>
+        <div class="hi-days"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i></div>
+        <small>5 jours d'affilée</small>
+      </div>
+
+      <div class="ac-hi-card hi-pulse">
+        <span class="hi-cap">Bien-être</span>
+        <svg class="hi-ecg" viewBox="0 0 130 34"><path d="M2 18 H30 l6 -13 l8 26 l6 -18 H84 l5 -6 l6 8 H128" fill="none" stroke="var(--ac-teal)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <span class="ac-hi-chip" style="top:118px;right:2px">Santé</span>
+      <span class="ac-hi-chip" style="bottom:70px;left:0">Argent</span>
+      <span class="ac-hi-chip" style="bottom:6px;left:150px">Mental</span>
+      <span class="ac-hi-chip" style="top:96px;left:176px">Tech</span>
     </div>
   </section>
 

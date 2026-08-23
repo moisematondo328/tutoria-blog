@@ -160,8 +160,9 @@
 /* Barre utilitaire */
 .ac-util { background: var(--ac-ink); color: #cfe0da; font-size: .8rem; }
 .ac-util-in { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 7px 24px; }
-.ac-util a { color: #cfe0da; text-decoration: none; margin-right: 18px; font-weight: 500; white-space: nowrap; }
+.ac-util a { color: #cfe0da; text-decoration: none; margin-right: 18px; font-weight: 500; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 .ac-util a:hover { color: #fff; }
+.ac-util-l svg { width: 14px; height: 14px; flex: 0 0 auto; opacity: .85; }
 .ac-util-l { display: flex; align-items: center; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .ac-util-l::-webkit-scrollbar { display: none; }
 .ac-util-r { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; }
@@ -182,8 +183,29 @@
 
 /* Hero 2 colonnes + illustration "chemin" */
 .ac-hero2 { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; padding: 56px 0 40px; }
-.ac-hero2 .ac-h-illu { position: relative; min-height: 320px; }
-.ac-h-illu svg { width: 100%; height: auto; }
+/* Collage du hero (façon portail tuto : chaque vignette dit un domaine) */
+.ac-hero2 .ac-h-illu { position: relative; height: 460px; }
+.ac-hi-thread { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.ac-hi-card { position: absolute; z-index: 2; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; box-shadow: var(--ac-shadow-sm); padding: 13px 15px; }
+.ac-hi-card .hi-cap { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ac-muted); margin-bottom: 9px; }
+.hi-budget { top: 4px; right: 0; width: 236px; }
+.hi-budget .hi-bar { display: flex; height: 16px; border-radius: 6px; overflow: hidden; }
+.hi-budget .hi-bar i { display: block; }
+.hi-budget .hi-legend { display: flex; justify-content: space-between; margin-top: 8px; font-size: .64rem; font-weight: 600; color: var(--ac-ink-soft); }
+.hi-code { top: 158px; left: 6px; width: 240px; background: #0A2621; border-color: #0A2621; padding: 12px 14px; }
+.hi-code .hi-dots { display: flex; gap: 6px; margin-bottom: 9px; }
+.hi-code .hi-dots i { width: 9px; height: 9px; border-radius: 50%; background: #35544d; }
+.hi-code .hi-dots i:first-child { background: #ff5f56; } .hi-code .hi-dots i:nth-child(2) { background: #ffbd2e; } .hi-code .hi-dots i:nth-child(3) { background: #27c93f; }
+.hi-code pre { margin: 0; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .74rem; line-height: 1.6; color: #cfe0da; white-space: pre; }
+.hi-code pre .k { color: #17B39D; } .hi-code pre .f { color: #FDD200; }
+.hi-streak { top: 300px; right: 8px; width: 208px; }
+.hi-streak .hi-days { display: flex; gap: 6px; }
+.hi-streak .hi-days i { width: 20px; height: 20px; border-radius: 6px; background: var(--ac-line); }
+.hi-streak .hi-days i.on { background: var(--ac-teal); }
+.hi-streak small { display: block; margin-top: 8px; font-size: .72rem; font-weight: 600; color: var(--ac-teal); }
+.hi-pulse { top: 18px; left: 0; width: 168px; }
+.hi-pulse .hi-ecg { width: 100%; height: 30px; display: block; }
+.ac-hi-chip { position: absolute; z-index: 3; background: var(--ac-surface); border: 1px solid var(--ac-line-strong); color: var(--ac-ink-soft); font-weight: 700; font-size: .74rem; padding: 5px 12px; border-radius: 999px; box-shadow: var(--ac-shadow-sm); }
 
 /* Cartes-features (piliers en dégradé) */
 .ac-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 10px 0 8px; }
