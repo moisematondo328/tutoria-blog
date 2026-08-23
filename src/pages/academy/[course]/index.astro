@@ -34,7 +34,7 @@ const first = lessons[0];
     <article class="ac-article">
       <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href={`/academy/#${pillar?.slug}`}>{course.data.category}</a> › <span>{course.data.title}</span></div>
 
-      <header class="ac-chead" style={`--c:${pillar?.color || 'var(--teal)'}`}>
+      <header class="ac-chead" style={`--c:${pillar?.color || 'var(--ac-teal)'}`}>
         <span class="ac-cat">{course.data.category}</span>
         <h1>{course.data.title}</h1>
         <p class="ac-cx">{course.data.excerpt}</p>
@@ -70,23 +70,24 @@ const first = lessons[0];
   .ac-reader { display: grid; grid-template-columns: 300px 1fr; gap: 34px; align-items: start; padding-top: 22px; }
   #ac-tree { position: sticky; top: 74px; max-height: calc(100vh - 96px); overflow-y: auto; }
   .ac-article { min-width: 0; }
-  .ac-crumb { font-size: .84rem; color: var(--muted); margin-bottom: 16px; }
-  .ac-crumb a { color: var(--muted); text-decoration: none; }
-  .ac-crumb a:hover { color: var(--teal); }
-  .ac-crumb span { color: var(--ink); }
-  .ac-chead { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--c); border-radius: 16px; padding: 24px 26px; margin-bottom: 24px; }
+  .ac-crumb { font-size: .84rem; color: var(--ac-muted); margin-bottom: 16px; }
+  .ac-crumb a { color: var(--ac-muted); text-decoration: none; }
+  .ac-crumb a:hover { color: var(--ac-teal); }
+  .ac-crumb span { color: var(--ac-ink); }
+  .ac-chead { background: var(--ac-surface); border: 1px solid var(--ac-line); border-left: 6px solid var(--c); border-radius: 16px; padding: 24px 26px; margin-bottom: 24px; }
   .ac-cat { display: inline-block; background: var(--c); color: #fff; font-weight: 700; font-size: .76rem; padding: 4px 12px; border-radius: 999px; }
-  .ac-chead h1 { margin: 12px 0 8px; font-size: 1.8rem; line-height: 1.2; }
-  .ac-cx { color: var(--muted); font-size: 1.05rem; line-height: 1.55; margin: 0 0 14px; }
-  .ac-cmeta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--teal); font-weight: 600; font-size: .9rem; margin-bottom: 18px; }
-  .ac-begin { display: inline-block; background: var(--teal); color: #fff; font-weight: 700; padding: 12px 26px; border-radius: 12px; text-decoration: none; }
-  .ac-begin:hover { background: var(--teal-d); }
+  .ac-chead h1 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -0.025em; margin: 12px 0 10px; font-size: 2.1rem; line-height: 1.1; }
+  .ac-prog-list h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -0.02em; }
+  .ac-cx { color: var(--ac-muted); font-size: 1.05rem; line-height: 1.55; margin: 0 0 14px; }
+  .ac-cmeta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--ac-teal); font-weight: 600; font-size: .9rem; margin-bottom: 18px; }
+  .ac-begin { display: inline-block; background: var(--ac-teal); color: #fff; font-weight: 700; padding: 12px 26px; border-radius: 12px; text-decoration: none; }
+  .ac-begin:hover { background: var(--ac-teal-d); }
   .ac-cbody { margin-bottom: 26px; }
   .ac-prog-list h2 { font-size: 1.3rem; margin: 0 0 14px; }
   .ac-prog-list ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  .ac-prog-list a { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
-  .ac-prog-list a:hover { border-color: var(--teal); transform: translateX(3px); }
-  .ac-pn { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .ac-prog-list a { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 12px; padding: 14px 16px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
+  .ac-prog-list a:hover { border-color: var(--ac-teal); transform: translateX(3px); }
+  .ac-pn { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; }
   .ac-pt { flex: 1; font-weight: 600; }
   .ac-lock { background: #FDD200; color: #0B4A44; font-weight: 700; font-size: .72rem; padding: 3px 9px; border-radius: 999px; }
   @media (max-width: 860px) {

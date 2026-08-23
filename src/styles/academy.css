@@ -43,6 +43,10 @@
 }
 
 .ac-body { background: var(--ac-paper); color: var(--ac-ink); font-family: var(--ac-body); }
+/* Titres du contenu (leçons, cours) en typo display pour l'identité */
+.ac-main .prose h1, .ac-main .prose h2, .ac-main .prose h3 { font-family: var(--ac-display); letter-spacing: -0.015em; color: var(--ac-ink); }
+.ac-main .prose { color: var(--ac-ink-soft); }
+.ac-main .prose a { color: var(--ac-teal); }
 .ac-display { font-family: var(--ac-display); font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; }
 .ac-eyebrow { font-family: var(--ac-body); font-weight: 700; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ac-teal); }
 
@@ -127,8 +131,10 @@
   .ac-pillars { grid-template-columns: repeat(2, 1fr); }
   .ac-nav { display: none; }
 }
+@media (max-width: 860px) {
+  .ac-burger { display: block; }
+}
 @media (max-width: 620px) {
   .ac-pillars { grid-template-columns: 1fr; }
   .ac-search { display: none; }
-  .ac-burger { display: block; }
 }

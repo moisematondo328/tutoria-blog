@@ -1,26 +1,33 @@
 ---
-// Arbre de navigation de l'Academy : les cours d'un pilier, chacun dépliable en leçons.
+// Signature Tutoria Academy : le « Chemin d'apprentissage ».
+// Un fil vertical à nœuds (façon plan de métro) : chaque cours = un jalon, chaque leçon = un nœud.
 // props.courses = [{ id, title, lessons: [{ slug, title }] }]
 interface Props { courses: any[]; currentCourse: string; currentLesson?: string; pillarName?: string; }
-const { courses, currentCourse, currentLesson = '', pillarName = 'Programme' } = Astro.props;
+const { courses, currentCourse, currentLesson = '', pillarName = 'Chemin' } = Astro.props;
 ---
-<nav id="ac-tree" class="ac-tree" aria-label="Sommaire des cours">
-  <div class="ac-tree-head">{pillarName}</div>
-  <ol class="ac-tree-root">
+<nav id="ac-tree" class="ac-path" aria-label="Chemin d'apprentissage">
+  <div class="ac-path-head"><span class="ac-path-dot"></span>{pillarName}</div>
+  <ol class="ac-path-list">
     {courses.map((c) => {
       const open = c.id === currentCourse;
       return (
-        <li class={`ac-tree-item ${open ? 'open' : ''}`}>
-          <div class="ac-tree-course">
-            <button type="button" class="ac-caret-btn" aria-expanded={open ? 'true' : 'false'} aria-label="Déplier"><span class="ac-caret">▸</span></button>
-            <a href={`/academy/${c.id}/`} class={`ac-tree-clabel ${open ? 'cur' : ''}`}>{c.title}</a>
+        <li class={`ac-tree-item ac-path-course ${open ? 'open' : ''}`}>
+          <div class="ac-path-crow">
+            <button type="button" class="ac-caret-btn" aria-expanded={open ? 'true' : 'false'} aria-label="Déplier"><span class="ac-jalon"></span></button>
+            <a href={`/academy/${c.id}/`} class={`ac-path-clabel ${open ? 'cur' : ''}`}>{c.title}</a>
           </div>
-          <ol class="ac-tree-lessons">
-            {c.lessons.map((l: any, i: number) => (
-              <li class={open && l.slug === currentLesson ? 'active' : ''}>
-                <a href={`/academy/${c.id}/${l.slug}/`}><span class="ac-ln">{i + 1}</span><span>{l.title}</span></a>
-              </li>
-            ))}
+          <ol class="ac-path-lessons">
+            {c.lessons.map((l: any, i: number) => {
+              const active = open && l.slug === currentLesson;
+              return (
+                <li class={active ? 'active' : ''}>
+                  <a href={`/academy/${c.id}/${l.slug}/`}>
+                    <span class="ac-node" aria-hidden="true"></span>
+                    <span class="ac-node-txt"><b>{i + 1}.</b> {l.title}</span>
+                  </a>
+                </li>
+              );
+            })}
           </ol>
         </li>
       );
@@ -29,21 +36,28 @@ const { courses, currentCourse, currentLesson = '', pillarName = 'Programme' } =
 </nav>
 
 <style>
-  .ac-tree { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
-  .ac-tree-head { font-weight: 800; font-size: .78rem; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); padding: 6px 8px 10px; }
-  .ac-tree-root, .ac-tree-lessons { list-style: none; margin: 0; padding: 0; }
-  .ac-tree-course { display: flex; align-items: center; gap: 4px; border-radius: 9px; }
-  .ac-tree-course:hover { background: rgba(14,128,116,.06); }
-  .ac-caret-btn { background: none; border: 0; cursor: pointer; padding: 8px 4px 8px 8px; color: var(--muted); flex: 0 0 auto; }
-  .ac-caret { display: inline-block; transition: transform .15s; font-size: .8rem; }
-  .ac-tree-item.open .ac-caret { transform: rotate(90deg); }
-  .ac-tree-clabel { flex: 1; padding: 8px 8px 8px 0; text-decoration: none; color: var(--ink); font-weight: 600; font-size: .92rem; line-height: 1.3; }
-  .ac-tree-clabel.cur { color: var(--teal); }
-  .ac-tree-lessons { overflow: hidden; max-height: 0; transition: max-height .2s ease; }
-  .ac-tree-item.open .ac-tree-lessons { max-height: 1000px; }
-  .ac-tree-lessons li a { display: flex; gap: 9px; align-items: baseline; padding: 8px 10px 8px 26px; text-decoration: none; color: var(--muted); font-size: .88rem; line-height: 1.35; border-radius: 8px; }
-  .ac-tree-lessons li a:hover { color: var(--ink); background: rgba(14,128,116,.06); }
-  .ac-tree-lessons li a .ac-ln { flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%; background: var(--line); color: var(--ink); font-size: .68rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-  .ac-tree-lessons li.active a { background: rgba(14,128,116,.12); color: var(--ink); font-weight: 700; }
-  .ac-tree-lessons li.active a .ac-ln { background: var(--teal); color: #fff; }
+  .ac-path { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius); padding: 16px 14px; }
+  .ac-path-head { display: flex; align-items: center; gap: 9px; font-family: var(--ac-display); font-weight: 800; font-size: .82rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ac-teal); padding: 4px 6px 14px; }
+  .ac-path-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ac-yellow); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ac-yellow) 30%, transparent); }
+  .ac-path-list, .ac-path-lessons { list-style: none; margin: 0; padding: 0; }
+  .ac-path-course + .ac-path-course { margin-top: 2px; }
+  .ac-path-crow { display: flex; align-items: center; gap: 6px; border-radius: 10px; }
+  .ac-path-crow:hover { background: color-mix(in srgb, var(--ac-teal) 6%, transparent); }
+  .ac-caret-btn { background: none; border: 0; cursor: pointer; padding: 8px; display: flex; align-items: center; flex: 0 0 auto; }
+  .ac-jalon { position: relative; width: 15px; height: 15px; border-radius: 4px; background: var(--ac-line-strong); transform: rotate(45deg); transition: background .15s, transform .18s; }
+  .ac-tree-item.open .ac-jalon { background: var(--ac-teal); transform: rotate(45deg) scale(1.05); }
+  .ac-path-clabel { flex: 1; padding: 9px 8px 9px 0; text-decoration: none; color: var(--ac-ink); font-weight: 700; font-size: .93rem; line-height: 1.3; font-family: var(--ac-display); letter-spacing: -.01em; }
+  .ac-path-clabel.cur { color: var(--ac-teal); }
+  /* le fil + les nœuds */
+  .ac-path-lessons { overflow: hidden; max-height: 0; transition: max-height .22s ease; position: relative; margin-left: 15px; }
+  .ac-tree-item.open .ac-path-lessons { max-height: 1400px; }
+  .ac-path-lessons::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 12px; width: 2px; background: var(--ac-line-strong); }
+  .ac-path-lessons li a { display: flex; align-items: center; gap: 12px; padding: 7px 10px 7px 0; text-decoration: none; color: var(--ac-muted); font-size: .88rem; line-height: 1.35; border-radius: 9px; position: relative; }
+  .ac-node { flex: 0 0 auto; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: var(--ac-surface); border: 2px solid var(--ac-line-strong); z-index: 1; transition: all .15s; }
+  .ac-node-txt b { color: var(--ac-ink-soft); font-weight: 700; }
+  .ac-path-lessons li a:hover { color: var(--ac-ink); }
+  .ac-path-lessons li a:hover .ac-node { border-color: var(--ac-teal); }
+  .ac-path-lessons li.active a { color: var(--ac-ink); font-weight: 600; }
+  .ac-path-lessons li.active .ac-node { background: var(--ac-teal); border-color: var(--ac-teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ac-teal) 22%, transparent); width: 15px; height: 15px; margin-left: -7px; }
+  .ac-path-lessons li.active .ac-node-txt b { color: var(--ac-teal); }
 </style>
