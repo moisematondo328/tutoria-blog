@@ -58,6 +58,11 @@ const lessonSlug = slugOf(lesson.id);
       <h1>{lesson.data.title}</h1>
       <div class="prose"><Content /></div>
 
+      <div class="ac-done" data-course={course.id} data-lesson={lessonSlug}>
+        <button class="ac-done-btn" id="ac-done" type="button" hidden>Marquer comme terminé</button>
+        <a class="ac-done-login" id="ac-done-login" href="/academy/compte/connexion/" hidden>Connecte-toi pour suivre ta progression →</a>
+      </div>
+
       {lesson.data.quiz && lesson.data.quiz.length > 0 && (
         <section class="ac-quiz">
           <h2>Vérifie ta compréhension</h2>
@@ -117,8 +122,39 @@ const lessonSlug = slugOf(lesson.id);
     #ac-tree { position: static; max-height: none; display: none; margin-bottom: 18px; }
     #ac-tree.mobile-open { display: block; }
   }
+  .ac-done { margin: 26px 0 4px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .ac-done-btn { font-family: inherit; font-weight: 700; font-size: .92rem; cursor: pointer; border: 1.5px solid var(--ac-teal); color: var(--ac-teal); background: var(--ac-surface); border-radius: 11px; padding: 11px 20px; transition: background .15s, color .15s; }
+  .ac-done-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--ac-teal) 8%, var(--ac-surface)); }
+  .ac-done-btn.is-done { background: var(--ac-teal); color: #fff; }
+  .ac-done-login { font-weight: 600; font-size: .9rem; color: var(--ac-teal); text-decoration: none; }
+  .ac-done-login:hover { text-decoration: underline; }
   @media print {
-    .ac-top, .ac-foot, #ac-tree, .ac-rownav, .ac-botnav, .ac-prog { display: none !important; }
+    .ac-top, .ac-foot, #ac-tree, .ac-rownav, .ac-botnav, .ac-prog, .ac-done { display: none !important; }
     .ac-reader { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  async function progressUI() {
+    const wrap = document.querySelector('.ac-done');
+    if (!wrap || wrap.dataset.bound) return;
+    wrap.dataset.bound = '1';
+    const btn = document.getElementById('ac-done');
+    const login = document.getElementById('ac-done-login');
+    const course = wrap.dataset.course, lesson = wrap.dataset.lesson;
+    let me = null;
+    try { me = (await (await fetch('/api/auth/me')).json()).user; } catch {}
+    if (!me) { login.hidden = false; return; }
+    let done = false;
+    try { const pd = await (await fetch('/api/progress')).json(); if (pd.ok) done = !!pd.progress[`${course}/${lesson}`]; } catch {}
+    const render = () => { btn.textContent = done ? '✓ Leçon terminée' : 'Marquer comme terminé'; btn.classList.toggle('is-done', done); };
+    btn.hidden = false; render();
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      const next = !done;
+      try { const d = await (await fetch('/api/progress', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ course, lesson, done: next }) })).json(); if (d.ok) { done = next; render(); } } catch {}
+      btn.disabled = false;
+    });
+  }
+  document.addEventListener('astro:page-load', progressUI);
+</script>

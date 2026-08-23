@@ -1,0 +1,67 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+---
+
+<AcademyLayout title="Mon compte" description="Ton espace Tutoria Academy.">
+  <div class="ac-dash" id="dash" hidden>
+    <div class="ac-verify-banner" id="verify" hidden>Pense à confirmer ton adresse e-mail (lien envoyé dans ta boîte) pour sécuriser ton compte.</div>
+    <div class="ac-dash-hero">
+      <div class="ac-avatar" id="avatar"></div>
+      <div>
+        <h1 id="hello"></h1>
+        <span class="em" id="email"></span>
+      </div>
+    </div>
+    <div class="ac-dash-grid">
+      <div class="ac-stat"><b id="s-done">0</b><span>leçons terminées</span></div>
+      <div class="ac-stat"><b id="s-courses">0</b><span>cours en cours</span></div>
+      <div class="ac-stat"><b id="s-since">—</b><span>membre depuis</span></div>
+    </div>
+    <div class="ac-dash-actions">
+      <a class="ac-btn ac-btn-primary" href="/academy/#catalogue">Continuer l'apprentissage</a>
+      <button class="ac-btn ac-btn-ghost" id="logout" type="button">Se déconnecter</button>
+    </div>
+  </div>
+  <div class="ac-dash" id="loading"><p style="color:var(--ac-muted)">Chargement…</p></div>
+</AcademyLayout>
+
+<script>
+  function initialsOf(name, email) {
+    const base = (name || email || '?').trim();
+    const parts = base.split(/\s+/).filter(Boolean);
+    return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || base[0].toUpperCase();
+  }
+  async function boot() {
+    const dash = document.getElementById('dash');
+    if (!dash || dash.dataset.bound) return;
+    dash.dataset.bound = '1';
+    const loading = document.getElementById('loading');
+    let user = null;
+    try { const r = await fetch('/api/auth/me'); const d = await r.json(); user = d.user; } catch {}
+    if (!user) { location.href = '/academy/compte/connexion/'; return; }
+
+    const avatar = document.getElementById('avatar');
+    if (user.avatar) { const img = document.createElement('img'); img.src = user.avatar; img.alt = ''; avatar.appendChild(img); }
+    else avatar.textContent = initialsOf(user.name, user.email);
+    document.getElementById('hello').textContent = `Salut, ${user.name || 'toi'} !`;
+    document.getElementById('email').textContent = user.email;
+    if (!user.verified) document.getElementById('verify').hidden = false;
+    if (user.createdAt) document.getElementById('s-since').textContent = new Date(user.createdAt).getFullYear();
+
+    try {
+      const pr = await fetch('/api/progress'); const pd = await pr.json();
+      if (pd.ok) {
+        const keys = Object.keys(pd.progress || {});
+        document.getElementById('s-done').textContent = keys.length;
+        document.getElementById('s-courses').textContent = new Set(keys.map((k) => k.split('/')[0])).size;
+      }
+    } catch {}
+
+    loading.hidden = true; dash.hidden = false;
+    document.getElementById('logout').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      location.href = '/academy/';
+    });
+  }
+  document.addEventListener('astro:page-load', boot);
+</script>

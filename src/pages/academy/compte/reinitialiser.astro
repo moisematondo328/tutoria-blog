@@ -1,0 +1,53 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+---
+
+<AcademyLayout title="Nouveau mot de passe" description="Choisis un nouveau mot de passe.">
+  <div class="ac-auth-wrap">
+    <div class="ac-auth-head">
+      <span class="ac-auth-eyebrow">Tutoria Academy</span>
+      <h1>Nouveau mot de passe</h1>
+      <p>Choisis un mot de passe solide, rien qu'à toi.</p>
+    </div>
+    <div class="ac-auth-card">
+      <div class="ac-msg err" id="msg"></div>
+      <form id="form" novalidate>
+        <div class="ac-field"><label for="password">Nouveau mot de passe</label><input id="password" name="password" type="password" autocomplete="new-password" placeholder="8 caractères minimum" minlength="8" required /></div>
+        <button class="ac-auth-btn" type="submit" id="submit">Enregistrer</button>
+      </form>
+      <div class="ac-auth-links"><a href="/academy/compte/connexion/">Retour à la connexion</a></div>
+    </div>
+  </div>
+</AcademyLayout>
+
+<script>
+  function bind() {
+    const form = document.getElementById('form');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('submit');
+    const token = new URLSearchParams(location.search).get('token') || '';
+    if (!token) { msg.textContent = 'Lien invalide. Redemande un e-mail de réinitialisation.'; msg.classList.add('show'); }
+    const errors = {
+      token: 'Lien invalide. Redemande un e-mail de réinitialisation.',
+      expired: 'Ce lien a expiré. Redemande un e-mail de réinitialisation.',
+      password: 'Ton mot de passe doit faire au moins 8 caractères.',
+      config: 'Service momentanément indisponible. Réessaie plus tard.',
+    };
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.classList.remove('show');
+      btn.disabled = true; btn.textContent = 'Enregistrement…';
+      try {
+        const r = await fetch('/api/auth/reset', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ token, password: form.password.value }) });
+        const d = await r.json();
+        if (d.ok) { location.href = '/academy/compte/'; return; }
+        msg.textContent = errors[d.error] || 'Une erreur est survenue.';
+        msg.classList.add('show');
+      } catch { msg.textContent = 'Connexion impossible. Vérifie ton réseau.'; msg.classList.add('show'); }
+      btn.disabled = false; btn.textContent = 'Enregistrer';
+    });
+  }
+  document.addEventListener('astro:page-load', bind);
+</script>

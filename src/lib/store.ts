@@ -63,3 +63,17 @@ export async function setJSON(key: string, value: unknown): Promise<void> {
   if (mode === 'rest') { await client.set(key, value as any); return; }
   await client.set(key, JSON.stringify(value));
 }
+
+// Écrit une valeur avec expiration (secondes) : sessions, jetons de vérif/réinit.
+export async function setJSONEx(key: string, value: unknown, ttlSeconds: number): Promise<void> {
+  resolve();
+  if (!client) return;
+  if (mode === 'rest') { await client.set(key, value as any, { ex: ttlSeconds }); return; }
+  await client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
+}
+
+export async function del(key: string): Promise<void> {
+  resolve();
+  if (!client) return;
+  await client.del(key);
+}

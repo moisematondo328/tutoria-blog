@@ -90,6 +90,10 @@ Un seul mot de passe (`ADMIN_SECRET`). Trois onglets :
   publiés en texte seul (repli propre).
 - `PIXABAY_API_KEY` — 2e banque photo (format `NNNNNNNN-hex…`). Le sélecteur d'images de `/admin`
   (`/api/photos`) mélange Pexels + Pixabay ; les images IA de Pixabay sont filtrées (`isAiGenerated`).
+- `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` — connexion Google (OAuth) des comptes Academy.
+  Dans Google Cloud Console, autoriser l'URI de redirection `https://<domaine>/api/auth/google/callback`.
+  Absents = le bouton Google renvoie une erreur propre ; l'e-mail + mot de passe continue de marcher.
+  Les e-mails de vérification / réinitialisation réutilisent `BREVO_API_KEY` (expéditeur vérifié).
 
 ## Docs de référence
 `docs/01-app-spec.md` · `02-brand-brief.md` · `03-data-dictionary.md` · `04-feature-backlog.md`

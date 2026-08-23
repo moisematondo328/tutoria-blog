@@ -1,0 +1,46 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+---
+
+<AcademyLayout title="Mot de passe oublié" description="Réinitialise ton mot de passe Tutoria Academy.">
+  <div class="ac-auth-wrap">
+    <div class="ac-auth-head">
+      <span class="ac-auth-eyebrow">Tutoria Academy</span>
+      <h1>Mot de passe oublié</h1>
+      <p>On t'envoie un lien pour en choisir un nouveau.</p>
+    </div>
+    <div class="ac-auth-card">
+      <div class="ac-msg ok" id="ok">Si un compte existe pour cette adresse, un e-mail vient de partir. Regarde ta boîte de réception.</div>
+      <div class="ac-msg err" id="msg"></div>
+      <form id="form" novalidate>
+        <div class="ac-field"><label for="email">Adresse e-mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="toi@exemple.com" required /></div>
+        <button class="ac-auth-btn" type="submit" id="submit">Envoyer le lien</button>
+      </form>
+      <div class="ac-auth-links"><a href="/academy/compte/connexion/">Retour à la connexion</a></div>
+    </div>
+  </div>
+</AcademyLayout>
+
+<script>
+  function bind() {
+    const form = document.getElementById('form');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const ok = document.getElementById('ok');
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('submit');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.classList.remove('show'); ok.classList.remove('show');
+      btn.disabled = true; btn.textContent = 'Envoi…';
+      try {
+        const r = await fetch('/api/auth/forgot', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: form.email.value }) });
+        const d = await r.json();
+        if (d.ok) { ok.classList.add('show'); form.reset(); }
+        else { msg.textContent = 'Service momentanément indisponible. Réessaie plus tard.'; msg.classList.add('show'); }
+      } catch { msg.textContent = 'Connexion impossible. Vérifie ton réseau.'; msg.classList.add('show'); }
+      btn.disabled = false; btn.textContent = 'Envoyer le lien';
+    });
+  }
+  document.addEventListener('astro:page-load', bind);
+</script>
