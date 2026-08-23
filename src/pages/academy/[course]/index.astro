@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import AcademyLayout from '../../../layouts/AcademyLayout.astro';
 import AcademyTree from '../../../components/AcademyTree.astro';
-import { pillarByName } from '../../../consts';
+import { pillarByName, expertByName } from '../../../consts';
 
 export async function getStaticPaths() {
   const slugOf = (id: string) => id.split('/').pop() as string;
@@ -41,7 +41,9 @@ const first = lessons[0];
         <div class="ac-cmeta">
           <span>{course.data.level}</span>
           <span>{lessons.length} leçon{lessons.length > 1 ? 's' : ''}</span>
-          {course.data.expert && <span>Animé par {course.data.expert}</span>}
+          {course.data.expert && (expertByName(course.data.expert)
+            ? <a href={`/academy/expert/${expertByName(course.data.expert)!.slug}/`} style="color:var(--ac-teal);text-decoration:none;font-weight:700">Animé par {course.data.expert} →</a>
+            : <span>Animé par {course.data.expert}</span>)}
         </div>
         {first && <a class="ac-begin" href={`/academy/${course.id}/${slugOf(first.id)}/`}>Commencer le cours ›</a>}
       </header>

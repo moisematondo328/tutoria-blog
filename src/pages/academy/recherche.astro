@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import AcademyLayout from '../../layouts/AcademyLayout.astro';
+
+const nd = ({ data }: any) => !data.draft;
+const courses = await getCollection('courses', nd);
+const lessons = await getCollection('lessons', nd);
+const articles = await getCollection('blog', nd);
+const slugOf = (id: string) => id.split('/').pop();
+const cTitle = (id: string) => courses.find((c) => c.id === id)?.data.title || '';
+
+const index = [
+  ...courses.map((c) => ({ t: 'Cours', title: c.data.title, sub: c.data.category, url: `/academy/${c.id}/`, s: (c.data.title + ' ' + c.data.excerpt + ' ' + c.data.category + ' ' + c.data.expert).toLowerCase() })),
+  ...lessons.map((l) => ({ t: 'Leçon', title: l.data.title, sub: cTitle(l.data.course), url: `/academy/${l.data.course}/${slugOf(l.id)}/`, s: (l.data.title + ' ' + cTitle(l.data.course)).toLowerCase() })),
+  ...articles.map((a) => ({ t: 'Article', title: a.data.title, sub: a.data.category, url: `/blog/${a.id}/`, s: (a.data.title + ' ' + a.data.excerpt + ' ' + a.data.category).toLowerCase() })),
+];
+---
+
+<AcademyLayout title="Recherche">
+  <section class="ac-srch">
+    <h1 class="ac-display">Rechercher</h1>
+    <div class="ac-srch-box">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" id="ac-srch-input" placeholder="Un cours, une leçon, un article…" autocomplete="off" autofocus />
+    </div>
+    <div id="ac-srch-results" class="ac-srch-results"></div>
+  </section>
+  <script type="application/json" id="ac-idx" set:html={JSON.stringify(index)} />
+</AcademyLayout>
+
+<script>
+  function acSearch() {
+    const input = document.getElementById('ac-srch-input');
+    const box = document.getElementById('ac-srch-results');
+    const raw = document.getElementById('ac-idx');
+    if (!input || !box || !raw || input.dataset.bound) return;
+    input.dataset.bound = '1';
+    let idx = []; try { idx = JSON.parse(raw.textContent || '[]'); } catch (e) {}
+    const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+    const render = () => {
+      const q = (input.value || '').trim().toLowerCase();
+      if (!q) { box.innerHTML = '<p class="ac-srch-hint">Tape un mot-clé pour chercher dans tous les cours, leçons et articles.</p>'; return; }
+      const res = idx.filter((r) => r.s.includes(q)).slice(0, 40);
+      if (!res.length) { box.innerHTML = '<p class="ac-srch-hint">Aucun résultat pour « ' + esc(q) + ' ».</p>'; return; }
+      box.innerHTML = '<p class="ac-srch-count">' + res.length + ' résultat' + (res.length > 1 ? 's' : '') + '</p>' + res.map((r) =>
+        '<a class="ac-sr" href="' + r.url + '"><span class="ac-sr-t ac-sr-' + (r.t === 'Cours' ? 'c' : r.t === 'Leçon' ? 'l' : 'a') + '">' + r.t + '</span><span class="ac-sr-body"><b>' + esc(r.title) + '</b><small>' + esc(r.sub) + '</small></span><span class="ac-sr-arw">→</span></a>').join('');
+    };
+    input.addEventListener('input', render);
+    const pre = new URLSearchParams(location.search).get('q');
+    if (pre) input.value = pre;
+    render();
+  }
+  document.addEventListener('astro:page-load', acSearch);
+</script>
+
+<style>
+  .ac-srch { max-width: 780px; margin: 0 auto; padding: 48px 0 40px; }
+  .ac-srch h1 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 2.2rem; margin: 0 0 20px; }
+  .ac-srch-box { display: flex; align-items: center; gap: 12px; background: var(--ac-surface); border: 2px solid var(--ac-teal); border-radius: 14px; padding: 14px 18px; color: var(--ac-teal); box-shadow: var(--ac-shadow-sm); }
+  .ac-srch-box input { flex: 1; border: 0; background: transparent; font-family: inherit; font-size: 1.05rem; color: var(--ac-ink); outline: none; }
+  .ac-srch-results { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .ac-srch-hint, .ac-srch-count { color: var(--ac-muted); font-size: .92rem; }
+  .ac-srch-count { font-weight: 700; margin: 0 0 4px; }
+  .ac-sr { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 12px; padding: 13px 16px; text-decoration: none; color: var(--ac-ink); transition: border-color .12s, transform .12s; }
+  .ac-sr:hover { border-color: var(--ac-teal); transform: translateX(3px); }
+  .ac-sr-t { flex: 0 0 auto; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 4px 9px; border-radius: 999px; }
+  .ac-sr-c { background: color-mix(in srgb, var(--ac-teal) 15%, var(--ac-surface)); color: var(--ac-teal-d); }
+  .ac-sr-l { background: color-mix(in srgb, var(--ac-teal-l) 18%, var(--ac-surface)); color: var(--ac-teal-d); }
+  .ac-sr-a { background: color-mix(in srgb, var(--ac-yellow) 22%, var(--ac-surface)); color: var(--ac-yellow-d); }
+  .ac-sr-body { flex: 1; min-width: 0; }
+  .ac-sr-body b { display: block; font-family: var(--ac-display); font-weight: 700; font-size: 1rem; }
+  .ac-sr-body small { color: var(--ac-muted); }
+  .ac-sr-arw { color: var(--ac-muted); }
+</style>

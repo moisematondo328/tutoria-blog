@@ -38,6 +38,21 @@ export const PILLARS: Pillar[] = [
   { name: 'Technologie Émergente', slug: 'technologie-emergente', color: '#12A594', icon: 'tech', blurb: "L'IA et la tech au service de ton quotidien." },
 ];
 
+export type Expert = { name: string; slug: string; pillar: string; role: string; bio: string };
+export const EXPERTS: Expert[] = [
+  { name: 'Hervé Mulamba', slug: 'herve-mulamba', pillar: 'Développement Personnel', role: 'Coach en développement personnel', bio: "Il aide les jeunes à passer de l'intention à l'action : discipline, habitudes, mental. Du concret, pas de la théorie." },
+  { name: 'Jemima Kanga', slug: 'jemima-kanga', pillar: 'Santé & Bien-être', role: 'Professionnelle de santé', bio: 'Elle traduit la santé en gestes simples du quotidien, adaptés au contexte africain. Prévenir plutôt que subir.' },
+  { name: 'Glodi Kambembo', slug: 'glodi-kambembo', pillar: 'Finance & Investissement', role: "Expert en investissement", bio: "Il rend l'investissement accessible, même avec peu : où mettre son argent, quand, et pourquoi." },
+  { name: 'Prince Modju', slug: 'prince-modju', pillar: 'Finance & Investissement', role: 'Vulgarisateur finance', bio: 'Il explique la finance sans jargon, avec des exemples locaux. Comprendre pour mieux décider.' },
+  { name: 'Salem Balukisa', slug: 'salem-balukisa', pillar: 'Finance & Investissement', role: 'Expert-comptable & gestion', bio: 'Il structure ce qui fait tenir un budget et une petite activité : chiffres clairs, décisions saines.' },
+  { name: 'Moïse Matondo', slug: 'moise-matondo', pillar: 'Technologie Émergente', role: 'Fondateur & développeur', bio: "Il met la tech et l'IA au service du quotidien : des outils concrets, expliqués pas à pas." },
+];
+export function expertBySlug(slug: string): Expert | undefined { return EXPERTS.find((e) => e.slug === slug); }
+export function expertByName(name: string): Expert | undefined {
+  const n = (name || '').trim().toLowerCase();
+  return EXPERTS.find((e) => e.name.toLowerCase() === n);
+}
+
 export function pillarBySlug(slug: string): Pillar | undefined {
   return PILLARS.find((p) => p.slug === slug);
 }

@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { EXPERTS, pillarByName } from '../../../consts';
+
+export async function getStaticPaths() {
+  return EXPERTS.map((e) => ({ params: { slug: e.slug }, props: { expert: e } }));
+}
+
+const { expert } = Astro.props;
+const courses = (await getCollection('courses', ({ data }) => !data.draft))
+  .filter((c) => (c.data.expert || '').trim().toLowerCase() === expert.name.toLowerCase())
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const lessons = await getCollection('lessons', ({ data }) => !data.draft);
+const lessonCount = (id: string) => lessons.filter((l) => l.data.course === id).length;
+const pillar = pillarByName(expert.pillar);
+const color = pillar?.color || 'var(--ac-teal)';
+const initials = expert.name.split(' ').map((w) => w[0]).slice(0, 2).join('');
+---
+
+<AcademyLayout title={expert.name} description={`${expert.role} · ${expert.bio}`}>
+  <section class="ac-exp-head" style={`--c:${color}`}>
+    <div class="ac-exp-av">{initials}</div>
+    <div class="ac-exp-info">
+      <a class="ac-exp-pill" href={`/academy/#${pillar?.slug}`}>{expert.pillar}</a>
+      <h1 class="ac-display">{expert.name}</h1>
+      <p class="ac-exp-role">{expert.role}</p>
+      <p class="ac-exp-bio">{expert.bio}</p>
+    </div>
+  </section>
+
+  <section class="ac-band">
+    <div class="ac-band-head"><div><h2>Ses <span class="em">cours</span></h2><p>{courses.length} cours</p></div></div>
+    {courses.length === 0
+      ? <p class="ac-soon">Ses premiers cours arrivent bientôt.</p>
+      : (
+        <div class="ac-grid">
+          {courses.map((c) => (
+            <a class="ac-card" href={`/academy/${c.id}/`} style={`--c:${color}`}>
+              <div class="ac-card-top">{c.data.cover && <img src={c.data.cover} alt="" />}<span class="ac-card-lvl">{c.data.level}</span></div>
+              <div class="ac-card-b">
+                <h3>{c.data.title}</h3>
+                <p>{c.data.excerpt}</p>
+                <div class="ac-card-m"><span class="ac-c-lessons">{lessonCount(c.id)} leçon{lessonCount(c.id) > 1 ? 's' : ''}</span></div>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+  </section>
+</AcademyLayout>
+
+<style>
+  .ac-exp-head { display: flex; gap: 26px; align-items: center; padding: 48px 0 20px; }
+  .ac-exp-av { flex: 0 0 auto; width: 108px; height: 108px; border-radius: 26px; background: linear-gradient(150deg, var(--c), var(--ac-teal-d)); color: #fff; font-family: var(--ac-display); font-weight: 800; font-size: 2.4rem; display: flex; align-items: center; justify-content: center; }
+  .ac-exp-pill { display: inline-block; background: color-mix(in srgb, var(--c) 14%, var(--ac-surface)); color: var(--c); font-weight: 700; font-size: .78rem; padding: 4px 12px; border-radius: 999px; text-decoration: none; }
+  .ac-exp-head h1 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 2.2rem; margin: 10px 0 4px; }
+  .ac-exp-role { color: var(--ac-teal); font-weight: 700; margin: 0 0 8px; }
+  .ac-exp-bio { color: var(--ac-ink-soft); font-size: 1.05rem; line-height: 1.55; margin: 0; max-width: 60ch; }
+  @media (max-width: 620px) { .ac-exp-head { flex-direction: column; align-items: flex-start; } }
+</style>

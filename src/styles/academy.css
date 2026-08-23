@@ -219,6 +219,20 @@
 .ac-art .ac-art-cat { font-size: .74rem; font-weight: 700; color: var(--ac-teal); text-transform: uppercase; letter-spacing: .06em; }
 .ac-art h3 { font-family: var(--ac-display); font-weight: 700; font-size: 1.02rem; line-height: 1.28; margin: 6px 0 0; }
 
+/* Résultats de recherche (injectés en JS -> styles globaux obligatoires) */
+.ac-srch-hint, .ac-srch-count { color: var(--ac-muted); font-size: .92rem; }
+.ac-srch-count { font-weight: 700; margin: 0 0 4px; }
+.ac-sr { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 12px; padding: 13px 16px; text-decoration: none; color: var(--ac-ink); transition: border-color .12s, transform .12s; margin-bottom: 10px; }
+.ac-sr:hover { border-color: var(--ac-teal); transform: translateX(3px); }
+.ac-sr-t { flex: 0 0 auto; width: 66px; text-align: center; font-size: .66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: 5px 0; border-radius: 999px; }
+.ac-sr-c { background: color-mix(in srgb, var(--ac-teal) 20%, var(--ac-surface)); color: var(--ac-teal-d); }
+.ac-sr-l { background: color-mix(in srgb, var(--ac-teal-l) 26%, var(--ac-surface)); color: var(--ac-teal-d); }
+.ac-sr-a { background: color-mix(in srgb, var(--ac-yellow) 32%, var(--ac-surface)); color: var(--ac-yellow-d); }
+.ac-sr-body { flex: 1; min-width: 0; }
+.ac-sr-body b { display: block; font-family: var(--ac-display); font-weight: 700; font-size: 1rem; line-height: 1.25; }
+.ac-sr-body small { color: var(--ac-muted); }
+.ac-sr-arw { color: var(--ac-muted); flex: 0 0 auto; }
+
 /* Footer multi-colonnes */
 .ac-foot { border-top: 1px solid var(--ac-line); margin-top: 60px; background: var(--ac-ink); color: #b9cec8; }
 .ac-foot-cols { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 30px; padding: 44px 24px 24px; }
