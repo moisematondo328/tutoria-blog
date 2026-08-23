@@ -48,7 +48,7 @@ const lessonSlug = slugOf(lesson.id);
 
       <div class="ac-rownav">
         {prev ? <a href={`/academy/${course.id}/${slugOf(prev.id)}/`}>‹ Précédent</a> : <span></span>}
-        <button class="ac-dl" onclick="window.print()" title="Télécharger / imprimer cette leçon">⬇ Télécharger</button>
+        <a class="ac-dl" href={`/academy/${course.id}/${lessonSlug}.pdf`} download title="Télécharger cette leçon en PDF">⬇ PDF</a>
         {next ? <a href={`/academy/${course.id}/${slugOf(next.id)}/`}>Suivant ›</a>
               : <a href={`/academy/${course.id}/`}>Fin ✓</a>}
       </div>
