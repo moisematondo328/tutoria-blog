@@ -1,0 +1,93 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { PILLARS, EXPERTS } from '../../../consts';
+
+const expertsOfPillar = (name: string) => EXPERTS.filter((e) => e.pillar === name);
+const steps = [
+  { t: 'Apprends', d: 'Des leçons courtes et structurées, pas des pavés. On va droit au but.' },
+  { t: 'Comprends', d: 'Des exemples concrets, des tableaux, des quiz. Tu vérifies que ça rentre.' },
+  { t: 'Applique', d: 'Chaque leçon finit par une action. Tu repars avec quelque chose à faire.' },
+];
+---
+
+<AcademyLayout title="À propos" description="Tutoria Academy : apprendre pour de vrai, dans ta langue, avec des experts de chez toi.">
+  <section class="ac-ab-hero">
+    <span class="ac-eyebrow">À propos</span>
+    <h1 class="ac-display">Apprendre pour de vrai, <span class="em">dans ta langue</span></h1>
+    <p>Tutoria est né d'un constat simple : on trouve mille vidéos et articles, mais peu de <b>parcours</b> qui te tiennent la main du début à la fin. Alors on a construit une école en ligne francophone, pensée pour l'Afrique : concrète, courte, et animée par des experts de chez nous.</p>
+  </section>
+
+  <section class="ac-ab-method">
+    <h2 class="ac-display">Notre méthode tient en trois mots</h2>
+    <div class="ac-ab-steps">
+      {steps.map((s, i) => (
+        <div class="ac-ab-step">
+          <span class="ac-ab-num">{i + 1}</span>
+          <div><b>{s.t}</b><p>{s.d}</p></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="ac-ab-pillars">
+    <h2 class="ac-display">Quatre domaines, un expert par domaine</h2>
+    <p class="ac-ab-sub">On ne fait pas semblant de tout savoir. Chaque domaine est porté par une personne qui le vit et l'enseigne.</p>
+    <div class="ac-ab-grid">
+      {PILLARS.map((p) => (
+        <div class="ac-ab-card" style={`--c:${p.color}`}>
+          <span class="ac-ab-dot"></span>
+          <h3>{p.name}</h3>
+          <p>{p.blurb}</p>
+          <div class="ac-ab-experts">
+            {expertsOfPillar(p.name).map((e) => (
+              <a href={`/academy/expert/${e.slug}/`}>{e.name}</a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="ac-ab-cta">
+    <div>
+      <h2 class="ac-display">Prêt à t'y mettre ?</h2>
+      <p>Choisis un domaine, suis le chemin, applique. C'est gratuit pour commencer.</p>
+    </div>
+    <a class="ac-btn ac-btn-yellow" href="/academy/#catalogue">Explorer les cours</a>
+  </section>
+</AcademyLayout>
+
+<style>
+  .ac-ab-hero { max-width: 720px; margin: 46px auto 0; text-align: center; }
+  .ac-ab-hero h1 { font-size: clamp(2rem, 4.4vw, 3rem); letter-spacing: -.03em; margin: 12px 0 16px; }
+  .ac-ab-hero h1 .em { color: var(--ac-teal); }
+  .ac-ab-hero p { color: var(--ac-ink-soft); font-size: 1.08rem; line-height: 1.7; margin: 0; }
+
+  .ac-ab-method { margin: 56px 0; }
+  .ac-ab-method h2 { font-size: 1.7rem; text-align: center; margin: 0 0 28px; }
+  .ac-ab-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ac-ab-step { display: flex; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; padding: 22px; }
+  .ac-ab-num { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-family: var(--ac-display); font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+  .ac-ab-step b { font-family: var(--ac-display); font-weight: 800; font-size: 1.2rem; }
+  .ac-ab-step p { margin: 6px 0 0; color: var(--ac-muted); font-size: .92rem; line-height: 1.5; }
+
+  .ac-ab-pillars { margin: 56px 0; }
+  .ac-ab-pillars h2 { font-size: 1.7rem; margin: 0 0 6px; }
+  .ac-ab-sub { color: var(--ac-muted); margin: 0 0 24px; max-width: 60ch; }
+  .ac-ab-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .ac-ab-card { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 18px; padding: 24px; border-left: 5px solid var(--c); }
+  .ac-ab-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--c); transform: rotate(45deg); }
+  .ac-ab-card h3 { font-family: var(--ac-display); font-weight: 800; font-size: 1.25rem; margin: 12px 0 6px; }
+  .ac-ab-card > p { color: var(--ac-ink-soft); margin: 0 0 14px; font-size: .95rem; line-height: 1.5; }
+  .ac-ab-experts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ac-ab-experts a { font-size: .84rem; font-weight: 600; color: var(--ac-teal-d); background: color-mix(in srgb, var(--ac-teal) 10%, var(--ac-surface)); border: 1px solid var(--ac-line); border-radius: 999px; padding: 5px 12px; text-decoration: none; }
+  .ac-ab-experts a:hover { border-color: var(--ac-teal); }
+
+  .ac-ab-cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; background: linear-gradient(120deg, var(--ac-ink), #123c34); color: #fff; border-radius: 20px; padding: 30px 34px; margin: 0 0 40px; }
+  .ac-ab-cta h2 { color: #fff; font-size: 1.5rem; margin: 0 0 6px; }
+  .ac-ab-cta p { color: #bcd3cd; margin: 0; }
+  @media (max-width: 760px) {
+    .ac-ab-steps, .ac-ab-grid { grid-template-columns: 1fr; }
+    .ac-ab-cta { flex-direction: column; align-items: flex-start; }
+  }
+</style>

@@ -1,0 +1,93 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { SOCIALS } from '../../../consts';
+---
+
+<AcademyLayout title="Contact" description="Une question, un projet, un partenariat ? Écris-nous.">
+  <div class="ac-ct">
+    <div class="ac-ct-main">
+      <span class="ac-eyebrow">Tutoria Academy</span>
+      <h1 class="ac-display">Parlons-en</h1>
+      <p class="ac-ct-lead">Une question sur un parcours, une envie d'accompagnement, un partenariat (école, ONG, entreprise) ? Écris-nous, on répond vite.</p>
+
+      <form id="ct-form">
+        <input type="hidden" name="access_key" value="bdb279ee-0299-4b3a-985a-e8ee91257ba0" />
+        <input type="hidden" name="from_name" value="Tutoria Academy" />
+        <input type="hidden" name="subject" value="Nouveau message - Tutoria Academy" />
+        <div class="ac-msg err" id="ct-err"></div>
+        <div class="ac-field"><label for="name">Ton nom</label><input id="name" name="name" type="text" autocomplete="name" required /></div>
+        <div class="ac-field"><label for="email">Ton e-mail</label><input id="email" name="email" type="email" autocomplete="email" required /></div>
+        <div class="ac-field"><label for="reason">Le sujet</label>
+          <select id="reason" name="reason" class="ac-ct-select">
+            <option>Une question sur un cours</option>
+            <option>Accompagnement par un expert</option>
+            <option>Partenariat (école, ONG, entreprise)</option>
+            <option>Devenir expert / enseigner</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="ac-field"><label for="message">Ton message</label><textarea id="message" name="message" rows="5" required></textarea></div>
+        <button class="ac-auth-btn" id="ct-send" type="submit">Envoyer le message</button>
+      </form>
+
+      <div class="ac-ct-done" id="ct-done" hidden>
+        <div class="ac-ct-done-ic">✓</div>
+        <h2>Message envoyé</h2>
+        <p>Merci ! On revient vers toi par e-mail au plus vite.</p>
+      </div>
+    </div>
+
+    <aside class="ac-ct-side">
+      <h3>Autres façons de nous joindre</h3>
+      <a class="ac-ct-link" href="https://www.tiktok.com/@tutorianews" target="_blank" rel="noopener"><b>TikTok</b><span>@tutorianews</span></a>
+      <a class="ac-ct-link" href={SOCIALS.youtube} target="_blank" rel="noopener"><b>YouTube</b><span>@TutoriaNews</span></a>
+      <a class="ac-ct-link" href={SOCIALS.facebook} target="_blank" rel="noopener"><b>Facebook</b><span>Tutoria News</span></a>
+      <div class="ac-ct-note">Réponse sous 48 h ouvrées. Pour l'accompagnement, précise ton domaine et ton objectif.</div>
+    </aside>
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-ct { display: grid; grid-template-columns: 1fr 320px; gap: 34px; align-items: start; max-width: 980px; margin: 40px auto 60px; }
+  .ac-ct-main h1 { font-size: 2.4rem; letter-spacing: -.03em; margin: 12px 0 10px; }
+  .ac-ct-lead { color: var(--ac-ink-soft); font-size: 1.05rem; line-height: 1.6; margin: 0 0 24px; max-width: 52ch; }
+  .ac-ct-select, #ct-form textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--ac-line); border-radius: 11px; font: inherit; font-size: .96rem; background: var(--ac-paper); color: var(--ac-ink); }
+  .ac-ct-select:focus, #ct-form textarea:focus, #ct-form input:focus { outline: none; border-color: var(--ac-teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac-teal) 16%, transparent); background: var(--ac-surface); }
+  #ct-form textarea { resize: vertical; }
+  .ac-ct-side { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 18px; padding: 22px; position: sticky; top: 84px; }
+  .ac-ct-side h3 { font-family: var(--ac-display); font-weight: 700; font-size: 1.05rem; margin: 0 0 14px; }
+  .ac-ct-link { display: flex; flex-direction: column; padding: 12px 0; border-bottom: 1px solid var(--ac-line); text-decoration: none; }
+  .ac-ct-link b { font-family: var(--ac-display); color: var(--ac-ink); }
+  .ac-ct-link span { color: var(--ac-teal); font-size: .88rem; }
+  .ac-ct-link:hover b { color: var(--ac-teal); }
+  .ac-ct-note { color: var(--ac-muted); font-size: .82rem; line-height: 1.5; margin-top: 14px; }
+  .ac-ct-done { text-align: center; padding: 30px 0; }
+  .ac-ct-done-ic { width: 56px; height: 56px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-size: 1.7rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .ac-ct-done h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.5rem; margin: 0 0 6px; }
+  .ac-ct-done p { color: var(--ac-ink-soft); }
+  @media (max-width: 780px) { .ac-ct { grid-template-columns: 1fr; } .ac-ct-side { position: static; } }
+</style>
+
+<script>
+  function contact() {
+    const form = document.getElementById('ct-form');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const err = document.getElementById('ct-err');
+    const btn = document.getElementById('ct-send');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.classList.remove('show');
+      btn.disabled = true; btn.textContent = 'Envoi…';
+      try {
+        const data = Object.fromEntries(new FormData(form).entries());
+        const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify(data) });
+        const d = await r.json();
+        if (d.success) { form.style.display = 'none'; document.getElementById('ct-done').hidden = false; return; }
+        err.textContent = "L'envoi a échoué. Réessaie dans un instant."; err.classList.add('show');
+      } catch { err.textContent = 'Connexion impossible. Vérifie ton réseau.'; err.classList.add('show'); }
+      btn.disabled = false; btn.textContent = 'Envoyer le message';
+    });
+  }
+  document.addEventListener('astro:page-load', contact);
+</script>
