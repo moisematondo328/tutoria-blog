@@ -3,6 +3,7 @@
 // L'Academy est l'expérience principale ; le blog vit comme section « Articles ».
 import { ClientRouter } from 'astro:transitions';
 import Analytics from '@vercel/analytics/astro';
+import { PILLARS, SOCIALS } from '../consts';
 import '../styles/global.css';
 import '../styles/academy.css';
 
@@ -52,6 +53,16 @@ const path = Astro.url.pathname;
     </script>
   </head>
   <body class="ac-body">
+    <div class="ac-util">
+      <div class="ac-util-in">
+        <div><a href="/articles/">Articles</a><a href="/livres/">Livres</a><a href="/a-propos/">À propos</a><a href="/contact/">Contact</a></div>
+        <div class="ac-util-r">
+          <a href={SOCIALS.tiktok} target="_blank" rel="noopener" aria-label="TikTok">TikTok</a>
+          <a href={SOCIALS.youtube} target="_blank" rel="noopener" aria-label="YouTube">YouTube</a>
+          <button class="ac-theme" id="theme-toggle" aria-label="Mode sombre">🌙</button>
+        </div>
+      </div>
+    </div>
     <header class="ac-top">
       <div class="ac-top-in">
         <button class="ac-burger" id="ac-burger" aria-label="Ouvrir le menu">☰</button>
@@ -60,15 +71,22 @@ const path = Astro.url.pathname;
           <span class="ac-badge">Academy</span>
         </a>
         <nav class="ac-nav" aria-label="Navigation Academy">
+          <div class="ac-drop">
+            <button class="ac-drop-t" type="button">Domaines <span aria-hidden="true">▾</span></button>
+            <div class="ac-drop-menu">
+              {PILLARS.map((p) => (
+                <a href={`/academy/#${p.slug}`}><span class="d-dot" style={`background:${p.color}`}></span><span><b>{p.name}</b><small>{p.blurb}</small></span></a>
+              ))}
+            </div>
+          </div>
           <a href="/academy/" class={path.startsWith('/academy') ? 'cur' : ''}>Cours</a>
           <a href="/articles/">Articles</a>
-          <a href="/a-propos/">À propos</a>
         </nav>
         <form class="ac-search" action="/academy/" role="search">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
           <input type="search" id="ac-q" name="q" placeholder="Rechercher un cours…" autocomplete="off" aria-label="Rechercher" />
         </form>
-        <button class="ac-theme" id="theme-toggle" aria-label="Mode sombre">🌙</button>
+        <a class="ac-btn ac-btn-primary" href="/academy/#catalogue" style="padding:9px 18px">Commencer</a>
       </div>
     </header>
 
@@ -77,10 +95,31 @@ const path = Astro.url.pathname;
     </main>
 
     <footer class="ac-foot">
-      <div class="ac-foot-in">
-        <span><strong>Tutoria</strong> Academy · Explorez, Apprenez, Partagez</span>
-        <span class="ac-foot-links"><a href="/academy/">Cours</a><a href="/articles/">Articles</a><a href="/contact/">Contact</a></span>
+      <div class="ac-foot-cols">
+        <div class="ac-foot-brand">
+          <span class="ac-foot-logo"><b>Tutoria</b> <span class="tag">Academy</span></span>
+          <p>La plateforme d'apprentissage francophone. Choisis ton domaine, suis le chemin, applique.</p>
+        </div>
+        <div>
+          <h4>Domaines</h4>
+          {PILLARS.map((p) => <a href={`/academy/#${p.slug}`}>{p.name}</a>)}
+        </div>
+        <div>
+          <h4>Academy</h4>
+          <a href="/academy/">Tous les cours</a>
+          <a href="/articles/">Articles</a>
+          <a href="/livres/">Livres</a>
+          <a href="/a-propos/">À propos</a>
+        </div>
+        <div>
+          <h4>Suivre</h4>
+          <a href={SOCIALS.tiktok} target="_blank" rel="noopener">TikTok</a>
+          <a href={SOCIALS.youtube} target="_blank" rel="noopener">YouTube</a>
+          <a href={SOCIALS.facebook} target="_blank" rel="noopener">Facebook</a>
+          <a href="/contact/">Contact</a>
+        </div>
       </div>
+      <div class="ac-foot-bottom"><div class="ac-foot-bottom-in"><span>© 2026 Tutoria Academy</span><span>Explorez, Apprenez, Partagez</span></div></div>
     </footer>
 
     <Analytics />

@@ -156,6 +156,87 @@
 .ac-foot-links a { color: var(--ac-muted); text-decoration: none; margin-left: 18px; }
 .ac-foot-links a:hover { color: var(--ac-teal); }
 
+/* ======================= HOME DENSE (façon portail tuto) ======================= */
+/* Barre utilitaire */
+.ac-util { background: var(--ac-ink); color: #cfe0da; font-size: .8rem; }
+.ac-util-in { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 7px 24px; }
+.ac-util a { color: #cfe0da; text-decoration: none; margin-right: 18px; font-weight: 500; }
+.ac-util a:hover { color: #fff; }
+.ac-util-r { display: flex; align-items: center; gap: 14px; }
+.ac-util-r a { margin: 0; opacity: .85; }
+.ac-util-r a:hover { opacity: 1; }
+
+/* Menu déroulant Domaines */
+.ac-drop { position: relative; }
+.ac-drop > .ac-drop-t { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .92rem; color: var(--ac-ink-soft); background: none; border: 0; cursor: pointer; padding: 8px 12px; border-radius: 9px; font-family: inherit; }
+.ac-drop > .ac-drop-t:hover { color: var(--ac-teal); background: color-mix(in srgb, var(--ac-teal) 8%, transparent); }
+.ac-drop-menu { position: absolute; top: 100%; left: 0; margin-top: 8px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; box-shadow: var(--ac-shadow); padding: 8px; min-width: 300px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all .16s; z-index: 70; }
+.ac-drop:hover .ac-drop-menu, .ac-drop:focus-within .ac-drop-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+.ac-drop-menu a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: var(--ac-ink); }
+.ac-drop-menu a:hover { background: var(--ac-paper); }
+.ac-drop-menu a .d-dot { width: 10px; height: 10px; border-radius: 3px; transform: rotate(45deg); flex: 0 0 auto; }
+.ac-drop-menu a b { font-family: var(--ac-display); font-weight: 700; font-size: .95rem; }
+.ac-drop-menu a small { display: block; color: var(--ac-muted); font-weight: 500; }
+
+/* Hero 2 colonnes + illustration "chemin" */
+.ac-hero2 { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; padding: 56px 0 40px; }
+.ac-hero2 .ac-h-illu { position: relative; min-height: 320px; }
+.ac-h-illu svg { width: 100%; height: auto; }
+
+/* Cartes-features (piliers en dégradé) */
+.ac-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 10px 0 8px; }
+.ac-feat { position: relative; border-radius: 20px; overflow: hidden; text-decoration: none; color: #fff; padding: 22px; min-height: 210px; display: flex; flex-direction: column; background: linear-gradient(150deg, var(--c1), var(--c2)); transition: transform .16s, box-shadow .16s; }
+.ac-feat:hover { transform: translateY(-5px); box-shadow: var(--ac-shadow); }
+.ac-feat .ac-feat-badge { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,.22); color: #fff; font-weight: 700; font-size: .68rem; padding: 4px 10px; border-radius: 999px; backdrop-filter: blur(4px); }
+.ac-feat .ac-feat-ic { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.18); border-radius: 12px; margin-bottom: 14px; }
+.ac-feat h3 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.01em; font-size: 1.28rem; margin: 0 0 8px; }
+.ac-feat p { margin: 0; font-size: .88rem; line-height: 1.45; color: rgba(255,255,255,.9); flex: 1; }
+.ac-feat .ac-feat-go { margin-top: 14px; display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.95); color: var(--ac-ink); font-weight: 700; font-size: .85rem; padding: 9px 16px; border-radius: 10px; align-self: flex-start; }
+
+/* Bande de section + carrousel */
+.ac-band { margin: 48px 0; }
+.ac-band-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.ac-band-head h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 1.8rem; margin: 0; }
+.ac-band-head h2 .em { color: var(--ac-teal); }
+.ac-band-head p { margin: 4px 0 0; color: var(--ac-muted); font-size: .92rem; }
+.ac-band-more { font-weight: 700; color: var(--ac-teal); text-decoration: none; font-size: .9rem; white-space: nowrap; }
+
+/* Tuiles domaine (grid) */
+.ac-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.ac-tile { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; padding: 15px 16px; text-decoration: none; color: var(--ac-ink); transition: border-color .14s, transform .14s; }
+.ac-tile:hover { border-color: var(--c); transform: translateX(3px); }
+.ac-tile .ac-tile-ic { width: 40px; height: 40px; border-radius: 11px; background: color-mix(in srgb, var(--c) 16%, var(--ac-surface)); color: var(--c); display: flex; align-items: center; justify-content: center; font-family: var(--ac-display); font-weight: 800; flex: 0 0 auto; }
+.ac-tile b { display: block; font-family: var(--ac-display); font-weight: 700; font-size: .98rem; }
+.ac-tile small { color: var(--ac-teal); font-weight: 600; font-size: .82rem; }
+
+/* Mini-cartes articles */
+.ac-arts { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.ac-art { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
+.ac-art:hover { transform: translateY(-4px); box-shadow: var(--ac-shadow); }
+.ac-art .ac-art-cov { aspect-ratio: 16/9; background: var(--ac-line); }
+.ac-art .ac-art-cov img { width: 100%; height: 100%; object-fit: cover; }
+.ac-art .ac-art-b { padding: 14px 16px 16px; }
+.ac-art .ac-art-cat { font-size: .74rem; font-weight: 700; color: var(--ac-teal); text-transform: uppercase; letter-spacing: .06em; }
+.ac-art h3 { font-family: var(--ac-display); font-weight: 700; font-size: 1.02rem; line-height: 1.28; margin: 6px 0 0; }
+
+/* Footer multi-colonnes */
+.ac-foot { border-top: 1px solid var(--ac-line); margin-top: 60px; background: var(--ac-ink); color: #b9cec8; }
+.ac-foot-cols { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 30px; padding: 44px 24px 24px; }
+.ac-foot-cols h4 { font-family: var(--ac-display); color: #fff; font-size: .95rem; margin: 0 0 14px; }
+.ac-foot-cols a { display: block; color: #b9cec8; text-decoration: none; padding: 5px 0; font-size: .9rem; }
+.ac-foot-cols a:hover { color: #fff; }
+.ac-foot-logo { font-family: var(--ac-display); font-size: 1.35rem; color: #fff; }
+.ac-foot-logo .tag { color: var(--ac-yellow); font-weight: 700; }
+.ac-foot-brand p { font-size: .88rem; line-height: 1.5; margin: 12px 0 0; max-width: 30ch; }
+.ac-foot-bottom { border-top: 1px solid #21322d; }
+.ac-foot-bottom-in { max-width: 1300px; margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .84rem; color: #8ca39d; }
+
+@media (max-width: 980px) {
+  .ac-features { grid-template-columns: repeat(2, 1fr); }
+  .ac-hero2 { grid-template-columns: 1fr; }
+  .ac-hero2 .ac-h-illu { display: none; }
+  .ac-foot-cols { grid-template-columns: 1fr 1fr; }
+}
 @media (max-width: 900px) {
   .ac-pillars { grid-template-columns: repeat(2, 1fr); }
   .ac-nav { display: none; }

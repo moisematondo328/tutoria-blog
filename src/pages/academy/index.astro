@@ -1,77 +1,129 @@
 ---
 import { getCollection } from 'astro:content';
 import AcademyLayout from '../../layouts/AcademyLayout.astro';
-import { PILLARS, pillarByName } from '../../consts';
+import { PILLARS, pillarByName, catSlugOf } from '../../consts';
 
-const courses = (await getCollection('courses', ({ data }) => !data.draft)).sort(
-  (a, b) => (a.data.order || 0) - (b.data.order || 0)
-);
+const courses = (await getCollection('courses', ({ data }) => !data.draft)).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 const lessons = await getCollection('lessons', ({ data }) => !data.draft);
 const lessonCount = (id: string) => lessons.filter((l) => l.data.course === id).length;
-const byPillar = PILLARS.map((p) => ({
-  pillar: p,
-  list: courses.filter((c) => pillarByName(c.data.category)?.slug === p.slug),
-}));
+const coursesOf = (slug: string) => courses.filter((c) => pillarByName(c.data.category)?.slug === slug);
+const articles = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()).slice(0, 4);
+
+const GRAD: Record<string, string[]> = {
+  'sante-bien-etre': ['#12A594', '#0B6E64'],
+  'developpement-personnel': ['#E0A400', '#A9760A'],
+  'finance-investissement': ['#0E8074', '#0A3F3A'],
+  'technologie-emergente': ['#19B7A0', '#0E8074'],
+};
+const ICON: Record<string, string> = {
+  'sante-bien-etre': '<path d="M12 21s-7-4.35-9.5-8.5C1 9.5 2.5 6 6 6c2 0 3 1.2 4 2.5C11 7.2 12 6 14 6c3.5 0 5 3.5 3.5 6.5C19 16.65 12 21 12 21z"/>',
+  'developpement-personnel': '<path d="M3 17l6-6 4 4 7-7"/><path d="M14 7h6v6"/>',
+  'finance-investissement': '<circle cx="8" cy="8" r="5"/><path d="M13 11a5 5 0 1 0 0 8"/><path d="M8 6v4M6 8h4"/>',
+  'technologie-emergente': '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
+};
 const pad = (n: number) => String(n + 1).padStart(2, '0');
 ---
 
 <AcademyLayout title="Apprends, comprends, applique">
-  <section class="ac-hero">
-    <svg class="ac-hero-arc" viewBox="0 0 600 600" fill="none" aria-hidden="true">
-      <path d="M60 540 C 60 220, 300 60, 560 90" stroke="var(--ac-teal-l)" stroke-width="26" stroke-linecap="round" opacity="0.28"/>
-      <path d="M120 560 C 140 300, 340 150, 560 200" stroke="var(--ac-yellow)" stroke-width="22" stroke-linecap="round" opacity="0.5"/>
-    </svg>
-    <span class="ac-eyebrow">Tutoria Academy</span>
-    <h1 class="ac-display">Apprends. Comprends. <span class="hl">Applique.</span></h1>
-    <p>La plateforme qui transforme le savoir en compétences concrètes. Choisis ton domaine, suis le chemin pas à pas, avance à ton rythme. Et emporte chaque cours avec toi.</p>
-    <div class="ac-hero-actions">
-      <a class="ac-btn ac-btn-primary" href="#catalogue">Explorer les cours →</a>
-      <a class="ac-btn ac-btn-ghost" href="/articles/">Lire les articles</a>
+  <!-- HERO -->
+  <section class="ac-hero2">
+    <div>
+      <span class="ac-eyebrow">Tutoria Academy</span>
+      <h1 class="ac-display" style="font-size:clamp(2.4rem,5vw,4rem);line-height:.98;letter-spacing:-.03em;margin:14px 0 18px">Apprends. Comprends. <span style="color:var(--ac-teal);position:relative">Applique.</span></h1>
+      <p style="font-size:1.15rem;line-height:1.6;color:var(--ac-ink-soft);max-width:46ch;margin:0 0 26px">La plateforme d'apprentissage francophone. Choisis ton domaine, suis le chemin pas à pas, et emporte chaque cours avec toi.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="ac-btn ac-btn-primary" href="#catalogue">Explorer les cours →</a>
+        <a class="ac-btn ac-btn-ghost" href="/articles/">Lire les articles</a>
+      </div>
+    </div>
+    <div class="ac-h-illu" aria-hidden="true">
+      <svg viewBox="0 0 380 340" fill="none">
+        <path d="M70 40 C 200 40, 180 150, 300 150 C 180 150, 200 300, 70 300" stroke="var(--ac-line-strong)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+        <g>
+          <circle cx="70" cy="40" r="26" fill="var(--ac-teal)"/><text x="70" y="48" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22">1</text>
+          <circle cx="300" cy="150" r="26" fill="var(--ac-yellow)"/><text x="300" y="158" text-anchor="middle" fill="#0A2621" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22">2</text>
+          <circle cx="70" cy="300" r="26" fill="var(--ac-teal-l)"/><text x="70" y="308" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22">3</text>
+          <circle cx="200" cy="95" r="9" fill="var(--ac-surface)" stroke="var(--ac-teal)" stroke-width="3"/>
+          <circle cx="240" cy="225" r="9" fill="var(--ac-surface)" stroke="var(--ac-teal-l)" stroke-width="3"/>
+        </g>
+      </svg>
     </div>
   </section>
 
-  <section class="ac-pillars">
-    {byPillar.map(({ pillar, list }, i) => (
-      <a class="ac-pillar" href={`#${pillar.slug}`} style={`--c:${pillar.color}`}>
-        <span class="ac-pnum">{pad(i)}</span>
-        <h3>{pillar.name}</h3>
-        <p>{pillar.blurb}</p>
-        <span class="ac-pcount">{list.length} cours →</span>
-      </a>
-    ))}
+  <!-- FEATURES : les 4 domaines -->
+  <section class="ac-features">
+    {PILLARS.map((p) => {
+      const g = GRAD[p.slug] || ['#0E8074', '#0A3F3A'];
+      const n = coursesOf(p.slug).length;
+      return (
+        <a class="ac-feat" href={`#${p.slug}`} style={`--c1:${g[0]};--c2:${g[1]}`}>
+          <span class="ac-feat-badge">{n > 0 ? `${n} cours` : 'Bientôt'}</span>
+          <span class="ac-feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={ICON[p.slug]} /></span>
+          <h3>{p.name}</h3>
+          <p>{p.blurb}</p>
+          <span class="ac-feat-go">Explorer →</span>
+        </a>
+      );
+    })}
   </section>
 
-  <div id="ac-lib" aria-hidden="false">
-    <div id="catalogue"></div>
-    {byPillar.map(({ pillar, list }) => (
-      <section class="ac-sec" id={pillar.slug} data-pillar-block style={`--c:${pillar.color}`}>
-        <div class="ac-sec-head">
-          <h2>{pillar.name}</h2>
-          <span class="ac-sec-count">{list.length} cours</span>
-        </div>
-        {list.length === 0
-          ? <p class="ac-soon">Parcours en préparation par notre expert.</p>
-          : (
-            <div class="ac-grid">
-              {list.map((c) => (
-                <a class="ac-card" href={`/academy/${c.id}/`} style={`--c:${pillar.color}`} data-search={(c.data.title + ' ' + c.data.excerpt + ' ' + c.data.category + ' ' + c.data.expert).toLowerCase()}>
-                  <div class="ac-card-top">
-                    {c.data.cover && <img src={c.data.cover} alt="" />}
-                    <span class="ac-card-lvl">{c.data.level}</span>
-                  </div>
-                  <div class="ac-card-b">
-                    <h3>{c.data.title}</h3>
-                    <p>{c.data.excerpt}</p>
-                    <div class="ac-card-m">
-                      <span class="ac-c-lessons">{lessonCount(c.id)} leçon{lessonCount(c.id) > 1 ? 's' : ''}</span>
-                      {c.data.expert && <span class="ac-c-exp">{c.data.expert}</span>}
-                    </div>
-                  </div>
-                </a>
-              ))}
+  <div id="catalogue"></div>
+
+  <!-- CATALOGUE par domaine -->
+  <div id="ac-lib">
+    {PILLARS.map((p) => {
+      const list = coursesOf(p.slug);
+      return (
+        <section class="ac-band" id={p.slug} data-pillar-block style={`--c:${p.color}`}>
+          <div class="ac-band-head">
+            <div>
+              <h2><span class="em">{p.name.split(' ')[0]}</span> {p.name.split(' ').slice(1).join(' ')}</h2>
+              <p>{list.length} cours · animé par un expert</p>
             </div>
-          )}
-      </section>
-    ))}
+          </div>
+          {list.length === 0
+            ? <p class="ac-soon">Parcours en préparation.</p>
+            : (
+              <div class="ac-grid">
+                {list.map((c) => (
+                  <a class="ac-card" href={`/academy/${c.id}/`} style={`--c:${p.color}`} data-search={(c.data.title + ' ' + c.data.excerpt + ' ' + c.data.expert).toLowerCase()}>
+                    <div class="ac-card-top">
+                      {c.data.cover && <img src={c.data.cover} alt="" />}
+                      <span class="ac-card-lvl">{c.data.level}</span>
+                    </div>
+                    <div class="ac-card-b">
+                      <h3>{c.data.title}</h3>
+                      <p>{c.data.excerpt}</p>
+                      <div class="ac-card-m">
+                        <span class="ac-c-lessons">{lessonCount(c.id)} leçon{lessonCount(c.id) > 1 ? 's' : ''}</span>
+                        {c.data.expert && <span class="ac-c-exp">{c.data.expert}</span>}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+        </section>
+      );
+    })}
   </div>
+
+  <!-- ARTICLES -->
+  {articles.length > 0 && (
+    <section class="ac-band">
+      <div class="ac-band-head">
+        <div><h2>Derniers <span class="em">articles</span></h2><p>À lire vite, entre deux leçons.</p></div>
+        <a class="ac-band-more" href="/articles/">Tous les articles →</a>
+      </div>
+      <div class="ac-arts">
+        {articles.map((a) => (
+          <a class="ac-art" href={`/blog/${a.id}/`}>
+            <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" />}</div>
+            <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 </AcademyLayout>
