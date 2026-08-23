@@ -42,13 +42,13 @@
   --ac-shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
-.ac-body { background: var(--ac-paper); color: var(--ac-ink); font-family: var(--ac-body); }
+.ac-body { background: var(--ac-paper); color: var(--ac-ink); font-family: var(--ac-body); overflow-x: hidden; }
 /* Titres du contenu (leçons, cours) en typo display pour l'identité */
 .ac-main .prose h1, .ac-main .prose h2, .ac-main .prose h3 { font-family: var(--ac-display); letter-spacing: -0.015em; color: var(--ac-ink); }
 .ac-main .prose { color: var(--ac-ink-soft); }
 .ac-main .prose a { color: var(--ac-teal); }
 /* Tableaux tuto */
-.ac-main .prose table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; font-size: .95rem; border: 1px solid var(--ac-line); border-radius: 12px; overflow: hidden; }
+.ac-main .prose table { width: auto; max-width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; font-size: .95rem; border: 1px solid var(--ac-line); border-radius: 12px; overflow: hidden; }
 .ac-main .prose thead th { background: color-mix(in srgb, var(--ac-teal) 12%, var(--ac-surface)); color: var(--ac-ink); font-family: var(--ac-display); font-weight: 700; text-align: left; padding: 11px 14px; }
 .ac-main .prose td { padding: 11px 14px; border-top: 1px solid var(--ac-line); }
 .ac-main .prose tbody tr:nth-child(even) td { background: var(--ac-surface-2); }
@@ -249,7 +249,7 @@
 
 @media (max-width: 980px) {
   .ac-features { grid-template-columns: repeat(2, 1fr); }
-  .ac-hero2 { grid-template-columns: 1fr; }
+  .ac-hero2 { grid-template-columns: 1fr; padding-top: 36px; }
   .ac-hero2 .ac-h-illu { display: none; }
   .ac-foot-cols { grid-template-columns: 1fr 1fr; }
 }
@@ -259,11 +259,31 @@
 }
 @media (max-width: 860px) {
   .ac-burger { display: block; }
+  /* En-tête compact : on ne garde que le menu et la marque, le reste passe dans le tiroir */
+  .ac-top-in > .ac-search, #ac-acct, .ac-top-in > .ac-btn-primary { display: none; }
+  .ac-top-in { gap: 12px; }
 }
 @media (max-width: 620px) {
   .ac-pillars { grid-template-columns: 1fr; }
-  .ac-search { display: none; }
+  .ac-foot-cols { grid-template-columns: 1fr; gap: 22px; }
 }
+@media (max-width: 560px) {
+  .ac-features { grid-template-columns: 1fr; }
+}
+
+/* Menu mobile (tiroir sous l'en-tête, dans le conteneur collant) */
+.ac-mobile { display: none; border-top: 1px solid var(--ac-line); background: var(--ac-surface); padding: 8px 24px 16px; }
+.ac-mobile.open { display: block; }
+.ac-mobile a { display: block; padding: 12px 4px; font-weight: 600; color: var(--ac-ink); text-decoration: none; border-bottom: 1px solid var(--ac-line); }
+.ac-mobile a:last-child { border-bottom: 0; }
+.ac-mobile a.pro { color: var(--ac-yellow-d); }
+.ac-mobile .ac-mob-pillars { display: grid; gap: 2px; padding: 4px 0; }
+.ac-mobile .ac-mob-pillars a { display: flex; align-items: center; gap: 10px; font-size: .92rem; border-bottom: 0; padding: 9px 4px; }
+.ac-mobile .ac-mob-dot { width: 9px; height: 9px; border-radius: 3px; transform: rotate(45deg); flex: 0 0 auto; }
+.ac-mobile .ac-mob-cta { margin-top: 12px; text-align: center; background: var(--ac-teal); color: #fff; border-radius: 11px; padding: 13px; border-bottom: 0; }
+
+/* Mesure de lecture confortable dans les lecteurs */
+.ac-article .prose, .ac-article > h1, .ac-course-intro { max-width: 72ch; }
 
 /* ---------- Comptes / authentification ---------- */
 .ac-auth-wrap { max-width: 452px; margin: 40px auto 64px; }

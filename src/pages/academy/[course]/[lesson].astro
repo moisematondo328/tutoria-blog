@@ -41,6 +41,7 @@ const lessonSlug = slugOf(lesson.id);
 
 <AcademyLayout title={`${lesson.data.title} · ${course.data.title}`} description={course.data.excerpt} wide={false}>
   <div class="ac-reader">
+    <button class="ac-plan-toggle" id="ac-plan" type="button" aria-label="Afficher le plan du cours">☰ Plan du cours</button>
     <AcademyTree courses={pillarCourses} currentCourse={course.id} currentLesson={lessonSlug} pillarName={pillar?.name} />
 
     <article class="ac-article" data-premium={lesson.data.premium ? '1' : '0'}>
@@ -62,7 +63,7 @@ const lessonSlug = slugOf(lesson.id);
       {lesson.data.premium && (
         <div class="ac-lock" id="ac-lock" hidden>
           <div class="ac-lock-card">
-            <div class="ac-lock-ic">🔒</div>
+            <div class="ac-lock-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
             <h3>La suite est réservée à Premium</h3>
             <p>Cette leçon fait partie d'un parcours complet. Passe à Premium pour la débloquer, avec toutes les leçons des 4 domaines et leurs fiches PDF.</p>
             <a class="ac-btn ac-btn-primary" href="/academy/premium/">Débloquer avec Premium</a>
@@ -129,8 +130,10 @@ const lessonSlug = slugOf(lesson.id);
   .ac-botnav b { font-weight: 700; }
   .ac-botnav a.done { background: var(--ac-teal); color: #fff; border-color: var(--ac-teal); }
   .ac-botnav a.done small { color: rgba(255,255,255,.8); }
+  .ac-plan-toggle { display: none; font-family: inherit; font-weight: 700; font-size: .88rem; color: var(--ac-teal); background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 10px; padding: 10px 14px; cursor: pointer; margin-bottom: 4px; }
   @media (max-width: 860px) {
     .ac-reader { grid-template-columns: 1fr; }
+    .ac-plan-toggle { display: block; }
     #ac-tree { position: static; max-height: none; display: none; margin-bottom: 18px; }
     #ac-tree.mobile-open { display: block; }
   }
@@ -144,7 +147,7 @@ const lessonSlug = slugOf(lesson.id);
   .ac-premium-tag { display: inline-block; background: var(--ac-yellow); color: var(--ac-ink); font-weight: 700; font-size: .72rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
   .ac-lock { margin: 4px 0 8px; }
   .ac-lock-card { text-align: center; border: 1px solid var(--ac-line); background: var(--ac-surface); border-radius: 18px; padding: 32px 26px; box-shadow: var(--ac-shadow-sm); }
-  .ac-lock-ic { font-size: 2rem; margin-bottom: 6px; }
+  .ac-lock-ic { color: var(--ac-teal); margin-bottom: 10px; display: flex; justify-content: center; }
   .ac-lock-card h3 { font-family: var(--ac-display); font-weight: 800; font-size: 1.35rem; margin: 0 0 8px; }
   .ac-lock-card p { color: var(--ac-ink-soft); max-width: 46ch; margin: 0 auto 18px; line-height: 1.6; }
   .ac-article.is-locked .ac-prose-wrap { position: relative; max-height: 300px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 52%, transparent); mask-image: linear-gradient(#000 52%, transparent); }
@@ -158,6 +161,9 @@ const lessonSlug = slugOf(lesson.id);
 
 <script>
   async function readerBoot() {
+    const plan = document.getElementById('ac-plan');
+    if (plan && !plan.dataset.bound) { plan.dataset.bound = '1'; plan.addEventListener('click', () => { document.getElementById('ac-tree')?.classList.toggle('mobile-open'); }); }
+
     const article = document.querySelector('.ac-article');
     if (!article || article.dataset.bound) return;
     article.dataset.bound = '1';

@@ -13,8 +13,8 @@ const colors = ['#0A2621', '#0E8074', '#17B39D', '#E0A400', '#D1495B', '#2563EB'
   </div>
 
   <div class="ac-toolbar" id="tb-bar">
-    <button class="ac-tbtn on" data-tool="pen" id="tb-pen">✏️ Crayon</button>
-    <button class="ac-tbtn" data-tool="eraser" id="tb-eraser">🩹 Gomme</button>
+    <button class="ac-tbtn on" data-tool="pen" id="tb-pen">Crayon</button>
+    <button class="ac-tbtn" data-tool="eraser" id="tb-eraser">Gomme</button>
     <span class="sep"></span>
     {colors.map((c, i) => (
       <button class={`ac-swatch${i === 0 ? ' on' : ''}`} data-color={c} style={`background:${c}`} aria-label={`Couleur ${c}`}></button>
@@ -24,8 +24,8 @@ const colors = ['#0A2621', '#0E8074', '#17B39D', '#E0A400', '#D1495B', '#2563EB'
     <button class="ac-tbtn on" data-size="6" id="tb-size-md">Moyen</button>
     <button class="ac-tbtn" data-size="12">Épais</button>
     <span class="sep"></span>
-    <button class="ac-tbtn" id="tb-clear">🗑️ Effacer</button>
-    <button class="ac-tbtn" id="tb-save">⬇️ Télécharger</button>
+    <button class="ac-tbtn" id="tb-clear">Tout effacer</button>
+    <button class="ac-tbtn" id="tb-save">Télécharger</button>
   </div>
   <div class="ac-canvas-wrap"><canvas id="tb-canvas"></canvas></div>
 </AcademyLayout>

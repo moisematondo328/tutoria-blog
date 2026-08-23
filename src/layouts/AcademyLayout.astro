@@ -98,6 +98,20 @@ const path = Astro.url.pathname;
         <a class="ac-acct" id="ac-acct" href="/academy/compte/connexion/">Se connecter</a>
         <a class="ac-btn ac-btn-primary" href="/academy/#catalogue" style="padding:9px 18px">Commencer</a>
       </div>
+      <nav class="ac-mobile" id="ac-mobile" aria-label="Menu mobile">
+        <div class="ac-mob-pillars">
+          {PILLARS.map((p) => (
+            <a href={`/academy/#${p.slug}`}><span class="ac-mob-dot" style={`background:${p.color}`}></span>{p.name}</a>
+          ))}
+        </div>
+        <a href="/academy/">Tous les cours</a>
+        <a href="/academy/articles/">Articles</a>
+        <a class="pro" href="/academy/premium/">Premium</a>
+        <a href="/academy/outils/">Outils</a>
+        <a href="/academy/recherche/">Rechercher</a>
+        <a href="/academy/compte/">Mon compte</a>
+        <a class="ac-mob-cta" href="/academy/#catalogue">Commencer</a>
+      </nav>
     </header>
 
     <main class={wide ? 'ac-main' : 'ac-main'}>
@@ -141,7 +155,13 @@ const path = Astro.url.pathname;
         const tt = document.getElementById('theme-toggle');
         if (tt && !tt.dataset.bound) { tt.dataset.bound = '1'; tt.addEventListener('click', () => { const n = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', n); try { localStorage.setItem('theme', n); } catch (e) {} }); }
         const burger = document.getElementById('ac-burger');
-        if (burger && !burger.dataset.bound) { burger.dataset.bound = '1'; burger.addEventListener('click', () => { const tree = document.getElementById('ac-tree'); if (tree) tree.classList.toggle('mobile-open'); }); }
+        if (burger && !burger.dataset.bound) {
+          burger.dataset.bound = '1';
+          burger.addEventListener('click', () => {
+            const menu = document.getElementById('ac-mobile');
+            if (menu) { const open = menu.classList.toggle('open'); burger.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+          });
+        }
         const acct = document.getElementById('ac-acct');
         if (acct && !acct.dataset.bound) {
           acct.dataset.bound = '1';
