@@ -1,0 +1,106 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { PLANS, COACHING, yearlySavingPct } from '../../../lib/plans';
+---
+
+<AcademyLayout title="Premium" description="Débloque tous les parcours des 4 domaines. Abonnement clair, sans engagement.">
+  <section class="ac-pr-head">
+    <span class="ac-eyebrow">Tutoria Academy</span>
+    <h1 class="ac-display">Va au bout de <span class="em">chaque parcours</span></h1>
+    <p>Les articles et les bases resteront toujours gratuits. Premium débloque les parcours complets des 4 domaines, animés par nos experts.</p>
+    <div class="ac-pr-toggle" id="cycle">
+      <button class="on" data-cycle="monthly" type="button">Mensuel</button>
+      <button data-cycle="yearly" type="button">Annuel <span class="save">2 mois offerts</span></button>
+    </div>
+  </section>
+
+  <div class="ac-pr-grid">
+    {PLANS.map((p) => (
+      <div class={`ac-pr-card${p.highlight ? ' hot' : ''}`}>
+        {p.highlight && <span class="ac-pr-tag">Le plus choisi</span>}
+        <h2>{p.name}</h2>
+        <p class="ac-pr-tl">{p.tagline}</p>
+        <div class="ac-pr-price">
+          {p.id === 'free' ? (
+            <span class="amount">Gratuit</span>
+          ) : (
+            <>
+              <span class="amount" data-monthly={`$${p.monthly}`} data-yearly={`$${p.yearly}`}>${p.monthly}</span>
+              <span class="per" data-monthly="/mois" data-yearly="/an">/mois</span>
+              <span class="ac-pr-save" data-save={`Soit ${yearlySavingPct(p)}% d'économie`} hidden></span>
+            </>
+          )}
+        </div>
+        <ul class="ac-pr-feats">
+          {p.features.map((f) => <li>{f}</li>)}
+        </ul>
+        {p.id === 'free'
+          ? <a class="ac-btn ac-btn-ghost ac-pr-cta" href="/academy/compte/inscription/">{p.cta}</a>
+          : <a class="ac-btn ac-btn-primary ac-pr-cta" data-plan="premium" href="/academy/compte/paiement/?plan=premium&cycle=monthly">{p.cta}</a>}
+      </div>
+    ))}
+  </div>
+
+  <div class="ac-pr-coach">
+    <div>
+      <span class="ac-eyebrow">{COACHING.name}</span>
+      <h3 class="ac-display">{COACHING.tagline}</h3>
+      <p>{COACHING.blurb}</p>
+    </div>
+    <a class="ac-btn ac-btn-yellow" href="/contact/">{COACHING.cta}</a>
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-pr-head { text-align: center; max-width: 640px; margin: 46px auto 8px; }
+  .ac-pr-head h1 { font-size: clamp(2rem, 4.4vw, 3rem); letter-spacing: -.03em; margin: 12px 0 12px; }
+  .ac-pr-head h1 .em { color: var(--ac-teal); }
+  .ac-pr-head p { color: var(--ac-ink-soft); font-size: 1.05rem; line-height: 1.6; margin: 0 0 24px; }
+  .ac-pr-toggle { display: inline-flex; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 999px; padding: 5px; gap: 4px; }
+  .ac-pr-toggle button { font: inherit; font-weight: 700; font-size: .9rem; color: var(--ac-ink-soft); background: none; border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .ac-pr-toggle button.on { background: var(--ac-ink); color: #fff; }
+  .ac-pr-toggle .save { font-size: .68rem; font-weight: 700; background: var(--ac-yellow); color: var(--ac-ink); padding: 2px 8px; border-radius: 999px; }
+  .ac-pr-toggle button.on .save { background: var(--ac-yellow); }
+
+  .ac-pr-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 860px; margin: 34px auto 0; }
+  .ac-pr-card { position: relative; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 20px; padding: 30px 28px; display: flex; flex-direction: column; }
+  .ac-pr-card.hot { border: 2px solid var(--ac-teal); box-shadow: var(--ac-shadow); }
+  .ac-pr-tag { position: absolute; top: -12px; left: 28px; background: var(--ac-teal); color: #fff; font-weight: 700; font-size: .72rem; letter-spacing: .04em; padding: 5px 12px; border-radius: 999px; }
+  .ac-pr-card h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.5rem; margin: 4px 0 4px; }
+  .ac-pr-tl { color: var(--ac-muted); font-size: .92rem; margin: 0 0 18px; min-height: 2.6em; }
+  .ac-pr-price { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .ac-pr-price .amount { font-family: var(--ac-display); font-weight: 800; font-size: 2.6rem; color: var(--ac-ink); line-height: 1; }
+  .ac-pr-price .per { color: var(--ac-muted); font-weight: 600; }
+  .ac-pr-save { width: 100%; color: var(--ac-teal-d); font-weight: 700; font-size: .82rem; }
+  .ac-pr-feats { list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-direction: column; gap: 11px; }
+  .ac-pr-feats li { position: relative; padding-left: 28px; font-size: .95rem; color: var(--ac-ink-soft); line-height: 1.4; }
+  .ac-pr-feats li::before { content: ""; position: absolute; left: 0; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: color-mix(in srgb, var(--ac-teal) 16%, var(--ac-surface)); }
+  .ac-pr-feats li::after { content: ""; position: absolute; left: 6px; top: 7px; width: 6px; height: 3px; border-left: 2px solid var(--ac-teal); border-bottom: 2px solid var(--ac-teal); transform: rotate(-45deg); }
+  .ac-pr-cta { justify-content: center; margin-top: auto; }
+
+  .ac-pr-coach { max-width: 860px; margin: 26px auto 60px; display: flex; align-items: center; justify-content: space-between; gap: 24px; background: linear-gradient(120deg, var(--ac-ink), #123c34); color: #fff; border-radius: 20px; padding: 28px 32px; }
+  .ac-pr-coach .ac-eyebrow { color: var(--ac-yellow); }
+  .ac-pr-coach h3 { font-size: 1.4rem; margin: 8px 0 6px; color: #fff; }
+  .ac-pr-coach p { color: #bcd3cd; font-size: .95rem; margin: 0; max-width: 46ch; }
+  @media (max-width: 720px) {
+    .ac-pr-grid { grid-template-columns: 1fr; }
+    .ac-pr-coach { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+<script>
+  function pricing() {
+    const cycle = document.getElementById('cycle');
+    if (!cycle || cycle.dataset.bound) return;
+    cycle.dataset.bound = '1';
+    const apply = (mode) => {
+      cycle.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.cycle === mode));
+      document.querySelectorAll('.ac-pr-price .amount[data-monthly]').forEach((el) => { el.textContent = el.dataset[mode]; });
+      document.querySelectorAll('.ac-pr-price .per[data-monthly]').forEach((el) => { el.textContent = el.dataset[mode]; });
+      document.querySelectorAll('.ac-pr-save').forEach((el) => { el.hidden = mode !== 'yearly'; if (mode === 'yearly') el.textContent = el.dataset.save; });
+      document.querySelectorAll('.ac-pr-cta[data-plan]').forEach((a) => { a.href = `/academy/compte/paiement/?plan=premium&cycle=${mode}`; });
+    };
+    cycle.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) apply(b.dataset.cycle); });
+  }
+  document.addEventListener('astro:page-load', pricing);
+</script>

@@ -313,3 +313,11 @@
 /* Point d'accès compte dans la barre du haut */
 .ac-acct { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; color: var(--ac-ink); }
 .ac-acct .ac-avatar { width: 30px; height: 30px; font-size: .8rem; }
+
+/* Badge de plan (tableau de bord) */
+.ac-plan-badge { display: inline-block; margin-top: 8px; font-weight: 700; font-size: .76rem; padding: 4px 12px; border-radius: 999px; background: var(--ac-line); color: var(--ac-ink-soft); }
+.ac-plan-badge.is-premium { background: var(--ac-yellow); color: var(--ac-ink); }
+
+/* Lien Premium dans la nav (accent) */
+.ac-nav a.ac-nav-pro { color: var(--ac-yellow-d); font-weight: 700; }
+.ac-nav a.ac-nav-pro:hover { color: var(--ac-yellow-d); background: color-mix(in srgb, var(--ac-yellow) 18%, transparent); }

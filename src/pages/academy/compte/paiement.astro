@@ -1,0 +1,164 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { getPlan, PAY_METHODS } from '../../../lib/plans';
+
+const plan = getPlan('premium');
+---
+
+<AcademyLayout title="Paiement" description="Active ton abonnement Premium Tutoria Academy.">
+  <div class="ac-pay" id="pay" hidden
+    data-monthly={plan.monthly} data-yearly={plan.yearly}>
+    <div class="ac-pay-main">
+      <div class="ac-crumb"><a href="/academy/premium/">Premium</a> › <span>Paiement</span></div>
+      <h1 class="ac-display">Finalise ton abonnement</h1>
+
+      <h2 class="ac-pay-h">Comment veux-tu payer ?</h2>
+      <div class="ac-pay-methods" id="methods">
+        {PAY_METHODS.map((m, i) => (
+          <label class={`ac-pay-m${i === 0 ? ' on' : ''}`}>
+            <input type="radio" name="method" value={m.id} data-kind={m.kind} data-hint={m.hint} checked={i === 0} />
+            <span class="ac-pay-m-b"><b>{m.label}</b><small>{m.kind === 'mobile' ? 'Mobile Money' : 'Visa · Mastercard'}</small></span>
+          </label>
+        ))}
+      </div>
+
+      <div class="ac-pay-fields" id="fields"></div>
+
+      <div class="ac-msg err" id="msg"></div>
+      <button class="ac-auth-btn ac-pay-btn" id="paybtn" type="button">Payer</button>
+      <p class="ac-pay-note">Paiement sécurisé. Tu peux résilier à tout moment depuis ton compte.</p>
+
+      <div class="ac-pay-done" id="done" hidden>
+        <div class="ac-pay-done-ic">✓</div>
+        <h2>Presque prêt</h2>
+        <p>Le paiement en ligne (Mobile Money et carte) est en cours d'activation sur Tutoria Academy. Ta demande est notée : on te prévient par e-mail dès qu'il est ouvert, et ton accès Premium sera débloqué aussitôt.</p>
+        <a class="ac-btn ac-btn-primary" href="/academy/compte/">Revenir à mon compte</a>
+      </div>
+    </div>
+
+    <aside class="ac-pay-summary">
+      <h3>Ton récap</h3>
+      <div class="ac-pay-row"><span>Abonnement</span><b>Premium</b></div>
+      <div class="ac-pay-row"><span>Formule</span><b id="sum-cycle">Mensuel</b></div>
+      <div class="ac-pay-row total"><span>À payer</span><b id="sum-total">$5</b></div>
+      <p class="ac-pay-hint" id="sum-hint">Renouvelé chaque mois. Sans engagement.</p>
+      <ul class="ac-pay-inc">
+        <li>Toutes les leçons premium</li>
+        <li>Parcours complets + fiches PDF</li>
+        <li>Nouveaux cours en priorité</li>
+      </ul>
+    </aside>
+  </div>
+  <div class="ac-pay" id="loading"><p style="color:var(--ac-muted)">Chargement…</p></div>
+</AcademyLayout>
+
+<style>
+  .ac-pay { max-width: 940px; margin: 30px auto 60px; display: grid; grid-template-columns: 1fr 320px; gap: 26px; align-items: start; }
+  .ac-crumb { font-size: .84rem; color: var(--ac-muted); margin-bottom: 12px; }
+  .ac-crumb a { color: var(--ac-muted); text-decoration: none; } .ac-crumb a:hover { color: var(--ac-teal); }
+  .ac-crumb span { color: var(--ac-ink); }
+  .ac-pay-main > h1 { font-size: 2rem; letter-spacing: -.02em; margin: 0 0 22px; }
+  .ac-pay-h { font-family: var(--ac-display); font-weight: 700; font-size: 1.1rem; margin: 0 0 12px; }
+  .ac-pay-methods { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+  .ac-pay-m { display: flex; align-items: center; gap: 11px; border: 1.5px solid var(--ac-line); border-radius: 13px; padding: 13px 15px; cursor: pointer; background: var(--ac-surface); transition: border-color .15s; }
+  .ac-pay-m:hover { border-color: var(--ac-teal); }
+  .ac-pay-m.on { border-color: var(--ac-teal); background: color-mix(in srgb, var(--ac-teal) 7%, var(--ac-surface)); }
+  .ac-pay-m input { accent-color: var(--ac-teal); flex: 0 0 auto; }
+  .ac-pay-m-b { display: flex; flex-direction: column; }
+  .ac-pay-m-b b { font-size: .96rem; } .ac-pay-m-b small { color: var(--ac-muted); font-size: .78rem; }
+  .ac-pay-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+  .ac-pay-fields .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .ac-pay-btn { max-width: none; }
+  .ac-pay-note { color: var(--ac-muted); font-size: .82rem; text-align: center; margin: 12px 0 0; }
+
+  .ac-pay-summary { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 18px; padding: 22px 22px 24px; position: sticky; top: 84px; }
+  .ac-pay-summary h3 { font-family: var(--ac-display); font-weight: 700; font-size: 1.05rem; margin: 0 0 14px; }
+  .ac-pay-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--ac-line); font-size: .92rem; color: var(--ac-ink-soft); }
+  .ac-pay-row b { color: var(--ac-ink); }
+  .ac-pay-row.total { border-bottom: 0; padding-top: 12px; font-size: 1rem; }
+  .ac-pay-row.total b { font-family: var(--ac-display); font-weight: 800; font-size: 1.5rem; color: var(--ac-teal); }
+  .ac-pay-hint { color: var(--ac-muted); font-size: .8rem; margin: 4px 0 16px; }
+  .ac-pay-inc { list-style: none; padding: 14px 0 0; margin: 0; border-top: 1px solid var(--ac-line); display: flex; flex-direction: column; gap: 9px; }
+  .ac-pay-inc li { position: relative; padding-left: 24px; font-size: .86rem; color: var(--ac-ink-soft); }
+  .ac-pay-inc li::before { content: "✓"; position: absolute; left: 0; color: var(--ac-teal); font-weight: 800; }
+
+  .ac-pay-done { text-align: center; padding: 20px 0; }
+  .ac-pay-done-ic { width: 56px; height: 56px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+  .ac-pay-done h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.5rem; margin: 0 0 8px; }
+  .ac-pay-done p { color: var(--ac-ink-soft); max-width: 44ch; margin: 0 auto 20px; line-height: 1.6; }
+  @media (max-width: 780px) { .ac-pay { grid-template-columns: 1fr; } .ac-pay-summary { position: static; order: -1; } .ac-pay-methods { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  function field(label, id, attrs = '') {
+    return `<div class="ac-field"><label for="${id}">${label}</label><input id="${id}" ${attrs} /></div>`;
+  }
+  function boot() {
+    const pay = document.getElementById('pay');
+    if (!pay || pay.dataset.bound) return;
+    pay.dataset.bound = '1';
+    const loading = document.getElementById('loading');
+
+    const params = new URLSearchParams(location.search);
+    let cycle = params.get('cycle') === 'yearly' ? 'yearly' : 'monthly';
+    const price = { monthly: Number(pay.dataset.monthly), yearly: Number(pay.dataset.yearly) };
+
+    const renderSummary = () => {
+      document.getElementById('sum-cycle').textContent = cycle === 'yearly' ? 'Annuel' : 'Mensuel';
+      document.getElementById('sum-total').textContent = '$' + price[cycle];
+      document.getElementById('sum-hint').textContent = cycle === 'yearly' ? 'Renouvelé chaque année. Sans engagement.' : 'Renouvelé chaque mois. Sans engagement.';
+      document.getElementById('paybtn').textContent = 'Payer $' + price[cycle];
+    };
+
+    const fields = document.getElementById('fields');
+    const renderFields = (kind, hint) => {
+      if (kind === 'card') {
+        fields.innerHTML =
+          field('Numéro de carte', 'cardnum', 'inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456"') +
+          '<div class="row2">' +
+          field('Expiration', 'cardexp', 'inputmode="numeric" autocomplete="cc-exp" placeholder="MM/AA"') +
+          field('CVC', 'cardcvc', 'inputmode="numeric" autocomplete="cc-csc" placeholder="123"') +
+          '</div>' +
+          field('Nom sur la carte', 'cardname', 'autocomplete="cc-name" placeholder="Prénom Nom"');
+      } else {
+        fields.innerHTML = field(hint || 'Numéro de téléphone', 'phone', 'type="tel" inputmode="tel" placeholder="Ex. 08XXXXXXXX"');
+      }
+    };
+
+    const methods = document.getElementById('methods');
+    methods.addEventListener('change', (e) => {
+      const r = e.target.closest('input[name="method"]'); if (!r) return;
+      methods.querySelectorAll('.ac-pay-m').forEach((l) => l.classList.toggle('on', l.contains(r)));
+      renderFields(r.dataset.kind, r.dataset.hint);
+    });
+
+    const paybtn = document.getElementById('paybtn');
+    const msg = document.getElementById('msg');
+    paybtn.addEventListener('click', () => {
+      msg.classList.remove('show');
+      const sel = methods.querySelector('input[name="method"]:checked');
+      const inputs = Array.from(fields.querySelectorAll('input'));
+      if (inputs.some((i) => !i.value.trim())) { msg.textContent = 'Remplis les informations de paiement.'; msg.classList.add('show'); return; }
+      // Traitement réel branché à l'étape back (fournisseur Mobile Money / carte).
+      document.querySelector('.ac-pay-main > h1').style.display = 'none';
+      document.querySelector('.ac-pay-h').style.display = 'none';
+      document.getElementById('methods').style.display = 'none';
+      fields.style.display = 'none';
+      paybtn.style.display = 'none';
+      document.querySelector('.ac-pay-note').style.display = 'none';
+      document.getElementById('done').hidden = false;
+    });
+
+    // Récap + champs : indépendants de l'authentification
+    const first = document.querySelector('input[name="method"]:checked');
+    renderFields(first.dataset.kind, first.dataset.hint);
+    renderSummary();
+
+    // Exige d'être connecté (sinon redirige vers la connexion)
+    fetch('/api/auth/me').then((r) => r.json()).then((d) => {
+      if (!d.user) { location.href = '/academy/compte/connexion/?next=/academy/premium/'; return; }
+      loading.hidden = true; pay.hidden = false;
+    }).catch(() => { loading.hidden = true; pay.hidden = false; });
+  }
+  document.addEventListener('astro:page-load', boot);
+</script>

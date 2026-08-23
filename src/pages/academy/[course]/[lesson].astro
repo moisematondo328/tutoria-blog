@@ -43,8 +43,9 @@ const lessonSlug = slugOf(lesson.id);
   <div class="ac-reader">
     <AcademyTree courses={pillarCourses} currentCourse={course.id} currentLesson={lessonSlug} pillarName={pillar?.name} />
 
-    <article class="ac-article">
+    <article class="ac-article" data-premium={lesson.data.premium ? '1' : '0'}>
       <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href={`/academy/#${pillar?.slug}`}>{course.data.category}</a> › <a href={`/academy/${course.id}/`}>{course.data.title}</a> › <span>{lesson.data.title}</span></div>
+      {lesson.data.premium && <span class="ac-premium-tag">★ Premium</span>}
 
       <div class="ac-rownav">
         {prev ? <a href={`/academy/${course.id}/${slugOf(prev.id)}/`}>‹ Précédent</a> : <span></span>}
@@ -56,7 +57,18 @@ const lessonSlug = slugOf(lesson.id);
       <div class="ac-prog"><span>Leçon {index + 1} / {lessons.length}</span><div class="ac-bar"><i style={`width:${pct}%`}></i></div></div>
 
       <h1>{lesson.data.title}</h1>
-      <div class="prose"><Content /></div>
+      <div class="ac-prose-wrap"><div class="prose"><Content /></div></div>
+
+      {lesson.data.premium && (
+        <div class="ac-lock" id="ac-lock" hidden>
+          <div class="ac-lock-card">
+            <div class="ac-lock-ic">🔒</div>
+            <h3>La suite est réservée à Premium</h3>
+            <p>Cette leçon fait partie d'un parcours complet. Passe à Premium pour la débloquer, avec toutes les leçons des 4 domaines et leurs fiches PDF.</p>
+            <a class="ac-btn ac-btn-primary" href="/academy/premium/">Débloquer avec Premium</a>
+          </div>
+        </div>
+      )}
 
       <div class="ac-done" data-course={course.id} data-lesson={lessonSlug}>
         <button class="ac-done-btn" id="ac-done" type="button" hidden>Marquer comme terminé</button>
@@ -128,6 +140,16 @@ const lessonSlug = slugOf(lesson.id);
   .ac-done-btn.is-done { background: var(--ac-teal); color: #fff; }
   .ac-done-login { font-weight: 600; font-size: .9rem; color: var(--ac-teal); text-decoration: none; }
   .ac-done-login:hover { text-decoration: underline; }
+
+  .ac-premium-tag { display: inline-block; background: var(--ac-yellow); color: var(--ac-ink); font-weight: 700; font-size: .72rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
+  .ac-lock { margin: 4px 0 8px; }
+  .ac-lock-card { text-align: center; border: 1px solid var(--ac-line); background: var(--ac-surface); border-radius: 18px; padding: 32px 26px; box-shadow: var(--ac-shadow-sm); }
+  .ac-lock-ic { font-size: 2rem; margin-bottom: 6px; }
+  .ac-lock-card h3 { font-family: var(--ac-display); font-weight: 800; font-size: 1.35rem; margin: 0 0 8px; }
+  .ac-lock-card p { color: var(--ac-ink-soft); max-width: 46ch; margin: 0 auto 18px; line-height: 1.6; }
+  .ac-article.is-locked .ac-prose-wrap { position: relative; max-height: 300px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 52%, transparent); mask-image: linear-gradient(#000 52%, transparent); }
+  .ac-article.is-locked .ac-dl { visibility: hidden; }
+
   @media print {
     .ac-top, .ac-foot, #ac-tree, .ac-rownav, .ac-botnav, .ac-prog, .ac-done { display: none !important; }
     .ac-reader { grid-template-columns: 1fr; }
@@ -135,15 +157,31 @@ const lessonSlug = slugOf(lesson.id);
 </style>
 
 <script>
-  async function progressUI() {
+  async function readerBoot() {
+    const article = document.querySelector('.ac-article');
+    if (!article || article.dataset.bound) return;
+    article.dataset.bound = '1';
+
+    let me = null;
+    try { me = (await (await fetch('/api/auth/me')).json()).user; } catch {}
+    const isPremiumUser = !!me && me.plan === 'premium';
+
+    // Paywall : verrouille la leçon premium pour les non-abonnés
+    if (article.dataset.premium === '1' && !isPremiumUser) {
+      article.classList.add('is-locked');
+      const lock = document.getElementById('ac-lock');
+      if (lock) lock.hidden = false;
+      document.querySelector('.ac-quiz')?.style.setProperty('display', 'none');
+      document.querySelector('.ac-done')?.style.setProperty('display', 'none');
+      return; // pas de progression sur une leçon verrouillée
+    }
+
+    // Progression
     const wrap = document.querySelector('.ac-done');
-    if (!wrap || wrap.dataset.bound) return;
-    wrap.dataset.bound = '1';
+    if (!wrap) return;
     const btn = document.getElementById('ac-done');
     const login = document.getElementById('ac-done-login');
     const course = wrap.dataset.course, lesson = wrap.dataset.lesson;
-    let me = null;
-    try { me = (await (await fetch('/api/auth/me')).json()).user; } catch {}
     if (!me) { login.hidden = false; return; }
     let done = false;
     try { const pd = await (await fetch('/api/progress')).json(); if (pd.ok) done = !!pd.progress[`${course}/${lesson}`]; } catch {}
@@ -156,5 +194,5 @@ const lessonSlug = slugOf(lesson.id);
       btn.disabled = false;
     });
   }
-  document.addEventListener('astro:page-load', progressUI);
+  document.addEventListener('astro:page-load', readerBoot);
 </script>

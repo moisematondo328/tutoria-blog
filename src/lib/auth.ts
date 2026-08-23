@@ -20,6 +20,8 @@ export interface User {
   provider: 'email' | 'google';
   verified: boolean;
   avatar?: string;
+  plan: 'free' | 'premium';
+  planUntil?: number; // échéance de l'abonnement premium (timestamp)
   createdAt: number;
 }
 export type SafeUser = Omit<User, 'passwordHash'>;
@@ -30,6 +32,8 @@ export const safe = (u: User): SafeUser => {
   const { passwordHash, ...rest } = u;
   return rest;
 };
+export const isPremium = (u: Pick<User, 'plan' | 'planUntil'> | null | undefined): boolean =>
+  !!u && u.plan === 'premium' && (!u.planUntil || u.planUntil > Date.now());
 
 // ---------- Mots de passe (scrypt, sans dépendance) ----------
 export function hashPassword(pw: string): string {
@@ -77,6 +81,7 @@ export async function createUser(input: {
     provider: input.provider,
     verified: input.verified ?? false,
     avatar: input.avatar,
+    plan: 'free',
     createdAt: Date.now(),
   };
   await saveUser(u);
