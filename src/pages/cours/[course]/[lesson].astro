@@ -1,0 +1,94 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const slugOf = (id: string) => id.split('/').pop() as string;
+  const courses = await getCollection('courses', ({ data }) => !data.draft);
+  const allLessons = await getCollection('lessons', ({ data }) => !data.draft);
+  const paths: any[] = [];
+  for (const course of courses) {
+    const lessons = allLessons
+      .filter((l) => l.data.course === course.id)
+      .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+    lessons.forEach((lesson, index) => {
+      paths.push({
+        params: { course: course.id, lesson: slugOf(lesson.id) },
+        props: { course, lesson, lessons, index },
+      });
+    });
+  }
+  return paths;
+}
+
+const { course, lesson, lessons, index } = Astro.props;
+const slugOf = (id: string) => id.split('/').pop() as string;
+const { Content } = await render(lesson);
+const prev = index > 0 ? lessons[index - 1] : null;
+const next = index < lessons.length - 1 ? lessons[index + 1] : null;
+const pct = Math.round(((index + 1) / lessons.length) * 100);
+---
+
+<BaseLayout title={`${lesson.data.title} · ${course.data.title}`} description={course.data.excerpt}>
+  <div class="breadcrumb"><div class="wrap"><a href="/">Accueil</a> » <a href="/cours/">Cours</a> » <a href={`/cours/${course.id}/`}>{course.data.title}</a> » {lesson.data.title}</div></div>
+
+  <div class="wrap course-shell">
+    <aside class="toc">
+      <a class="toc-head" href={`/cours/${course.id}/`}>{course.data.title}</a>
+      <ol>
+        {lessons.map((l, i) => (
+          <li class={i === index ? 'active' : ''}>
+            <a href={`/cours/${course.id}/${slugOf(l.id)}/`}><span>{i + 1}</span>{l.data.title}</a>
+          </li>
+        ))}
+      </ol>
+    </aside>
+
+    <article class="lesson">
+      <div class="progress">
+        <span>Leçon {index + 1} / {lessons.length}</span>
+        <div class="bar"><i style={`width:${pct}%`}></i></div>
+      </div>
+      <h1>{lesson.data.title}</h1>
+      <div class="prose"><Content /></div>
+
+      <nav class="lesson-nav">
+        {prev
+          ? <a class="prev" href={`/cours/${course.id}/${slugOf(prev.id)}/`}><small>Précédent</small>{prev.data.title}</a>
+          : <span></span>}
+        {next
+          ? <a class="next" href={`/cours/${course.id}/${slugOf(next.id)}/`}><small>Suivant</small>{next.data.title}</a>
+          : <a class="next done" href={`/cours/${course.id}/`}><small>Bravo</small>Terminer le cours ✓</a>}
+      </nav>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .course-shell { display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start; }
+  .toc { position: sticky; top: 90px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .toc-head { display: block; font-weight: 800; color: var(--ink); text-decoration: none; margin-bottom: 12px; line-height: 1.3; }
+  .toc-head:hover { color: var(--teal); }
+  .toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; counter-reset: none; }
+  .toc li a { display: flex; gap: 10px; align-items: baseline; padding: 9px 10px; border-radius: 9px; text-decoration: none; color: var(--muted); font-size: .92rem; line-height: 1.35; }
+  .toc li a span { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: var(--line); color: var(--ink); font-size: .72rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .toc li a:hover { background: rgba(14,128,116,.08); color: var(--ink); }
+  .toc li.active a { background: rgba(14,128,116,.12); color: var(--ink); font-weight: 700; }
+  .toc li.active a span { background: var(--teal); color: #fff; }
+  .progress { margin-bottom: 14px; }
+  .progress span { font-size: .82rem; color: var(--teal); font-weight: 700; }
+  .progress .bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+  .progress .bar i { display: block; height: 100%; background: var(--teal-l); }
+  .lesson h1 { font-size: 1.8rem; line-height: 1.2; margin: 0 0 18px; }
+  .lesson-nav { display: flex; justify-content: space-between; gap: 14px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .lesson-nav a { display: flex; flex-direction: column; gap: 3px; max-width: 46%; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; text-decoration: none; color: var(--ink); font-weight: 600; transition: border-color .15s; }
+  .lesson-nav a:hover { border-color: var(--teal); }
+  .lesson-nav a.next { margin-left: auto; text-align: right; }
+  .lesson-nav a.done { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .lesson-nav small { color: var(--muted); font-weight: 600; font-size: .74rem; text-transform: uppercase; letter-spacing: .5px; }
+  .lesson-nav a.done small { color: rgba(255,255,255,.8); }
+  @media (max-width: 860px) {
+    .course-shell { grid-template-columns: 1fr; }
+    .toc { position: static; order: 2; margin-top: 24px; }
+  }
+</style>

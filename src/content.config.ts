@@ -37,4 +37,31 @@ const videos = defineCollection({
   }),
 });
 
-export const collections = { blog, books, videos };
+// Cours = un parcours structuré (par pilier, porté par un expert). Le corps du .md = la présentation.
+const courses = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/courses' }),
+  schema: z.object({
+    title: z.string(),
+    category: z.string(), // pilier
+    expert: z.string().optional().default(''),
+    cover: z.string().optional().default(''),
+    excerpt: z.string().optional().default(''),
+    level: z.string().optional().default('Débutant'),
+    order: z.number().optional().default(0),
+    draft: z.boolean().optional().default(false),
+  }),
+});
+
+// Leçon = une étape d'un cours. `course` = slug du cours ; `order` = position ; `premium` = verrouillée (Phase 3).
+const lessons = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/lessons' }),
+  schema: z.object({
+    title: z.string(),
+    course: z.string(),
+    order: z.number().optional().default(0),
+    premium: z.boolean().optional().default(false),
+    draft: z.boolean().optional().default(false),
+  }),
+});
+
+export const collections = { blog, books, videos, courses, lessons };
