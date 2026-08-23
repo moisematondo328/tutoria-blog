@@ -96,6 +96,15 @@ const path = Astro.url.pathname;
           if (b.dataset.bound) return; b.dataset.bound = '1';
           b.addEventListener('click', (e) => { e.preventDefault(); const item = b.closest('.ac-tree-item'); if (!item) return; const open = item.classList.toggle('open'); b.setAttribute('aria-expanded', open ? 'true' : 'false'); });
         });
+        document.querySelectorAll('.ac-quiz-q').forEach((qq) => {
+          if (qq.dataset.bound) return; qq.dataset.bound = '1';
+          const opts = Array.from(qq.querySelectorAll('.ac-quiz-opt'));
+          opts.forEach((o) => o.addEventListener('click', () => {
+            if (qq.dataset.done) return; qq.dataset.done = '1';
+            opts.forEach((x) => { x.disabled = true; if (x.dataset.correct === '1') x.classList.add('ok'); });
+            if (o.dataset.correct !== '1') o.classList.add('ko');
+          }));
+        });
         const q = document.getElementById('ac-q');
         const grid = document.getElementById('ac-lib');
         if (q && grid) {

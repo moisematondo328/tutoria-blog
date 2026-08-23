@@ -4,20 +4,28 @@ course: "gerer-son-budget"
 order: 1
 premium: false
 draft: false
+quiz:
+  - q: "À quoi sert d'abord un budget ?"
+    options:
+      - { t: "Gagner plus d'argent" }
+      - { t: "Voir où va son argent", correct: true }
+      - { t: "Ne plus jamais dépenser" }
 ---
 
-## Le problème : l'argent qui disparaît
+Un budget ne sert pas à gagner plus. Il sert à **voir** où va ton argent. C'est tout, et c'est énorme.
 
-Tu reçois ton argent, et quelques jours plus tard tu ne sais plus où il est passé. Ce n'est pas un manque de discipline, c'est un manque de visibilité. Un budget, ce n'est rien d'autre que rendre visible ce qui est invisible.
+## Ce que ça change
 
-## Ce qu'un budget t'apporte vraiment
+| Sans budget | Avec budget |
+|---|---|
+| Tu devines | Tu vois |
+| Tu subis | Tu décides |
+| L'argent disparaît | Chaque franc a un rôle |
 
-- Tu vois où part chaque franc, au lieu de deviner.
-- Tu décides à l'avance, au calme, au lieu de subir dans l'urgence.
-- Tu repères les petites fuites qui, cumulées, coûtent cher sur un mois.
+## À faire maintenant (2 min)
 
-## Ta première action
+1. Note ton **revenu du mois** en haut d'une page.
+2. Liste tes dépenses des **7 derniers jours**.
+3. Entoure les **3 plus grosses**.
 
-Prends une feuille ou ton téléphone. Note ton revenu du mois en haut. En dessous, note tout ce que tu as dépensé ces 7 derniers jours, de mémoire. Ne cherche pas la perfection, cherche à voir. Ce simple exercice ouvre les yeux de la plupart des gens.
-
-Dans la prochaine leçon, on transforme cette photo en un plan clair avec la méthode 50/30/20.
+> **À retenir.** Un budget rend visible l'invisible. Pas de calcul compliqué, juste de la clarté.

@@ -1,25 +1,31 @@
 ---
-title: "Suivre ses dépenses sans se prendre la tête"
+title: "Suivre ses dépenses"
 course: "gerer-son-budget"
 order: 3
 premium: false
 draft: false
+quiz:
+  - q: "Quelle est la clé d'un budget qui marche ?"
+    options:
+      - { t: "Le faire une fois puis l'oublier" }
+      - { t: "Le suivre un peu chaque jour", correct: true }
+      - { t: "Attendre la fin de l'année" }
 ---
 
-## Le suivi, c'est là que ça se joue
+Un budget qu'on ne suit pas est un vœu. Le suivi prend **2 minutes par jour**.
 
-Un budget qu'on ne suit pas est juste un vœu. La bonne nouvelle : le suivi peut prendre 2 minutes par jour.
+## Choisis ta méthode
 
-## Trois façons de suivre, choisis la tienne
+| Méthode | Comment | Pour qui |
+|---|---|---|
+| **Carnet** | Noter chaque dépense le soir | Simple, sans appli |
+| **Téléphone** | Une note ou une appli budget | Toujours sur soi |
+| **Enveloppes** | Cash réparti par poste | Très visuel |
 
-1. **Le carnet** : tu notes chaque dépense le soir. Simple, gratuit, efficace si tu es régulier.
-2. **Le téléphone** : une note ou une appli de budget. Tu enregistres sur le moment, tu oublies rien.
-3. **Les enveloppes** : tu répartis ton cash dans des enveloppes par poste. Quand l'enveloppe est vide, tu t'arrêtes. Très parlant.
+## La revue du dimanche (5 min)
 
-## La revue de fin de semaine
+1. Regarde tes **trois parts**.
+2. Dans les clous ? Continue.
+3. Dépassé ? Ajuste la semaine suivante, sans culpabiliser.
 
-Une fois par semaine, regarde tes trois parts. Tu es dans les clous ? Tant mieux. Tu as dépassé ? Tu ajustes la semaine suivante, sans culpabiliser. Le budget n'est pas un juge, c'est un tableau de bord.
-
-## Tu as terminé
-
-Tu sais maintenant voir ton argent, le répartir avec 50/30/20, et le suivre. Applique-le un mois entier, puis reviens ajuster. C'est en le vivant que ça devient une seconde nature.
+> **À retenir.** Le budget n'est pas un juge, c'est un tableau de bord. Applique-le un mois, puis ajuste.

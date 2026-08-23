@@ -58,6 +58,23 @@ const lessonSlug = slugOf(lesson.id);
       <h1>{lesson.data.title}</h1>
       <div class="prose"><Content /></div>
 
+      {lesson.data.quiz && lesson.data.quiz.length > 0 && (
+        <section class="ac-quiz">
+          <h2>Vérifie ta compréhension</h2>
+          <p class="ac-quiz-sub">Clique la bonne réponse.</p>
+          {lesson.data.quiz.map((qz: any) => (
+            <div class="ac-quiz-q">
+              <p class="ac-quiz-title">{qz.q}</p>
+              <div class="ac-quiz-opts">
+                {qz.options.map((o: any) => (
+                  <button type="button" class="ac-quiz-opt" data-correct={o.correct ? '1' : '0'}>{o.t}</button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
       <nav class="ac-botnav">
         {prev
           ? <a class="p" href={`/academy/${course.id}/${slugOf(prev.id)}/`}><small>Précédent</small><b>{prev.data.title}</b></a>

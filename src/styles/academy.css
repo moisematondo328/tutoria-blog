@@ -47,6 +47,35 @@
 .ac-main .prose h1, .ac-main .prose h2, .ac-main .prose h3 { font-family: var(--ac-display); letter-spacing: -0.015em; color: var(--ac-ink); }
 .ac-main .prose { color: var(--ac-ink-soft); }
 .ac-main .prose a { color: var(--ac-teal); }
+/* Tableaux tuto */
+.ac-main .prose table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; font-size: .95rem; border: 1px solid var(--ac-line); border-radius: 12px; overflow: hidden; }
+.ac-main .prose thead th { background: color-mix(in srgb, var(--ac-teal) 12%, var(--ac-surface)); color: var(--ac-ink); font-family: var(--ac-display); font-weight: 700; text-align: left; padding: 11px 14px; }
+.ac-main .prose td { padding: 11px 14px; border-top: 1px solid var(--ac-line); }
+.ac-main .prose tbody tr:nth-child(even) td { background: var(--ac-surface-2); }
+/* Étapes numérotées */
+.ac-main .prose ol { counter-reset: acstep; list-style: none; padding-left: 0; }
+.ac-main .prose ol > li { position: relative; padding-left: 44px; margin: 12px 0; }
+.ac-main .prose ol > li::before { counter-increment: acstep; content: counter(acstep); position: absolute; left: 0; top: -2px; width: 30px; height: 30px; border-radius: 50%; background: var(--ac-teal); color: #fff; font-family: var(--ac-display); font-weight: 800; font-size: .95rem; display: flex; align-items: center; justify-content: center; }
+/* Encadré "À retenir" (blockquote) */
+.ac-main .prose blockquote { margin: 22px 0; padding: 16px 20px; background: color-mix(in srgb, var(--ac-yellow) 16%, var(--ac-surface)); border-left: 5px solid var(--ac-yellow); border-radius: 12px; color: var(--ac-ink); font-size: .98rem; }
+.ac-main .prose blockquote p { margin: 0; }
+.ac-main .prose blockquote strong { color: var(--ac-teal-d); }
+
+/* ---------- Quiz (auto-évaluation) ---------- */
+.ac-quiz { margin: 40px 0 8px; padding: 24px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius); }
+.ac-quiz > h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 1.3rem; margin: 0 0 4px; }
+.ac-quiz > p.ac-quiz-sub { color: var(--ac-muted); margin: 0 0 18px; font-size: .92rem; }
+.ac-quiz-q + .ac-quiz-q { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--ac-line); }
+.ac-quiz-title { font-weight: 700; margin: 0 0 12px; font-size: 1.02rem; }
+.ac-quiz-opts { display: flex; flex-direction: column; gap: 9px; }
+.ac-quiz-opt { text-align: left; font-family: inherit; font-size: .96rem; color: var(--ac-ink); background: var(--ac-paper); border: 1.5px solid var(--ac-line); border-radius: 12px; padding: 13px 16px; cursor: pointer; transition: border-color .12s, background .12s; display: flex; align-items: center; gap: 10px; }
+.ac-quiz-opt::before { content: ""; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ac-line-strong); flex: 0 0 auto; }
+.ac-quiz-opt:hover:not(:disabled) { border-color: var(--ac-teal); }
+.ac-quiz-opt.ok { border-color: var(--ac-teal); background: color-mix(in srgb, var(--ac-teal) 12%, var(--ac-surface)); font-weight: 600; }
+.ac-quiz-opt.ok::before { border-color: var(--ac-teal); background: var(--ac-teal) radial-gradient(circle, #fff 30%, transparent 32%); }
+.ac-quiz-opt.ko { border-color: #d1495b; background: color-mix(in srgb, #d1495b 10%, var(--ac-surface)); }
+.ac-quiz-opt.ko::before { border-color: #d1495b; }
+.ac-quiz-opt:disabled { cursor: default; }
 .ac-display { font-family: var(--ac-display); font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; }
 .ac-eyebrow { font-family: var(--ac-body); font-weight: 700; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ac-teal); }
 

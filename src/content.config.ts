@@ -61,6 +61,10 @@ const lessons = defineCollection({
     order: z.number().optional().default(0),
     premium: z.boolean().optional().default(false),
     draft: z.boolean().optional().default(false),
+    quiz: z.array(z.object({
+      q: z.string(),
+      options: z.array(z.object({ t: z.string(), correct: z.boolean().optional().default(false) })),
+    })).optional().default([]),
   }),
 });
 
