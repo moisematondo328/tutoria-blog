@@ -34,7 +34,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
       <p style="font-size:1.15rem;line-height:1.6;color:var(--ac-ink-soft);max-width:46ch;margin:0 0 26px">La plateforme d'apprentissage francophone. Choisis ton domaine, suis le chemin pas à pas, et emporte chaque cours avec toi.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <a class="ac-btn ac-btn-primary" href="#catalogue">Explorer les cours →</a>
-        <a class="ac-btn ac-btn-ghost" href="/articles/">Lire les articles</a>
+        <a class="ac-btn ac-btn-ghost" href="/academy/articles/">Lire les articles</a>
       </div>
     </div>
     <div class="ac-h-illu" aria-hidden="true">
@@ -114,11 +114,11 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     <section class="ac-band">
       <div class="ac-band-head">
         <div><h2>Derniers <span class="em">articles</span></h2><p>À lire vite, entre deux leçons.</p></div>
-        <a class="ac-band-more" href="/articles/">Tous les articles →</a>
+        <a class="ac-band-more" href="/academy/articles/">Tous les articles →</a>
       </div>
       <div class="ac-arts">
         {articles.map((a) => (
-          <a class="ac-art" href={`/blog/${a.id}/`}>
+          <a class="ac-art" href={`/academy/articles/${a.id}/`}>
             <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" />}</div>
             <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
           </a>

@@ -1,0 +1,39 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+
+const tools = [
+  { name: 'Compilateurs en ligne', desc: 'Écris et exécute du code dans ton navigateur, sans rien installer.', ic: '</>', soon: true },
+  { name: 'Code de pratique', desc: 'Des exercices guidés pour t’entraîner, du plus simple au plus costaud.', ic: '⌨', soon: true },
+  { name: 'Tableau blanc', desc: 'Un espace pour schématiser une idée, un budget, un plan.', ic: '▤', soon: true },
+  { name: 'Calculatrice graphique', desc: 'Visualise des courbes et des fonctions en un instant.', ic: '📈', soon: true },
+];
+---
+
+<AcademyLayout title="Outils">
+  <section style="padding:44px 0 8px">
+    <span class="ac-eyebrow">Tutoria Academy</span>
+    <h1 class="ac-display" style="font-size:2.4rem;letter-spacing:-.03em;margin:12px 0 8px">Outils</h1>
+    <p style="color:var(--ac-ink-soft);max-width:52ch;margin:0">Apprendre, c'est faire. Ces outils arrivent pour t'entraîner directement sur la plateforme.</p>
+  </section>
+
+  <div class="ac-tiles" style="margin-top:24px">
+    {tools.map((t) => (
+      <div class="ac-tool">
+        <span class="ac-tool-ic">{t.ic}</span>
+        <div class="ac-tool-b">
+          <div class="ac-tool-top"><b>{t.name}</b>{t.soon && <span class="ac-tool-soon">Bientôt</span>}</div>
+          <p>{t.desc}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-tool { display: flex; gap: 16px; align-items: flex-start; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; padding: 20px; }
+  .ac-tool-ic { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 13px; background: color-mix(in srgb, var(--ac-teal) 12%, var(--ac-surface)); color: var(--ac-teal); font-family: var(--ac-display); font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+  .ac-tool-top { display: flex; align-items: center; gap: 10px; }
+  .ac-tool-b b { font-family: var(--ac-display); font-weight: 700; font-size: 1.08rem; }
+  .ac-tool-soon { background: var(--ac-yellow); color: var(--ac-ink); font-weight: 700; font-size: .68rem; padding: 3px 9px; border-radius: 999px; }
+  .ac-tool-b p { margin: 6px 0 0; color: var(--ac-muted); font-size: .92rem; line-height: 1.45; }
+</style>

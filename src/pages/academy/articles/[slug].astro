@@ -1,0 +1,55 @@
+---
+import { getCollection, render } from 'astro:content';
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { catSlugOf, readingTime, SITE } from '../../../consts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, date, category, cover, excerpt } = post.data;
+const dateStr = new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const mins = readingTime(post.body ?? '');
+const related = (await getCollection('blog', ({ data }) => !data.draft))
+  .filter((p) => p.id !== post.id && p.data.category === category).slice(0, 3);
+---
+
+<AcademyLayout title={title} description={excerpt} image={cover}>
+  <article class="ac-read">
+    <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href="/academy/articles/">Articles</a> › <span>{title}</span></div>
+    <span class="ac-read-cat">{category}</span>
+    <h1 class="ac-display">{title}</h1>
+    <div class="ac-read-meta"><span>Par {SITE.author}</span><span>{dateStr}</span><span>{mins} min de lecture</span></div>
+    {cover && <img class="ac-read-cov" src={cover} alt={title} />}
+    <div class="prose"><Content /></div>
+  </article>
+
+  {related.length > 0 && (
+    <section class="ac-band" style="max-width:820px;margin-left:auto;margin-right:auto">
+      <div class="ac-band-head"><div><h2>À lire <span class="em">ensuite</span></h2></div></div>
+      <div class="ac-arts">
+        {related.map((a) => (
+          <a class="ac-art" href={`/academy/articles/${a.id}/`}>
+            <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" />}</div>
+            <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</AcademyLayout>
+
+<style>
+  .ac-read { max-width: 820px; margin: 0 auto; padding: 40px 0 20px; }
+  .ac-crumb { font-size: .84rem; color: var(--ac-muted); margin-bottom: 16px; }
+  .ac-crumb a { color: var(--ac-muted); text-decoration: none; }
+  .ac-crumb a:hover { color: var(--ac-teal); }
+  .ac-crumb span { color: var(--ac-ink); }
+  .ac-read-cat { display: inline-block; background: color-mix(in srgb, var(--ac-teal) 14%, var(--ac-surface)); color: var(--ac-teal-d); font-weight: 700; font-size: .76rem; padding: 4px 12px; border-radius: 999px; }
+  .ac-read h1 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.025em; font-size: clamp(1.9rem, 3.6vw, 2.6rem); line-height: 1.08; margin: 14px 0 12px; }
+  .ac-read-meta { display: flex; flex-wrap: wrap; gap: 16px; color: var(--ac-muted); font-size: .9rem; margin-bottom: 22px; }
+  .ac-read-cov { width: 100%; border-radius: 16px; margin-bottom: 24px; }
+</style>

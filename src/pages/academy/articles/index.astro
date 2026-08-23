@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { PILLARS } from '../../../consts';
+
+const articles = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+---
+
+<AcademyLayout title="Articles" description="Des lectures courtes et utiles pour compléter tes cours.">
+  <section style="padding:44px 0 8px">
+    <span class="ac-eyebrow">Tutoria Academy</span>
+    <h1 class="ac-display" style="font-size:2.4rem;letter-spacing:-.03em;margin:12px 0 8px">Articles</h1>
+    <p style="color:var(--ac-ink-soft);max-width:52ch;margin:0 0 6px">Des lectures courtes et utiles, entre deux leçons. Filtre par domaine.</p>
+  </section>
+
+  <div class="ac-filters" id="ac-filters">
+    <button class="ac-chip on" data-cat="">Tout</button>
+    {PILLARS.map((p) => <button class="ac-chip" data-cat={p.name} style={`--c:${p.color}`}>{p.name}</button>)}
+  </div>
+
+  <div class="ac-arts" id="ac-art-grid" style="margin-top:22px">
+    {articles.map((a) => (
+      <a class="ac-art" href={`/academy/articles/${a.id}/`} data-cat={a.data.category}>
+        <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" />}</div>
+        <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
+      </a>
+    ))}
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-filters { display: flex; flex-wrap: wrap; gap: 10px; }
+  .ac-chip { font-family: inherit; font-weight: 700; font-size: .86rem; color: var(--ac-ink-soft); background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+  .ac-chip:hover { border-color: var(--ac-teal); }
+  .ac-chip.on { background: var(--ac-ink); color: #fff; border-color: var(--ac-ink); }
+</style>
+
+<script>
+  function acArtFilter() {
+    const wrap = document.getElementById('ac-filters');
+    const grid = document.getElementById('ac-art-grid');
+    if (!wrap || !grid || wrap.dataset.bound) return;
+    wrap.dataset.bound = '1';
+    const chips = Array.from(wrap.querySelectorAll('.ac-chip'));
+    const cards = Array.from(grid.querySelectorAll('[data-cat]'));
+    wrap.addEventListener('click', (e) => {
+      const b = e.target.closest('.ac-chip'); if (!b) return;
+      chips.forEach((c) => c.classList.toggle('on', c === b));
+      const cat = b.dataset.cat || '';
+      cards.forEach((c) => { c.style.display = !cat || c.dataset.cat === cat ? '' : 'none'; });
+    });
+  }
+  document.addEventListener('astro:page-load', acArtFilter);
+</script>
