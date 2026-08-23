@@ -12,33 +12,50 @@ const byPillar = PILLARS.map((p) => ({
   pillar: p,
   list: courses.filter((c) => pillarByName(c.data.category)?.slug === p.slug),
 }));
+const pad = (n: number) => String(n + 1).padStart(2, '0');
 ---
 
-<AcademyLayout title="Apprendre pas à pas" wide={true}>
+<AcademyLayout title="Apprends, comprends, applique">
   <section class="ac-hero">
-    <h1>Apprends, pas à pas.</h1>
-    <p>Des parcours structurés et pratiques, animés par nos experts. Tu choisis un pilier, tu suis les leçons, tu appliques. Tu peux même les télécharger.</p>
-    <div class="ac-pills">
-      {byPillar.map(({ pillar, list }) => (
-        <a class="ac-pill" href={`#${pillar.slug}`} style={`--c:${pillar.color}`}>
-          <span class="ac-pill-name">{pillar.name}</span>
-          <span class="ac-pill-count">{list.length} cours</span>
-        </a>
-      ))}
+    <svg class="ac-hero-arc" viewBox="0 0 600 600" fill="none" aria-hidden="true">
+      <path d="M60 540 C 60 220, 300 60, 560 90" stroke="var(--ac-teal-l)" stroke-width="26" stroke-linecap="round" opacity="0.28"/>
+      <path d="M120 560 C 140 300, 340 150, 560 200" stroke="var(--ac-yellow)" stroke-width="22" stroke-linecap="round" opacity="0.5"/>
+    </svg>
+    <span class="ac-eyebrow">Tutoria Academy</span>
+    <h1 class="ac-display">Apprends. Comprends. <span class="hl">Applique.</span></h1>
+    <p>La plateforme qui transforme le savoir en compétences concrètes. Choisis ton domaine, suis le chemin pas à pas, avance à ton rythme. Et emporte chaque cours avec toi.</p>
+    <div class="ac-hero-actions">
+      <a class="ac-btn ac-btn-primary" href="#catalogue">Explorer les cours →</a>
+      <a class="ac-btn ac-btn-ghost" href="/articles/">Lire les articles</a>
     </div>
   </section>
 
-  <div id="ac-lib">
+  <section class="ac-pillars">
+    {byPillar.map(({ pillar, list }, i) => (
+      <a class="ac-pillar" href={`#${pillar.slug}`} style={`--c:${pillar.color}`}>
+        <span class="ac-pnum">{pad(i)}</span>
+        <h3>{pillar.name}</h3>
+        <p>{pillar.blurb}</p>
+        <span class="ac-pcount">{list.length} cours →</span>
+      </a>
+    ))}
+  </section>
+
+  <div id="ac-lib" aria-hidden="false">
+    <div id="catalogue"></div>
     {byPillar.map(({ pillar, list }) => (
       <section class="ac-sec" id={pillar.slug} data-pillar-block style={`--c:${pillar.color}`}>
-        <h2 class="ac-sec-title">{pillar.name}</h2>
+        <div class="ac-sec-head">
+          <h2>{pillar.name}</h2>
+          <span class="ac-sec-count">{list.length} cours</span>
+        </div>
         {list.length === 0
-          ? <p class="ac-soon">Cours en préparation.</p>
+          ? <p class="ac-soon">Parcours en préparation par notre expert.</p>
           : (
             <div class="ac-grid">
               {list.map((c) => (
-                <a class="ac-card" href={`/academy/${c.id}/`} data-search={(c.data.title + ' ' + c.data.excerpt + ' ' + c.data.category + ' ' + c.data.expert).toLowerCase()}>
-                  <div class="ac-card-top" style={`background:linear-gradient(135deg, ${pillar.color}, var(--teal-d))`}>
+                <a class="ac-card" href={`/academy/${c.id}/`} style={`--c:${pillar.color}`} data-search={(c.data.title + ' ' + c.data.excerpt + ' ' + c.data.category + ' ' + c.data.expert).toLowerCase()}>
+                  <div class="ac-card-top">
                     {c.data.cover && <img src={c.data.cover} alt="" />}
                     <span class="ac-card-lvl">{c.data.level}</span>
                   </div>
@@ -46,8 +63,8 @@ const byPillar = PILLARS.map((p) => ({
                     <h3>{c.data.title}</h3>
                     <p>{c.data.excerpt}</p>
                     <div class="ac-card-m">
-                      <span>{lessonCount(c.id)} leçon{lessonCount(c.id) > 1 ? 's' : ''}</span>
-                      {c.data.expert && <span class="ac-exp">{c.data.expert}</span>}
+                      <span class="ac-c-lessons">{lessonCount(c.id)} leçon{lessonCount(c.id) > 1 ? 's' : ''}</span>
+                      {c.data.expert && <span class="ac-c-exp">{c.data.expert}</span>}
                     </div>
                   </div>
                 </a>
@@ -58,29 +75,3 @@ const byPillar = PILLARS.map((p) => ({
     ))}
   </div>
 </AcademyLayout>
-
-<style>
-  .ac-hero { text-align: center; padding: 54px 10px 30px; }
-  .ac-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 12px; line-height: 1.05; }
-  .ac-hero p { color: var(--muted); max-width: 640px; margin: 0 auto; font-size: 1.08rem; line-height: 1.6; }
-  .ac-pills { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
-  .ac-pill { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-decoration: none; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 12px; padding: 10px 16px; min-width: 150px; }
-  .ac-pill:hover { border-color: var(--c); }
-  .ac-pill-name { font-weight: 700; color: var(--ink); font-size: .95rem; }
-  .ac-pill-count { color: var(--muted); font-size: .8rem; }
-  .ac-sec { margin: 40px 0; scroll-margin-top: 80px; }
-  .ac-sec-title { font-size: 1.4rem; border-left: 5px solid var(--c); padding-left: 12px; margin: 0 0 20px; }
-  .ac-soon { color: var(--muted); padding-left: 17px; }
-  .ac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
-  .ac-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
-  .ac-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(0,0,0,.12); }
-  .ac-card-top { position: relative; aspect-ratio: 16/9; }
-  .ac-card-top img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .ac-card-lvl { position: absolute; top: 10px; left: 10px; background: #FDD200; color: #0B4A44; font-weight: 700; font-size: .72rem; padding: 3px 10px; border-radius: 999px; }
-  .ac-card-b { padding: 15px 17px 17px; display: flex; flex-direction: column; gap: 7px; }
-  .ac-card-b h3 { margin: 0; font-size: 1.12rem; line-height: 1.28; }
-  .ac-card-b p { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.45; flex: 1; }
-  .ac-card-m { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: .82rem; }
-  .ac-card-m > span:first-child { color: var(--teal); font-weight: 700; }
-  .ac-exp { color: var(--muted); }
-</style>
