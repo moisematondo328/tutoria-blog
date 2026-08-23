@@ -1,0 +1,103 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+---
+
+<AcademyLayout title="Code de pratique" description="Des exercices guidés pour t'entraîner, du plus simple au plus costaud.">
+  <div class="ac-tool-head">
+    <div>
+      <a class="ac-tool-back" href="/academy/outils/">← Outils</a>
+      <h1>Code de pratique</h1>
+      <p>Résous, vérifie, progresse. Les tests tournent dans ton navigateur (JavaScript).</p>
+    </div>
+  </div>
+
+  <div class="ac-toolbar" id="pr-bar"></div>
+  <div class="ac-pr-ex" id="pr-statement"></div>
+  <div class="ac-code-grid">
+    <div class="ac-code-edit"><textarea id="pr-code" spellcheck="false"></textarea></div>
+    <div class="ac-code-out" id="pr-out"><span class="muted">Clique « Vérifier » pour lancer les tests.</span></div>
+  </div>
+  <div style="margin-top:10px;display:flex;gap:8px">
+    <button class="ac-tbtn on" id="pr-check">✓ Vérifier</button>
+    <button class="ac-tbtn" id="pr-reset">↺ Repartir du modèle</button>
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-pr-ex { background: var(--ac-surface); border: 1px solid var(--ac-line); border-bottom: 0; padding: 16px 18px; }
+  .ac-pr-ex h2 { font-family: var(--ac-display); font-weight: 700; font-size: 1.1rem; margin: 0 0 6px; }
+  .ac-pr-ex p { margin: 0; color: var(--ac-ink-soft); font-size: .95rem; line-height: 1.5; }
+  .ac-pr-ex code { font-family: ui-monospace, Menlo, Consolas, monospace; background: var(--ac-paper); padding: 1px 6px; border-radius: 5px; font-size: .88em; }
+</style>
+
+<script>
+  const EXOS = [
+    { id: 'somme', level: 'Facile', fn: 'somme', title: 'La somme de deux nombres',
+      statement: 'Écris la fonction <code>somme(a, b)</code> qui renvoie la somme de <code>a</code> et <code>b</code>.',
+      starter: 'function somme(a, b) {\n  // ton code ici\n}',
+      tests: [ { args: [2, 3], exp: 5 }, { args: [-4, 4], exp: 0 }, { args: [10, 90], exp: 100 } ] },
+    { id: 'pair', level: 'Facile', fn: 'estPair', title: 'Pair ou impair',
+      statement: 'Écris la fonction <code>estPair(n)</code> qui renvoie <code>true</code> si <code>n</code> est pair, sinon <code>false</code>.',
+      starter: 'function estPair(n) {\n  // ton code ici\n}',
+      tests: [ { args: [4], exp: true }, { args: [7], exp: false }, { args: [0], exp: true } ] },
+    { id: 'inverse', level: 'Moyen', fn: 'inverse', title: 'Inverser un mot',
+      statement: 'Écris la fonction <code>inverse(mot)</code> qui renvoie le mot à l\'envers. Ex. <code>inverse("abc")</code> donne <code>"cba"</code>.',
+      starter: 'function inverse(mot) {\n  // ton code ici\n}',
+      tests: [ { args: ['abc'], exp: 'cba' }, { args: ['Tutoria'], exp: 'airotuT' }, { args: [''], exp: '' } ] },
+    { id: 'max', level: 'Moyen', fn: 'plusGrand', title: 'Le plus grand d\'une liste',
+      statement: 'Écris la fonction <code>plusGrand(liste)</code> qui renvoie le plus grand nombre du tableau <code>liste</code>.',
+      starter: 'function plusGrand(liste) {\n  // ton code ici\n}',
+      tests: [ { args: [[3, 9, 2]], exp: 9 }, { args: [[-5, -1, -8]], exp: -1 }, { args: [[42]], exp: 42 } ] },
+  ];
+
+  function pratique() {
+    const code = document.getElementById('pr-code');
+    if (!code || code.dataset.bound) return;
+    code.dataset.bound = '1';
+    const bar = document.getElementById('pr-bar');
+    const stmt = document.getElementById('pr-statement');
+    const out = document.getElementById('pr-out');
+    let cur = EXOS[0];
+
+    bar.innerHTML = EXOS.map((e, i) => `<button class="ac-tbtn${i === 0 ? ' on' : ''}" data-ex="${e.id}">${e.title} · ${e.level}</button>`).join('');
+    const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const fmt = (v) => typeof v === 'string' ? `"${v}"` : JSON.stringify(v);
+
+    function select(ex) {
+      cur = ex;
+      bar.querySelectorAll('.ac-tbtn').forEach((b) => b.classList.toggle('on', b.dataset.ex === ex.id));
+      stmt.innerHTML = `<h2>${ex.title}</h2><p>${ex.statement}</p>`;
+      code.value = ex.starter;
+      out.innerHTML = '<span class="muted">Clique « Vérifier » pour lancer les tests.</span>';
+    }
+    select(cur);
+    bar.addEventListener('click', (e) => { const b = e.target.closest('[data-ex]'); if (b) select(EXOS.find((x) => x.id === b.dataset.ex)); });
+
+    function check() {
+      let fn;
+      try {
+        fn = new Function('"use strict";\n' + code.value + '\nreturn typeof ' + cur.fn + ' === "function" ? ' + cur.fn + ' : null;')();
+      } catch (e) { out.innerHTML = `<span class="err">${esc((e.name || 'Erreur') + ': ' + e.message)}</span>`; return; }
+      if (!fn) { out.innerHTML = `<span class="err">La fonction ${esc(cur.fn)} est introuvable. Garde bien son nom.</span>`; return; }
+      const lines = []; let passed = 0;
+      for (const t of cur.tests) {
+        let got, ok = false;
+        try { got = fn(...t.args.map((a) => Array.isArray(a) ? a.slice() : a)); ok = eq(got, t.exp); } catch (e) { got = '' + e; }
+        if (ok) passed++;
+        const call = `${cur.fn}(${t.args.map(fmt).join(', ')})`;
+        lines.push(`<span class="${ok ? 'ok' : 'err'}">${ok ? '✓' : '✗'} ${esc(call)} → ${esc(fmt(got))}${ok ? '' : '   (attendu ' + esc(fmt(t.exp)) + ')'}</span>`);
+      }
+      const all = passed === cur.tests.length;
+      lines.push(`\n<span class="${all ? 'ok' : 'muted'}">${passed}/${cur.tests.length} tests réussis${all ? ' — bravo, exercice validé !' : ''}</span>`);
+      out.innerHTML = lines.join('\n');
+    }
+    document.getElementById('pr-check').addEventListener('click', check);
+    document.getElementById('pr-reset').addEventListener('click', () => select(cur));
+    code.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') { e.preventDefault(); const s = code.selectionStart, en = code.selectionEnd; code.value = code.value.slice(0, s) + '  ' + code.value.slice(en); code.selectionStart = code.selectionEnd = s + 2; }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); check(); }
+    });
+  }
+  document.addEventListener('astro:page-load', pratique);
+</script>

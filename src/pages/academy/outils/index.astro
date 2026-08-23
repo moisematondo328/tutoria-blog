@@ -2,10 +2,10 @@
 import AcademyLayout from '../../../layouts/AcademyLayout.astro';
 
 const tools = [
-  { name: 'Compilateurs en ligne', desc: 'Écris et exécute du code dans ton navigateur, sans rien installer.', ic: '</>', soon: true },
-  { name: 'Code de pratique', desc: 'Des exercices guidés pour t’entraîner, du plus simple au plus costaud.', ic: '⌨', soon: true },
-  { name: 'Tableau blanc', desc: 'Un espace pour schématiser une idée, un budget, un plan.', ic: '▤', soon: true },
-  { name: 'Calculatrice graphique', desc: 'Visualise des courbes et des fonctions en un instant.', ic: '📈', soon: true },
+  { name: 'Compilateur en ligne', href: '/academy/outils/compilateur/', ic: '</>', desc: 'Écris et exécute du code dans ton navigateur. JavaScript tourne en direct.', status: 'JS en direct' },
+  { name: 'Code de pratique', href: '/academy/outils/pratique/', ic: '⌨', desc: 'Des exercices guidés, vérifiés automatiquement pendant que tu codes.', status: 'Disponible' },
+  { name: 'Tableau blanc', href: '/academy/outils/tableau-blanc/', ic: '▤', desc: 'Un espace pour schématiser une idée, un budget, un plan. Puis télécharge.', status: 'Disponible' },
+  { name: 'Calculatrice graphique', href: '/academy/outils/calculatrice/', ic: '📈', desc: 'Écris une fonction et vois sa courbe. Zoome, compare, comprends.', status: 'Disponible' },
 ];
 ---
 
@@ -13,27 +13,28 @@ const tools = [
   <section style="padding:44px 0 8px">
     <span class="ac-eyebrow">Tutoria Academy</span>
     <h1 class="ac-display" style="font-size:2.4rem;letter-spacing:-.03em;margin:12px 0 8px">Outils</h1>
-    <p style="color:var(--ac-ink-soft);max-width:52ch;margin:0">Apprendre, c'est faire. Ces outils arrivent pour t'entraîner directement sur la plateforme.</p>
+    <p style="color:var(--ac-ink-soft);max-width:52ch;margin:0">Apprendre, c'est faire. Entraîne-toi directement sur la plateforme.</p>
   </section>
 
   <div class="ac-tiles" style="margin-top:24px">
     {tools.map((t) => (
-      <div class="ac-tool">
+      <a class="ac-tool" href={t.href}>
         <span class="ac-tool-ic">{t.ic}</span>
         <div class="ac-tool-b">
-          <div class="ac-tool-top"><b>{t.name}</b>{t.soon && <span class="ac-tool-soon">Bientôt</span>}</div>
+          <div class="ac-tool-top"><b>{t.name}</b><span class="ac-tool-ok">{t.status}</span></div>
           <p>{t.desc}</p>
         </div>
-      </div>
+      </a>
     ))}
   </div>
 </AcademyLayout>
 
 <style>
-  .ac-tool { display: flex; gap: 16px; align-items: flex-start; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; padding: 20px; }
+  .ac-tool { display: flex; gap: 16px; align-items: flex-start; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; padding: 20px; text-decoration: none; color: inherit; transition: border-color .15s, transform .15s; }
+  .ac-tool:hover { border-color: var(--ac-teal); transform: translateY(-2px); }
   .ac-tool-ic { flex: 0 0 auto; width: 48px; height: 48px; border-radius: 13px; background: color-mix(in srgb, var(--ac-teal) 12%, var(--ac-surface)); color: var(--ac-teal); font-family: var(--ac-display); font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
   .ac-tool-top { display: flex; align-items: center; gap: 10px; }
   .ac-tool-b b { font-family: var(--ac-display); font-weight: 700; font-size: 1.08rem; }
-  .ac-tool-soon { background: var(--ac-yellow); color: var(--ac-ink); font-weight: 700; font-size: .68rem; padding: 3px 9px; border-radius: 999px; }
+  .ac-tool-ok { background: color-mix(in srgb, var(--ac-teal) 14%, var(--ac-surface)); color: var(--ac-teal-d); font-weight: 700; font-size: .68rem; padding: 3px 9px; border-radius: 999px; }
   .ac-tool-b p { margin: 6px 0 0; color: var(--ac-muted); font-size: .92rem; line-height: 1.45; }
 </style>

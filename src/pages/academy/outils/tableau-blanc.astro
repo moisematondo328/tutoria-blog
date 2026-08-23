@@ -1,0 +1,91 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+const colors = ['#0A2621', '#0E8074', '#17B39D', '#E0A400', '#D1495B', '#2563EB', '#FFFFFF'];
+---
+
+<AcademyLayout title="Tableau blanc" description="Un espace pour schématiser une idée, un budget, un plan.">
+  <div class="ac-tool-head">
+    <div>
+      <a class="ac-tool-back" href="/academy/outils/">← Outils</a>
+      <h1>Tableau blanc</h1>
+      <p>Dessine, schématise, explique. Puis télécharge ton image.</p>
+    </div>
+  </div>
+
+  <div class="ac-toolbar" id="tb-bar">
+    <button class="ac-tbtn on" data-tool="pen" id="tb-pen">✏️ Crayon</button>
+    <button class="ac-tbtn" data-tool="eraser" id="tb-eraser">🩹 Gomme</button>
+    <span class="sep"></span>
+    {colors.map((c, i) => (
+      <button class={`ac-swatch${i === 0 ? ' on' : ''}`} data-color={c} style={`background:${c}`} aria-label={`Couleur ${c}`}></button>
+    ))}
+    <span class="sep"></span>
+    <button class="ac-tbtn" data-size="3">Fin</button>
+    <button class="ac-tbtn on" data-size="6" id="tb-size-md">Moyen</button>
+    <button class="ac-tbtn" data-size="12">Épais</button>
+    <span class="sep"></span>
+    <button class="ac-tbtn" id="tb-clear">🗑️ Effacer</button>
+    <button class="ac-tbtn" id="tb-save">⬇️ Télécharger</button>
+  </div>
+  <div class="ac-canvas-wrap"><canvas id="tb-canvas"></canvas></div>
+</AcademyLayout>
+
+<script>
+  function whiteboard() {
+    const canvas = document.getElementById('tb-canvas');
+    if (!canvas || canvas.dataset.bound) return;
+    canvas.dataset.bound = '1';
+    const wrap = canvas.parentElement;
+    const ctx = canvas.getContext('2d');
+    let color = '#0A2621', size = 6, tool = 'pen', drawing = false, last = null;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function setup() {
+      const w = wrap.clientWidth, h = Math.max(420, Math.round(w * 0.52));
+      const prev = document.createElement('canvas');
+      prev.width = canvas.width; prev.height = canvas.height;
+      if (canvas.width) prev.getContext('2d').drawImage(canvas, 0, 0);
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      if (prev.width) ctx.drawImage(prev, 0, 0, prev.width / dpr, prev.height / dpr);
+    }
+    setup();
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(setup, 200); });
+
+    const pos = (e) => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    const start = (e) => { drawing = true; last = pos(e); e.preventDefault(); };
+    const move = (e) => {
+      if (!drawing) return;
+      const p = pos(e);
+      ctx.strokeStyle = tool === 'eraser' ? '#fff' : color;
+      ctx.lineWidth = tool === 'eraser' ? size * 2.4 : size;
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+      last = p; e.preventDefault();
+    };
+    const end = () => { drawing = false; };
+    canvas.addEventListener('pointerdown', start);
+    canvas.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', end);
+
+    const bar = document.getElementById('tb-bar');
+    bar.querySelectorAll('.ac-swatch').forEach((b) => b.addEventListener('click', () => {
+      bar.querySelectorAll('.ac-swatch').forEach((x) => x.classList.remove('on'));
+      b.classList.add('on'); color = b.dataset.color;
+      tool = 'pen'; document.getElementById('tb-pen').classList.add('on'); document.getElementById('tb-eraser').classList.remove('on');
+    }));
+    bar.querySelectorAll('[data-size]').forEach((b) => b.addEventListener('click', () => {
+      bar.querySelectorAll('[data-size]').forEach((x) => x.classList.remove('on'));
+      b.classList.add('on'); size = Number(b.dataset.size);
+    }));
+    document.getElementById('tb-pen').addEventListener('click', () => { tool = 'pen'; document.getElementById('tb-pen').classList.add('on'); document.getElementById('tb-eraser').classList.remove('on'); });
+    document.getElementById('tb-eraser').addEventListener('click', () => { tool = 'eraser'; document.getElementById('tb-eraser').classList.add('on'); document.getElementById('tb-pen').classList.remove('on'); });
+    document.getElementById('tb-clear').addEventListener('click', () => { const w = canvas.width / dpr, h = canvas.height / dpr; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); });
+    document.getElementById('tb-save').addEventListener('click', () => {
+      const a = document.createElement('a'); a.download = 'tutoria-tableau.png'; a.href = canvas.toDataURL('image/png'); a.click();
+    });
+  }
+  document.addEventListener('astro:page-load', whiteboard);
+</script>

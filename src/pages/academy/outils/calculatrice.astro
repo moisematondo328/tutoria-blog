@@ -1,0 +1,157 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+const examples = ['x^2', 'sin(x)', '1/x', '2*x + 1', 'sqrt(abs(x))', 'cos(x) * x'];
+---
+
+<AcademyLayout title="Calculatrice graphique" description="Visualise des courbes et des fonctions en un instant.">
+  <div class="ac-tool-head">
+    <div>
+      <a class="ac-tool-back" href="/academy/outils/">← Outils</a>
+      <h1>Calculatrice graphique</h1>
+      <p>Écris une fonction, vois sa courbe. Zoome, compare, comprends.</p>
+    </div>
+  </div>
+
+  <div class="ac-toolbar" id="gc-bar">
+    <span style="font-family:var(--ac-display);font-weight:800;color:#0E8074">y =</span>
+    <input class="ac-gc-in" id="gc-f" type="text" value="x^2" spellcheck="false" style="border-color:#0E8074" />
+    <span style="font-family:var(--ac-display);font-weight:800;color:#E0A400">y =</span>
+    <input class="ac-gc-in" id="gc-g" type="text" placeholder="(facultatif)" spellcheck="false" style="border-color:#E0A400" />
+    <button class="ac-tbtn on" id="gc-plot">Tracer</button>
+    <span class="sep"></span>
+    <button class="ac-tbtn" id="gc-zin">➕</button>
+    <button class="ac-tbtn" id="gc-zout">➖</button>
+    <button class="ac-tbtn" id="gc-reset">Réinitialiser</button>
+  </div>
+  <div class="ac-canvas-wrap"><canvas id="gc-canvas"></canvas></div>
+  <div class="ac-gc-ex">
+    <span>Exemples :</span>
+    {examples.map((e) => <button class="ac-chip-ex" data-ex={e}>{e}</button>)}
+    <span class="ac-gc-err" id="gc-err" hidden></span>
+  </div>
+</AcademyLayout>
+
+<style>
+  .ac-gc-in { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .9rem; color: var(--ac-ink); background: var(--ac-paper); border: 1.5px solid var(--ac-line); border-radius: 9px; padding: 8px 12px; width: 150px; outline: none; }
+  .ac-gc-in:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac-teal) 14%, transparent); }
+  .ac-gc-ex { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; font-size: .85rem; color: var(--ac-muted); }
+  .ac-chip-ex { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .82rem; color: var(--ac-teal-d); background: color-mix(in srgb, var(--ac-teal) 8%, var(--ac-surface)); border: 1px solid var(--ac-line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+  .ac-chip-ex:hover { border-color: var(--ac-teal); }
+  .ac-gc-err { color: #D1495B; font-weight: 600; }
+</style>
+
+<script>
+  function grapher() {
+    const canvas = document.getElementById('gc-canvas');
+    if (!canvas || canvas.dataset.bound) return;
+    canvas.dataset.bound = '1';
+    const wrap = canvas.parentElement;
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0;
+    let view = { cx: 0, cy: 0, scale: 32 }; // pixels par unité
+
+    function compile(expr) {
+      const c = expr.replace(/\s+/g, '');
+      if (!c) return null;
+      if (!/^[-+*/^().0-9xeE,a-z]*$/i.test(c)) throw new Error('caractère non autorisé');
+      if (/(window|document|constructor|function|=>|;|\[|\])/i.test(c)) throw new Error('expression non autorisée');
+      const js = c.replace(/\^/g, '**');
+      const fn = new Function('x', 'with(Math){return (' + js + ')}');
+      if (!Number.isFinite(fn(0.5)) && !Number.isNaN(fn(0.5))) { /* ok, peut être Infinity ponctuel */ }
+      return fn;
+    }
+
+    function size() {
+      const w = wrap.clientWidth, h = Math.max(420, Math.round(w * 0.56));
+      W = w; H = h;
+      canvas.width = w * dpr; canvas.height = h * dpr; canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    const X = (x) => W / 2 + (x - view.cx) * view.scale;
+    const Y = (y) => H / 2 - (y - view.cy) * view.scale;
+
+    function niceStep(px) { // pas de grille "rond" pour ~px pixels
+      const raw = px / view.scale;
+      const p = Math.pow(10, Math.floor(Math.log10(raw)));
+      const n = raw / p;
+      const m = n < 1.5 ? 1 : n < 3.5 ? 2 : n < 7.5 ? 5 : 10;
+      return m * p;
+    }
+
+    function grid() {
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+      const step = niceStep(70);
+      const x0 = view.cx - (W / 2) / view.scale, x1 = view.cx + (W / 2) / view.scale;
+      const y0 = view.cy - (H / 2) / view.scale, y1 = view.cy + (H / 2) / view.scale;
+      ctx.lineWidth = 1; ctx.font = '11px Poppins, sans-serif'; ctx.fillStyle = '#9CB3AC';
+      ctx.strokeStyle = '#EAF1EE';
+      for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) {
+        ctx.beginPath(); ctx.moveTo(X(x), 0); ctx.lineTo(X(x), H); ctx.stroke();
+      }
+      for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) {
+        ctx.beginPath(); ctx.moveTo(0, Y(y)); ctx.lineTo(W, Y(y)); ctx.stroke();
+      }
+      // axes
+      ctx.strokeStyle = '#0A2621'; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); ctx.stroke();
+      // graduations
+      ctx.fillStyle = '#5B726B';
+      for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) {
+        if (Math.abs(x) < 1e-9) continue;
+        ctx.fillText(+x.toFixed(4), X(x) + 3, Y(0) + 13);
+      }
+      for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) {
+        if (Math.abs(y) < 1e-9) continue;
+        ctx.fillText(+y.toFixed(4), X(0) + 5, Y(y) - 3);
+      }
+    }
+
+    function plot(fn, stroke) {
+      if (!fn) return;
+      ctx.strokeStyle = stroke; ctx.lineWidth = 2.2; ctx.beginPath();
+      let pen = false;
+      for (let px = 0; px <= W; px++) {
+        const x = view.cx + (px - W / 2) / view.scale;
+        let y; try { y = fn(x); } catch { y = NaN; }
+        if (!Number.isFinite(y)) { pen = false; continue; }
+        const py = Y(y);
+        if (py < -1e5 || py > 1e5) { pen = false; continue; }
+        if (!pen) { ctx.moveTo(px, py); pen = true; } else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    const err = document.getElementById('gc-err');
+    function draw() {
+      grid();
+      err.hidden = true;
+      try { plot(compile(document.getElementById('gc-f').value), '#0E8074'); } catch (e) { err.textContent = 'f : ' + e.message; err.hidden = false; }
+      try { plot(compile(document.getElementById('gc-g').value), '#E0A400'); } catch (e) { err.textContent = 'g : ' + e.message; err.hidden = false; }
+    }
+    function redraw() { size(); draw(); }
+    redraw();
+
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(redraw, 200); });
+    document.getElementById('gc-plot').addEventListener('click', draw);
+    document.getElementById('gc-f').addEventListener('keydown', (e) => { if (e.key === 'Enter') draw(); });
+    document.getElementById('gc-g').addEventListener('keydown', (e) => { if (e.key === 'Enter') draw(); });
+    document.getElementById('gc-zin').addEventListener('click', () => { view.scale *= 1.4; draw(); });
+    document.getElementById('gc-zout').addEventListener('click', () => { view.scale /= 1.4; draw(); });
+    document.getElementById('gc-reset').addEventListener('click', () => { view = { cx: 0, cy: 0, scale: 32 }; draw(); });
+    document.querySelectorAll('.ac-chip-ex').forEach((b) => b.addEventListener('click', () => { document.getElementById('gc-f').value = b.dataset.ex; draw(); }));
+
+    // pan à la souris
+    let pan = null;
+    canvas.addEventListener('pointerdown', (e) => { pan = { x: e.clientX, y: e.clientY }; });
+    window.addEventListener('pointermove', (e) => {
+      if (!pan) return;
+      view.cx -= (e.clientX - pan.x) / view.scale; view.cy += (e.clientY - pan.y) / view.scale;
+      pan = { x: e.clientX, y: e.clientY }; draw();
+    });
+    window.addEventListener('pointerup', () => { pan = null; });
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); view.scale *= e.deltaY < 0 ? 1.1 : 0.9; draw(); }, { passive: false });
+  }
+  document.addEventListener('astro:page-load', grapher);
+</script>

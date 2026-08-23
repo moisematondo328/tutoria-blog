@@ -1,0 +1,109 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+---
+
+<AcademyLayout title="Compilateur en ligne" description="Écris et exécute du code dans ton navigateur, sans rien installer.">
+  <div class="ac-tool-head">
+    <div>
+      <a class="ac-tool-back" href="/academy/outils/">← Outils</a>
+      <h1>Compilateur en ligne</h1>
+      <p>Écris du code, lance-le, vois le résultat. JavaScript tourne directement ici.</p>
+    </div>
+  </div>
+
+  <div class="ac-toolbar">
+    <select class="ac-select" id="cp-lang">
+      <option value="javascript">JavaScript</option>
+      <option value="python">Python</option>
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
+      <option value="java">Java</option>
+    </select>
+    <button class="ac-tbtn on" id="cp-run">▶ Exécuter</button>
+    <button class="ac-tbtn" id="cp-reset">↺ Réinitialiser</button>
+    <span class="sep"></span>
+    <button class="ac-tbtn" id="cp-clear">Effacer la sortie</button>
+  </div>
+  <div class="ac-code-grid">
+    <div class="ac-code-edit"><textarea id="cp-code" spellcheck="false"></textarea></div>
+    <div class="ac-code-out" id="cp-out"><span class="muted">La sortie apparaîtra ici.</span></div>
+  </div>
+  <div class="ac-note-soon" id="cp-note" hidden>L'exécution de ce langage se fait côté serveur : elle arrive très bientôt. Pour l'instant, JavaScript s'exécute directement dans ton navigateur.</div>
+</AcademyLayout>
+
+<script>
+  const STARTERS = {
+    javascript: `// Écris du JavaScript, puis clique sur Exécuter.\nfunction salut(nom) {\n  return "Bonjour, " + nom + " !";\n}\n\nconsole.log(salut("Tutoria"));\nconsole.log("2 + 2 =", 2 + 2);`,
+    python: `# Python (exécution serveur bientôt)\ndef salut(nom):\n    return f"Bonjour, {nom} !"\n\nprint(salut("Tutoria"))`,
+    c: `#include <stdio.h>\n\nint main() {\n    printf("Bonjour, Tutoria !\\n");\n    return 0;\n}`,
+    cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Bonjour, Tutoria !" << endl;\n    return 0;\n}`,
+    java: `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Bonjour, Tutoria !");\n    }\n}`,
+  };
+
+  function compiler() {
+    const code = document.getElementById('cp-code');
+    if (!code || code.dataset.bound) return;
+    code.dataset.bound = '1';
+    const out = document.getElementById('cp-out');
+    const langSel = document.getElementById('cp-lang');
+    const note = document.getElementById('cp-note');
+    const runBtn = document.getElementById('cp-run');
+
+    const fmt = (v) => {
+      if (typeof v === 'string') return v;
+      try { return JSON.stringify(v); } catch { return String(v); }
+    };
+    const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+    let lang = 'javascript';
+    const load = () => { code.value = STARTERS[lang]; };
+    load();
+
+    function setLang(l) {
+      lang = l;
+      note.hidden = l === 'javascript';
+      runBtn.classList.toggle('on', l === 'javascript');
+      load();
+      out.innerHTML = '<span class="muted">La sortie apparaîtra ici.</span>';
+    }
+    langSel.addEventListener('change', () => setLang(langSel.value));
+
+    function runJS() {
+      const lines = [];
+      const push = (t, cls) => lines.push(cls ? `<span class="${cls}">${esc(t)}</span>` : esc(t));
+      const cons = {
+        log: (...a) => push(a.map(fmt).join(' ')),
+        info: (...a) => push(a.map(fmt).join(' ')),
+        warn: (...a) => push(a.map(fmt).join(' ')),
+        error: (...a) => push(a.map(fmt).join(' '), 'err'),
+      };
+      try {
+        const fn = new Function('console', '"use strict";\n' + code.value);
+        const t0 = performance.now();
+        const ret = fn(cons);
+        const ms = Math.max(1, Math.round(performance.now() - t0));
+        if (ret !== undefined) push('⟵ ' + fmt(ret), 'ok');
+        push(`\n✓ Terminé en ${ms} ms`, 'muted');
+      } catch (e) {
+        push((e && e.name ? e.name + ': ' : 'Erreur : ') + (e && e.message ? e.message : e), 'err');
+      }
+      out.innerHTML = lines.join('\n') || '<span class="muted">(aucune sortie)</span>';
+    }
+
+    function run() {
+      if (lang !== 'javascript') {
+        out.innerHTML = '<span class="muted">Ce langage s\'exécutera côté serveur (bientôt). Essaie JavaScript en attendant.</span>';
+        return;
+      }
+      runJS();
+    }
+    runBtn.addEventListener('click', run);
+    document.getElementById('cp-reset').addEventListener('click', load);
+    document.getElementById('cp-clear').addEventListener('click', () => { out.innerHTML = '<span class="muted">La sortie apparaîtra ici.</span>'; });
+    code.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') { e.preventDefault(); const s = code.selectionStart, en = code.selectionEnd; code.value = code.value.slice(0, s) + '  ' + code.value.slice(en); code.selectionStart = code.selectionEnd = s + 2; }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); }
+    });
+  }
+  document.addEventListener('astro:page-load', compiler);
+</script>
