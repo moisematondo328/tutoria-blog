@@ -2,8 +2,8 @@
 // Signature Tutoria Academy : le « Chemin d'apprentissage ».
 // Un fil vertical à nœuds (façon plan de métro) : chaque cours = un jalon, chaque leçon = un nœud.
 // props.courses = [{ id, title, lessons: [{ slug, title }] }]
-interface Props { courses: any[]; currentCourse: string; currentLesson?: string; pillarName?: string; }
-const { courses, currentCourse, currentLesson = '', pillarName = 'Chemin' } = Astro.props;
+interface Props { courses: any[]; currentCourse: string; currentLesson?: string; pillarName?: string; activeHeadings?: { slug: string; text: string }[]; }
+const { courses, currentCourse, currentLesson = '', pillarName = 'Chemin', activeHeadings = [] } = Astro.props;
 ---
 <nav id="ac-tree" class="ac-path" aria-label="Chemin d'apprentissage">
   <div class="ac-path-head"><span class="ac-path-dot"></span>{pillarName}</div>
@@ -25,6 +25,11 @@ const { courses, currentCourse, currentLesson = '', pillarName = 'Chemin' } = As
                     <span class="ac-node" aria-hidden="true"></span>
                     <span class="ac-node-txt"><b>{i + 1}.</b> {l.title}</span>
                   </a>
+                  {active && activeHeadings.length > 1 && (
+                    <ul class="ac-subnodes">
+                      {activeHeadings.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+                    </ul>
+                  )}
                 </li>
               );
             })}
@@ -60,4 +65,10 @@ const { courses, currentCourse, currentLesson = '', pillarName = 'Chemin' } = As
   .ac-path-lessons li.active a { color: var(--ac-ink); font-weight: 600; }
   .ac-path-lessons li.active .ac-node { background: var(--ac-teal); border-color: var(--ac-teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ac-teal) 22%, transparent); width: 15px; height: 15px; margin-left: -7px; }
   .ac-path-lessons li.active .ac-node-txt b { color: var(--ac-teal); }
+  /* sous-ancres de la leçon active (sections de la page) */
+  .ac-subnodes { list-style: none; margin: 2px 0 6px; padding: 0 0 0 25px; position: relative; }
+  .ac-subnodes::before { content: ""; position: absolute; left: 6px; top: 2px; bottom: 8px; width: 2px; background: var(--ac-line); }
+  .ac-subnodes li a { display: block; padding: 5px 8px; font-size: .82rem; color: var(--ac-muted); text-decoration: none; border-radius: 7px; position: relative; }
+  .ac-subnodes li a::before { content: ""; position: absolute; left: -19px; top: 12px; width: 8px; height: 2px; background: var(--ac-line); }
+  .ac-subnodes li a:hover { color: var(--ac-teal); }
 </style>

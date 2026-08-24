@@ -3,9 +3,18 @@
 // L'Academy est l'expérience principale ; le blog vit comme section « Articles ».
 import { ClientRouter } from 'astro:transitions';
 import Analytics from '@vercel/analytics/astro';
-import { PILLARS, SOCIALS } from '../consts';
+import SpeedInsights from '@vercel/speed-insights/astro';
+import { getCollection } from 'astro:content';
+import { PILLARS, SOCIALS, pillarByName } from '../consts';
+import Ico from '../components/Ico.astro';
 import '../styles/global.css';
 import '../styles/academy.css';
+
+// Cours groupés par domaine, pour le méga-menu "Domaines"
+const allCourses = (await getCollection('courses', ({ data }) => !data.draft))
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const coursesByPillar = (slug: string) =>
+  allCourses.filter((c) => pillarByName(c.data.category)?.slug === slug);
 
 interface Props {
   title?: string;
@@ -18,18 +27,6 @@ const pageTitle = title ? `${title} · Tutoria Academy` : 'Tutoria Academy · Ap
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image ?? '/og.png', Astro.site);
 const path = Astro.url.pathname;
-
-// Icônes de la barre utilitaire (trait fin, comme le modèle)
-const S = 'fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
-const UIC: Record<string, string> = {
-  home: `<svg viewBox="0 0 24 24" ${S}><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>`,
-  board: `<svg viewBox="0 0 24 24" ${S}><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
-  terminal: `<svg viewBox="0 0 24 24" ${S}><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>`,
-  chart: `<svg viewBox="0 0 24 24" ${S}><path d="M4 4v16h16"/><path d="M7 14l4-5 3 3 4-6"/></svg>`,
-  code: `<svg viewBox="0 0 24 24" ${S}><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg>`,
-  article: `<svg viewBox="0 0 24 24" ${S}><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h5"/></svg>`,
-  tools: `<svg viewBox="0 0 24 24" ${S}><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2l-6 6 2.9 2.9 6-6a4 4 0 0 0 5.2-5.4l-2.5 2.5-2-2z"/></svg>`,
-};
 ---
 
 <!doctype html>
@@ -49,9 +46,12 @@ const UIC: Record<string, string> = {
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
     <ClientRouter />
     <script is:inline>
       try { const t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
@@ -68,17 +68,18 @@ const UIC: Record<string, string> = {
     <div class="ac-util">
       <div class="ac-util-in">
         <div class="ac-util-l">
-          <a href="/academy/"><Fragment set:html={UIC.home} />Accueil</a>
-          <a href="/academy/outils/tableau-blanc/"><Fragment set:html={UIC.board} />Tableau blanc</a>
-          <a href="/academy/outils/pratique/"><Fragment set:html={UIC.terminal} />Code de pratique</a>
-          <a href="/academy/outils/calculatrice/"><Fragment set:html={UIC.chart} />Calculatrice graphique</a>
-          <a href="/academy/outils/compilateur/"><Fragment set:html={UIC.code} />Compilateurs en ligne</a>
-          <a href="/academy/articles/"><Fragment set:html={UIC.article} />Articles</a>
-          <a href="/academy/outils/"><Fragment set:html={UIC.tools} />Outils</a>
+          <a href="/academy/"><Ico class="ac-uic" name="ph:house-duotone" />Accueil</a>
+          <a href="/academy/outils/tableau-blanc/"><Ico class="ac-uic" name="ph:chalkboard-simple-duotone" />Tableau blanc</a>
+          <a href="/academy/outils/pratique/"><Ico class="ac-uic" name="ph:terminal-window-duotone" />Code de pratique</a>
+          <a href="/academy/outils/calculatrice/"><Ico class="ac-uic" name="ph:chart-line-duotone" />Calculatrice graphique</a>
+          <a href="/academy/outils/compilateur/"><Ico class="ac-uic" name="ph:code-duotone" />Compilateurs en ligne</a>
+          <a href="/academy/articles/"><Ico class="ac-uic" name="ph:article-duotone" />Articles</a>
+          <a href="/academy/outils/"><Ico class="ac-uic" name="ph:wrench-duotone" />Outils</a>
         </div>
         <div class="ac-util-r">
-          <a href={SOCIALS.tiktok} target="_blank" rel="noopener" aria-label="TikTok">TikTok</a>
-          <a href={SOCIALS.youtube} target="_blank" rel="noopener" aria-label="YouTube">YouTube</a>
+          <a class="ac-soc" href={SOCIALS.tiktok} target="_blank" rel="noopener" aria-label="TikTok"><Ico name="si:tiktok" /></a>
+          <a class="ac-soc" href={SOCIALS.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Ico name="si:youtube" /></a>
+          <a class="ac-soc" href={SOCIALS.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Ico name="si:facebook" /></a>
           <button class="ac-theme" id="theme-toggle" aria-label="Mode sombre">🌙</button>
         </div>
       </div>
@@ -93,13 +94,33 @@ const UIC: Record<string, string> = {
         <nav class="ac-nav" aria-label="Navigation Academy">
           <div class="ac-drop">
             <button class="ac-drop-t" type="button">Domaines <span aria-hidden="true">▾</span></button>
-            <div class="ac-drop-menu">
-              {PILLARS.map((p) => (
-                <a href={`/academy/#${p.slug}`}><span class="d-dot" style={`background:${p.color}`}></span><span><b>{p.name}</b><small>{p.blurb}</small></span></a>
-              ))}
+            <div class="ac-mega">
+              <div class="ac-mega-cols">
+                {PILLARS.map((p) => {
+                  const cs = coursesByPillar(p.slug);
+                  return (
+                    <div class="ac-mega-col" style={`--c:${p.color}`}>
+                      <a class="ac-mega-h" href={`/academy/#${p.slug}`}><span class="d-dot" style={`background:${p.color}`}></span>{p.name}</a>
+                      <p class="ac-mega-blurb">{p.blurb}</p>
+                      <ul class="ac-mega-list">
+                        {cs.length === 0
+                          ? <li class="ac-mega-soon">Parcours à venir</li>
+                          : cs.slice(0, 4).map((c) => <li><a href={`/academy/${c.id}/`}>{c.data.title}</a></li>)}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+              <div class="ac-mega-foot">
+                <a href="/academy/bibliotheque/">Bibliothèque complète</a>
+                <a href="/academy/">Tous les cours</a>
+                <a href="/academy/outils/">Outils</a>
+                <a href="/academy/accompagnement/">Accompagnement</a>
+                <a href="/academy/articles/">Articles</a>
+              </div>
             </div>
           </div>
-          <a href="/academy/" class={path === '/academy/' || path.match(/^\/academy\/[^/]+\/?$/) && !path.startsWith('/academy/articles') && !path.startsWith('/academy/outils') && !path.startsWith('/academy/recherche') && !path.startsWith('/academy/expert') ? 'cur' : ''}>Cours</a>
+          <a href="/academy/bibliotheque/" class={path.startsWith('/academy/bibliotheque') ? 'cur' : ''}>Bibliothèque</a>
           <a href="/academy/articles/" class={path.startsWith('/academy/articles') ? 'cur' : ''}>Articles</a>
           <a href="/academy/accompagnement/" class={path.startsWith('/academy/accompagnement') ? 'cur ac-nav-pro' : 'ac-nav-pro'}>Accompagnement</a>
         </nav>
@@ -117,6 +138,7 @@ const UIC: Record<string, string> = {
           ))}
         </div>
         <a href="/academy/">Tous les cours</a>
+        <a href="/academy/bibliotheque/">Bibliothèque</a>
         <a href="/academy/articles/">Articles</a>
         <a class="pro" href="/academy/accompagnement/">Accompagnement</a>
         <a href="/academy/outils/">Outils</a>
@@ -160,6 +182,7 @@ const UIC: Record<string, string> = {
     </footer>
 
     <Analytics />
+    <SpeedInsights />
     <script>
       function acSetup() {
         const root = document.documentElement;

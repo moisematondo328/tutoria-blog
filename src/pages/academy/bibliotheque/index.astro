@@ -1,0 +1,117 @@
+---
+import AcademyLayout from '../../../layouts/AcademyLayout.astro';
+import { getCollection } from 'astro:content';
+import { PILLARS, pillarByName } from '../../../consts';
+
+const courses = (await getCollection('courses', ({ data }) => !data.draft))
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const lessons = await getCollection('lessons', ({ data }) => !data.draft);
+const lessonCount = (id: string) => lessons.filter((l) => l.data.course === id).length;
+const articles = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+
+// Regroupe TOUT le contenu par domaine (cours + articles) = le catalogue
+const byPillar = PILLARS.map((p) => {
+  const cs = courses.filter((c) => pillarByName(c.data.category)?.slug === p.slug);
+  const arts = articles.filter((a) => pillarByName(a.data.category)?.slug === p.slug);
+  const items = [
+    ...cs.map((c) => ({ title: c.data.title, href: `/academy/${c.id}/`, kind: 'Cours' as const })),
+    ...arts.map((a) => ({ title: a.data.title, href: `/academy/articles/${a.id}/`, kind: 'Article' as const })),
+  ];
+  return { pillar: p, items, coursesN: cs.length };
+});
+
+const totalTutos = courses.length + articles.length;
+// À la une : les cours d'abord, complétés par des articles récents
+const featured = [
+  ...courses.map((c) => ({ title: c.data.title, href: `/academy/${c.id}/`, cat: c.data.category, kind: 'Cours' })),
+  ...articles.slice(0, 8).map((a) => ({ title: a.data.title, href: `/academy/articles/${a.id}/`, cat: a.data.category, kind: 'Article' })),
+].slice(0, 8);
+const colorOf = (cat: string) => pillarByName(cat)?.color || '#0E8074';
+---
+
+<AcademyLayout title="Bibliothèque" description="Tous nos tutoriels gratuits, classés par domaine.">
+  <section class="ac-lib-hero">
+    <span class="ac-eyebrow">Bibliothèque Tutoria</span>
+    <h1 class="ac-display">Explore nos tutoriels, <span class="em">gratuitement</span></h1>
+    <p>Santé, argent, mental, tech. Tout notre contenu au même endroit, classé par domaine. Tu lis, tu comprends, tu appliques.</p>
+    <div class="ac-lib-stats">
+      <div><b>{totalTutos}+</b><span>tutoriels</span></div>
+      <div><b>4</b><span>domaines</span></div>
+      <div><b>100%</b><span>gratuit</span></div>
+    </div>
+  </section>
+
+  <section class="ac-lib-sec">
+    <h2 class="ac-display">À la une</h2>
+    <div class="ac-lib-pop">
+      {featured.map((f) => (
+        <a class="ac-lib-card" href={f.href} style={`--c:${colorOf(f.cat)}`}>
+          <span class="ac-lib-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5"/></svg></span>
+          <div>
+            <b>{f.title}</b>
+            <small>{f.cat}</small>
+          </div>
+          <span class="ac-lib-kind">{f.kind}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {byPillar.map(({ pillar, items, coursesN }) => (
+    <section class="ac-lib-cat" id={pillar.slug} style={`--c:${pillar.color}`}>
+      <div class="ac-lib-cat-head">
+        <span class="ac-lib-dot"></span>
+        <h2>{pillar.name}</h2>
+        <span class="ac-lib-count">{items.length} tutoriel{items.length > 1 ? 's' : ''}{coursesN > 0 ? ` · ${coursesN} cours` : ''}</span>
+        <a class="ac-lib-all" href={`/academy/#${pillar.slug}`}>Voir le domaine →</a>
+      </div>
+      {items.length === 0
+        ? <p class="ac-lib-empty">Premiers tutoriels en préparation.</p>
+        : (
+          <ul class="ac-lib-links">
+            {items.map((it) => (
+              <li><a href={it.href}>{it.title}{it.kind === 'Cours' && <span class="ac-lib-badge">Cours</span>}</a></li>
+            ))}
+          </ul>
+        )}
+    </section>
+  ))}
+</AcademyLayout>
+
+<style>
+  .ac-lib-hero { text-align: center; max-width: 680px; margin: 46px auto 10px; }
+  .ac-lib-hero h1 { font-size: clamp(2rem, 4.4vw, 3rem); letter-spacing: -.03em; margin: 12px 0 12px; }
+  .ac-lib-hero h1 .em { color: var(--ac-teal); }
+  .ac-lib-hero p { color: var(--ac-ink-soft); font-size: 1.05rem; line-height: 1.6; margin: 0 0 24px; }
+  .ac-lib-stats { display: inline-flex; gap: 14px; }
+  .ac-lib-stats div { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; padding: 14px 26px; }
+  .ac-lib-stats b { display: block; font-family: var(--ac-display); font-weight: 800; font-size: 1.7rem; color: var(--ac-teal); line-height: 1; }
+  .ac-lib-stats span { color: var(--ac-muted); font-size: .82rem; }
+
+  .ac-lib-sec { margin: 48px 0; }
+  .ac-lib-sec > h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.6rem; letter-spacing: -.02em; margin: 0 0 18px; padding-left: 14px; border-left: 5px solid var(--ac-teal); }
+  .ac-lib-pop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .ac-lib-card { display: flex; align-items: center; gap: 12px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; padding: 15px; text-decoration: none; color: inherit; transition: transform .14s, border-color .14s, box-shadow .14s; }
+  .ac-lib-card:hover { transform: translateY(-3px); border-color: var(--c); box-shadow: var(--ac-shadow-sm); }
+  .ac-lib-ic { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 11px; background: color-mix(in srgb, var(--c) 14%, var(--ac-surface)); color: var(--c); display: flex; align-items: center; justify-content: center; }
+  .ac-lib-ic svg { width: 20px; height: 20px; }
+  .ac-lib-card b { font-family: var(--ac-display); font-weight: 700; font-size: .92rem; line-height: 1.25; display: block; }
+  .ac-lib-card small { color: var(--ac-muted); font-size: .76rem; }
+  .ac-lib-kind { margin-left: auto; align-self: flex-start; font-size: .64rem; font-weight: 700; color: var(--c); background: color-mix(in srgb, var(--c) 12%, var(--ac-surface)); padding: 3px 8px; border-radius: 999px; }
+
+  .ac-lib-cat { margin: 40px 0; padding-top: 26px; border-top: 1px solid var(--ac-line); scroll-margin-top: 88px; }
+  .ac-lib-cat-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .ac-lib-dot { width: 14px; height: 14px; border-radius: 4px; background: var(--c); transform: rotate(45deg); }
+  .ac-lib-cat-head h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; margin: 0; }
+  .ac-lib-count { color: var(--ac-muted); font-size: .88rem; font-weight: 600; }
+  .ac-lib-all { margin-left: auto; font-weight: 700; font-size: .88rem; color: var(--c); text-decoration: none; }
+  .ac-lib-links { columns: 3; column-gap: 40px; list-style: none; margin: 0; padding: 0; }
+  .ac-lib-links li { break-inside: avoid; margin: 0 0 3px; }
+  .ac-lib-links a { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: .92rem; color: var(--ac-ink-soft); text-decoration: none; line-height: 1.4; }
+  .ac-lib-links a:hover { color: var(--c); }
+  .ac-lib-badge { font-size: .6rem; font-weight: 700; color: #fff; background: var(--c); padding: 2px 7px; border-radius: 999px; text-transform: uppercase; letter-spacing: .04em; }
+  .ac-lib-empty { color: var(--ac-muted); font-style: italic; }
+  @media (max-width: 860px) { .ac-lib-pop { grid-template-columns: repeat(2, 1fr); } .ac-lib-links { columns: 2; } }
+  @media (max-width: 560px) { .ac-lib-pop { grid-template-columns: 1fr; } .ac-lib-links { columns: 1; } }
+</style>

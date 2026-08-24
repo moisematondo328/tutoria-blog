@@ -1,52 +1,85 @@
-# 3 — Data Dictionary (Dictionnaire des données)
+# 3 — Data Dictionary
 
-## Collection `blog` (articles) — `src/content/blog/*.md`
-Définie dans `src/content.config.ts` (schéma Zod).
+> Deux sources de données : **contenu statique** (content collections Astro, `src/content/`) et
+> **données dynamiques** (Redis/Upstash, via `src/lib/store.ts` et `src/lib/auth.ts`).
 
-| Champ | Type | Requis | Description |
-|---|---|---|---|
-| `title` | string | ✅ | Titre de l'article |
-| `date` | datetime | ✅ | Date de publication (`AAAA-MM-JJ HH:mm:ss`) |
-| `category` | enum (4 piliers) | ✅ | Rubrique — voir liste ci-dessous |
-| `categorySlug` | string | ⬜ (déduit) | Slug de rubrique ; sinon calculé via `catSlugOf()` |
-| `excerpt` | string | ⬜ | Résumé (SEO + cartes). Auto-généré si vide |
-| `cover` | string (chemin) | ⬜ | Image à la une : `/uploads/AAAA/MM/*.webp` |
-| `draft` | boolean | ⬜ (défaut false) | `true` = non publié (modération) |
-| *body* | markdown/HTML | — | Corps de l'article (après le frontmatter) |
+## A. Contenu statique — Content Collections (`src/content.config.ts`)
 
-`id` d'un article = nom du fichier sans `.md` = son slug d'URL (`/blog/<id>/`).
-
-## Rubriques (piliers) — `src/consts.ts`
-| Nom (`category`) | `slug` (URL) | Couleur | Icône |
-|---|---|---|---|
-| Santé & Bien-être | `sante-bien-etre` | `#0E8074` | health |
-| Développement Personnel | `developpement-personnel` | `#E0A400` | growth |
-| Finance & Investissement | `finance-investissement` | `#0B6E64` | finance |
-| Technologie Émergente | `technologie-emergente` | `#12A594` | tech |
-
-## Collection `books` (livres) — `src/content/books/*.md`
-| Champ | Type | Description |
+### `courses` (`src/content/courses/*.md`)
+| Champ | Type | Notes |
 |---|---|---|
-| `title` | string | Titre du livre |
-| `author` | string | Auteur |
-| `cover` | image | Couverture (`/uploads/…`) |
-| `description` | text | Résumé |
-| `file` | file | PDF à télécharger (`/livres/…`) |
-| `readUrl` | string | Lien de lecture en ligne (optionnel) |
-| `available` | boolean | `false` = badge « Bientôt » |
-| `order` | number | Ordre d'affichage |
+| `title` | string | requis |
+| `category` | string | un des 4 domaines (nom exact) |
+| `expert` | string | nom de l'expert (lie à `EXPERTS`) |
+| `cover` | string | image optionnelle |
+| `excerpt` | string | résumé carte |
+| `level` | string | défaut « Débutant » |
+| `order` | number | tri |
+| `draft` | boolean | exclu si true |
 
-Gérable depuis le back-office (Pages CMS → collection **Livres**).
+### `lessons` (`src/content/lessons/<course>/*.md`)
+| Champ | Type | Notes |
+|---|---|---|
+| `title` | string | requis |
+| `course` | string | id du cours parent |
+| `order` | number | ordre dans le cours |
+| `premium` | boolean | **hérité, non utilisé** (contenu gratuit ; plus de paywall) |
+| `draft` | boolean | |
+| `quiz` | array | `[{ q, options:[{ t, correct? }] }]` — rendu interactif + inclus au PDF |
 
-## Médias
-- Images : `public/uploads/AAAA/MM/` (→ `/uploads/`)
-- Fichiers livres (PDF) : `public/livres/` (→ `/livres/`)
-- Emplacement historique : `public/uploads/AAAA/MM/`
-- Format : **WebP** (converti/compressé, largeur max 1000 px, qualité ~58).
-- Référence dans le contenu : `/uploads/AAAA/MM/fichier.webp`.
+Corps = markdown court : intro, **tableau**, **étapes numérotées** (`1. 2. 3.`), encadré
+`> **À retenir.** …`. Pas de pavés.
 
-## Données côté « usine à contenu » (séparé — Airtable)
-La base Airtable **« Tutoria — Usine à contenu »** (table `Contenus`) alimente la production
-vidéo/sociale. Champs : Sujet, Angle, Pilier, Statut, Hook, Script, Textes_ecran, A_filmer, Titre,
-Description, Hashtags, Voix_URL, Video_URL, perf… (voir `00_Pilotage/Kit-Automatisation/`).
-> À terme, cette base pourra **générer des articles** poussés vers `src/content/blog/` (auto-publication).
+### `blog` (`src/content/blog/*.md`) — les Articles
+`title, date, category, excerpt, cover, draft`. ~57 articles migrés, classés dans les 4 domaines.
+Servis dans la coquille Academy à `/academy/articles/[slug]/` et listés dans la Bibliothèque.
+
+### `books`, `videos`
+Collections héritées du blog (livres, vidéos). Présentes, peu utilisées côté Academy.
+
+## B. Constantes (`src/consts.ts`)
+- `PILLARS` : `{ name, slug, color, icon, blurb }` × 4.
+- `EXPERTS` : `{ name, slug, pillar (nom du domaine), role, bio }` × 6. Helpers `expertBySlug`,
+  `expertByName`.
+- `SITE`, `SOCIALS`, `NAV`, `pillarByName`, `catSlugOf`, `readingTime`.
+
+## C. Offres (`src/lib/plans.ts`)
+- `ACCOMP` : le produit payant. `{ name, tagline, blurb, cta, steps[3], formats[] }`.
+  `formats` = `[{ id:'seance', price:15, per:'la séance' }, { id:'mensuel', price:49, per:'par mois', highlight }]`.
+- `PAY_METHODS` : `[{ id, label, kind:'mobile'|'card', hint }]` — Airtel, Orange, M-Pesa,
+  Africell, Carte.
+- (`PLANS`/`COACHING`/`getPlan` : reliquats de l'ancienne offre Premium, non utilisés.)
+
+## D. Données dynamiques — Redis (`src/lib/auth.ts`, `store.ts`)
+
+### Modèle `User` (clé `user:{id}`)
+| Champ | Type | Notes |
+|---|---|---|
+| `id` | string | `randomBytes(9).base64url` |
+| `email` | string | normalisé (minuscule) |
+| `name` | string | |
+| `passwordHash` | string \| null | `scrypt$sel$clé` ; null si Google seul |
+| `provider` | 'email' \| 'google' | |
+| `verified` | boolean | e-mail confirmé |
+| `avatar` | string? | photo Google |
+| `plan` | 'free' \| 'premium' | **hérité** (contenu gratuit ; réservé à un usage futur) |
+| `planUntil` | number? | échéance éventuelle |
+| `createdAt` | number | timestamp |
+
+`SafeUser` = `User` sans `passwordHash` (renvoyé par l'API `/api/auth/me`).
+
+### Clés Redis
+| Clé | Valeur | TTL |
+|---|---|---|
+| `user:{id}` | objet User | ∞ |
+| `user:byEmail:{email}` | `{ id }` | ∞ |
+| `session:{token}` | `{ userId, createdAt }` | 30 j |
+| `verify:{token}` | `{ userId }` | 24 h |
+| `reset:{token}` | `{ userId }` | 1 h |
+| `user:{id}:progress` | `{ "courseId/lessonSlug": timestamp }` | ∞ |
+
+Cookies : `tuto_session` (httpOnly, Secure, SameSite=Lax, 30 j) ; `oauth_state` (10 min, CSRF Google).
+
+## E. Progression
+`Progress = Record<"courseId/lessonSlug", timestamp>`. API `/api/progress` (GET état, POST bascule).
+Le lecteur (bouton « Marquer comme terminé ») et le tableau de bord lisent/écrivent cette clé.

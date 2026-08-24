@@ -1,10 +1,38 @@
-# CLAUDE.md — Tutoria News (site blog)
+# CLAUDE.md — Tutoria Academy (plateforme d'apprentissage)
 
 Instructions pour Claude Code / tout développeur reprenant ce projet.
 
 ## Ce que c'est
-Blog éducatif **Tutoria News** (média francophone, Afrique). Site **statique Astro**, reconstruit
-depuis un backup WordPress, déployé sur **Vercel**. Voir `docs/01-app-spec.md`.
+**Tutoria Academy** : plateforme d'apprentissage francophone (Afrique), **clone rigoureux de
+tutorialspoint.com** adapté à nos 4 domaines. Site **statique Astro** + fonctions serverless,
+déployé sur **Vercel**. L'ancien **blog Tutoria News** vit désormais comme **section « Articles »**
+dans la coquille Academy (il n'est plus l'expérience principale). Voir `docs/01-app-spec.md`.
+
+**Modèle** : le **contenu est gratuit** (la matière qui capte l'attention) ; le **payant, c'est
+l'accompagnement** par un expert (demande → inscription → paiement → espace). Pas de pub, pas de
+verrou sur le contenu. Détails : `docs/01-app-spec.md`.
+
+> **Norme de doc du projet** (à tenir à jour) : `docs/01-app-spec` · `02-brand-brief` ·
+> `03-data-dictionary` · ce `CLAUDE.md` · `04-feature-backlog` · `05-integrations` · `06-error-log`.
+
+## L'Academy (expérience principale, sous `/academy/`)
+- **Layout** : `src/layouts/AcademyLayout.astro` (barre utilitaire à icônes, méga-menu « Domaines »,
+  nav, tiroir mobile `.ac-mobile`, pied multi-colonnes, hydratation compte via `/api/auth/me`).
+- **Design system** : `src/styles/academy.css` (tokens `--ac-*`, Bricolage Grotesque + Poppins,
+  signature « chemin d'apprentissage »). Voir `docs/02-brand-brief.md`.
+- **Pages** : `academy/index` (accueil dense + hero collage), `academy/bibliotheque` (catalogue),
+  `academy/[course]/index` + `academy/[course]/[lesson]` (+ `[lesson].pdf.ts` = fiche PDF),
+  `academy/outils/*` (tableau-blanc, calculatrice, compilateur, pratique), `academy/compte/*`
+  (connexion, inscription, mot-de-passe, reinitialiser, paiement, tableau de bord),
+  `academy/accompagnement`, `academy/expert/[slug]`, `academy/articles/*`, `academy/recherche`,
+  `academy/a-propos`, `academy/contact`.
+- **Comptes** : `src/lib/auth.ts` (scrypt + sessions Redis + Brevo + Google OAuth), routes
+  `src/pages/api/auth/*` + `api/progress`. **Offres** : `src/lib/plans.ts` (`ACCOMP`, `PAY_METHODS`).
+- **PDF** : `src/lib/lesson-pdf.ts` (pdfkit + marked, polices `src/assets/pdf-fonts/`).
+- **Contenu cours** : `src/content/courses/` + `src/content/lessons/<course>/` (leçons courtes + `quiz`).
+
+⚠️ **Ne pas déployer sans validation quand le fondateur suit en local** : il inspecte sur
+`localhost:4321` (`npm run dev -- --host --port 4321`) ; pousser seulement quand il valide.
 
 ## Stack
 - **Astro 5** (statique / SSG par défaut), TypeScript léger.

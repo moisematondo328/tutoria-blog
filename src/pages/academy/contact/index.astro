@@ -1,6 +1,8 @@
 ---
 import AcademyLayout from '../../../layouts/AcademyLayout.astro';
 import { SOCIALS } from '../../../consts';
+import { turnstileSiteKey } from '../../../lib/turnstile';
+const siteKey = turnstileSiteKey();
 ---
 
 <AcademyLayout title="Contact" description="Une question, un projet, un partenariat ? Écris-nous.">
@@ -11,9 +13,6 @@ import { SOCIALS } from '../../../consts';
       <p class="ac-ct-lead">Une question sur un parcours, une envie d'accompagnement, un partenariat (école, ONG, entreprise) ? Écris-nous, on répond vite.</p>
 
       <form id="ct-form">
-        <input type="hidden" name="access_key" value="bdb279ee-0299-4b3a-985a-e8ee91257ba0" />
-        <input type="hidden" name="from_name" value="Tutoria Academy" />
-        <input type="hidden" name="subject" value="Nouveau message - Tutoria Academy" />
         <div class="ac-msg err" id="ct-err"></div>
         <div class="ac-field"><label for="name">Ton nom</label><input id="name" name="name" type="text" autocomplete="name" required /></div>
         <div class="ac-field"><label for="email">Ton e-mail</label><input id="email" name="email" type="email" autocomplete="email" required /></div>
@@ -27,8 +26,10 @@ import { SOCIALS } from '../../../consts';
           </select>
         </div>
         <div class="ac-field"><label for="message">Ton message</label><textarea id="message" name="message" rows="5" required></textarea></div>
+        <div id="ts-widget" class="cf-turnstile ac-ts" data-sitekey={siteKey} data-theme="auto"></div>
         <button class="ac-auth-btn" id="ct-send" type="submit">Envoyer le message</button>
       </form>
+      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer is:inline></script>
 
       <div class="ac-ct-done" id="ct-done" hidden>
         <div class="ac-ct-done-ic">✓</div>
@@ -69,22 +70,36 @@ import { SOCIALS } from '../../../consts';
 </style>
 
 <script>
+  let ctWid = null;
+  function renderCtTs() {
+    const host = document.getElementById('ts-widget');
+    if (!host || host.dataset.rendered || !window.turnstile) return;
+    host.dataset.rendered = '1';
+    ctWid = window.turnstile.render(host, { sitekey: host.dataset.sitekey, theme: 'auto' });
+  }
+  window.onTurnstileLoad = renderCtTs;
+
   function contact() {
+    renderCtTs();
     const form = document.getElementById('ct-form');
     if (!form || form.dataset.bound) return;
     form.dataset.bound = '1';
     const err = document.getElementById('ct-err');
     const btn = document.getElementById('ct-send');
+    const errors = { captcha: 'Confirme que tu n\'es pas un robot.', invalid: 'Remplis ton nom, ton e-mail et ton message.', config: 'Service momentanément indisponible.', send: "L'envoi a échoué. Réessaie dans un instant." };
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       err.classList.remove('show');
+      const token = window.turnstile ? window.turnstile.getResponse(ctWid) : '';
+      if (!token) { err.textContent = errors.captcha; err.classList.add('show'); return; }
       btn.disabled = true; btn.textContent = 'Envoi…';
       try {
-        const data = Object.fromEntries(new FormData(form).entries());
-        const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify(data) });
+        const body = { name: form.name.value, email: form.email.value, reason: form.reason.value, message: form.message.value, turnstileToken: token };
+        const r = await fetch('/api/contact', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
         const d = await r.json();
-        if (d.success) { form.style.display = 'none'; document.getElementById('ct-done').hidden = false; return; }
-        err.textContent = "L'envoi a échoué. Réessaie dans un instant."; err.classList.add('show');
+        if (d.ok) { form.style.display = 'none'; document.getElementById('ct-done').hidden = false; return; }
+        err.textContent = errors[d.error] || errors.send; err.classList.add('show');
+        if (window.turnstile) window.turnstile.reset(ctWid);
       } catch { err.textContent = 'Connexion impossible. Vérifie ton réseau.'; err.classList.add('show'); }
       btn.disabled = false; btn.textContent = 'Envoyer le message';
     });

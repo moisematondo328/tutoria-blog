@@ -10,10 +10,10 @@ import { join } from 'node:path';
 // Chargées depuis la racine projet (présente au build statique).
 const fontPath = (f: string) => join(process.cwd(), 'src/assets/pdf-fonts', f);
 const FONTS = {
-  body: readFileSync(fontPath('Poppins-Regular.ttf')),
-  med: readFileSync(fontPath('Poppins-Medium.ttf')),
-  semi: readFileSync(fontPath('Poppins-SemiBold.ttf')),
-  display: readFileSync(fontPath('BricolageGrotesque-Bold.ttf')),
+  body: readFileSync(fontPath('Montserrat-Regular.ttf')),
+  med: readFileSync(fontPath('Montserrat-Medium.ttf')),
+  semi: readFileSync(fontPath('Montserrat-SemiBold.ttf')),
+  display: readFileSync(fontPath('Montserrat-ExtraBold.ttf')),
 };
 
 // Palette (tokens Academy)

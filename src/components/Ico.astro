@@ -1,0 +1,17 @@
+---
+// Icône PRO inline (Phosphor duotone + Simple Icons), depuis les données Iconify.
+// Inline (pas de sprite) → on peut colorer la couche secondaire duotone en jaune de marque.
+// Usage : <Ico name="ph:house-duotone" class="ac-uic" /> · <Ico name="si:tiktok" />
+import ph from '@iconify-json/ph/icons.json';
+import si from '@iconify-json/simple-icons/icons.json';
+
+interface Props { name: string; class?: string; }
+const { name, class: cls } = Astro.props;
+const [prefix, key] = name.includes(':') ? [name.slice(0, name.indexOf(':')), name.slice(name.indexOf(':') + 1)] : ['ph', name];
+const set: any = prefix === 'si' || prefix === 'simple-icons' ? si : ph;
+const ic = set.icons?.[key];
+const body = ic?.body ?? '';
+const w = ic?.width ?? set.width ?? 24;
+const h = ic?.height ?? set.height ?? 24;
+---
+<svg class={cls} viewBox={`0 0 ${w} ${h}`} width="1em" height="1em" fill="currentColor" aria-hidden="true" set:html={body}></svg>

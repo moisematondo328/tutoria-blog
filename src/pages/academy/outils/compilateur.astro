@@ -23,15 +23,22 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     <button class="ac-tbtn" id="cp-reset">Réinitialiser</button>
     <span class="sep"></span>
     <button class="ac-tbtn" id="cp-clear">Effacer la sortie</button>
+    <span class="ac-code-hint">Ctrl + Entrée pour lancer</span>
   </div>
   <div class="ac-code-grid">
-    <div class="ac-code-edit"><textarea id="cp-code" spellcheck="false"></textarea></div>
+    <div class="ac-code-edit"><div id="cp-editor"></div></div>
     <div class="ac-code-out" id="cp-out"><span class="muted">La sortie apparaîtra ici.</span></div>
   </div>
   <div class="ac-note-soon" id="cp-note" hidden>L'exécution de ce langage se fait côté serveur : elle arrive très bientôt. Pour l'instant, JavaScript s'exécute directement dans ton navigateur.</div>
 </AcademyLayout>
 
 <script>
+  import { EditorView, keymap } from '@codemirror/view';
+  import { Compartment } from '@codemirror/state';
+  import { basicSetup } from 'codemirror';
+  import { javascript } from '@codemirror/lang-javascript';
+  import { oneDark } from '@codemirror/theme-one-dark';
+
   const STARTERS = {
     javascript: `// Écris du JavaScript, puis clique sur Exécuter.\nfunction salut(nom) {\n  return "Bonjour, " + nom + " !";\n}\n\nconsole.log(salut("Tutoria"));\nconsole.log("2 + 2 =", 2 + 2);`,
     python: `# Python (exécution serveur bientôt)\ndef salut(nom):\n    return f"Bonjour, {nom} !"\n\nprint(salut("Tutoria"))`,
@@ -39,32 +46,41 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Bonjour, Tutoria !" << endl;\n    return 0;\n}`,
     java: `public class Main {\n    public static void main(String[] args) {\n        System.out.println("Bonjour, Tutoria !");\n    }\n}`,
   };
+  const PLACEHOLDER = '<span class="muted">La sortie apparaîtra ici.</span>';
 
   function compiler() {
-    const code = document.getElementById('cp-code');
-    if (!code || code.dataset.bound) return;
-    code.dataset.bound = '1';
+    const host = document.getElementById('cp-editor');
+    if (!host || host.dataset.bound) return;
+    host.dataset.bound = '1';
     const out = document.getElementById('cp-out');
     const langSel = document.getElementById('cp-lang');
     const note = document.getElementById('cp-note');
     const runBtn = document.getElementById('cp-run');
 
-    const fmt = (v) => {
-      if (typeof v === 'string') return v;
-      try { return JSON.stringify(v); } catch { return String(v); }
-    };
-    const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const fmt = (v) => { if (typeof v === 'string') return v; try { return JSON.stringify(v); } catch { return String(v); } };
+    const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
     let lang = 'javascript';
-    const load = () => { code.value = STARTERS[lang]; };
-    load();
+    const langComp = new Compartment();
+    const langExt = (l) => (l === 'javascript' ? javascript() : []);
+    const view = new EditorView({
+      doc: STARTERS[lang],
+      extensions: [
+        basicSetup, langComp.of(langExt(lang)), oneDark, EditorView.lineWrapping,
+        keymap.of([{ key: 'Mod-Enter', run: () => { run(); return true; } }]),
+      ],
+      parent: host,
+    });
+    const getCode = () => view.state.doc.toString();
+    const setCode = (s) => view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: s } });
 
     function setLang(l) {
       lang = l;
       note.hidden = l === 'javascript';
       runBtn.classList.toggle('on', l === 'javascript');
-      load();
-      out.innerHTML = '<span class="muted">La sortie apparaîtra ici.</span>';
+      setCode(STARTERS[l]);
+      view.dispatch({ effects: langComp.reconfigure(langExt(l)) });
+      out.innerHTML = PLACEHOLDER;
     }
     langSel.addEventListener('change', () => setLang(langSel.value));
 
@@ -78,7 +94,7 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
         error: (...a) => push(a.map(fmt).join(' '), 'err'),
       };
       try {
-        const fn = new Function('console', '"use strict";\n' + code.value);
+        const fn = new Function('console', '"use strict";\n' + getCode());
         const t0 = performance.now();
         const ret = fn(cons);
         const ms = Math.max(1, Math.round(performance.now() - t0));
@@ -91,19 +107,12 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     }
 
     function run() {
-      if (lang !== 'javascript') {
-        out.innerHTML = '<span class="muted">Ce langage s\'exécutera côté serveur (bientôt). Essaie JavaScript en attendant.</span>';
-        return;
-      }
+      if (lang !== 'javascript') { out.innerHTML = '<span class="muted">Ce langage s\'exécutera côté serveur (bientôt). Essaie JavaScript en attendant.</span>'; return; }
       runJS();
     }
     runBtn.addEventListener('click', run);
-    document.getElementById('cp-reset').addEventListener('click', load);
-    document.getElementById('cp-clear').addEventListener('click', () => { out.innerHTML = '<span class="muted">La sortie apparaîtra ici.</span>'; });
-    code.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') { e.preventDefault(); const s = code.selectionStart, en = code.selectionEnd; code.value = code.value.slice(0, s) + '  ' + code.value.slice(en); code.selectionStart = code.selectionEnd = s + 2; }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); }
-    });
+    document.getElementById('cp-reset').addEventListener('click', () => setCode(STARTERS[lang]));
+    document.getElementById('cp-clear').addEventListener('click', () => { out.innerHTML = PLACEHOLDER; });
   }
   document.addEventListener('astro:page-load', compiler);
 </script>

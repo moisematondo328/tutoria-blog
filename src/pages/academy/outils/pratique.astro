@@ -14,7 +14,7 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
   <div class="ac-toolbar" id="pr-bar"></div>
   <div class="ac-pr-ex" id="pr-statement"></div>
   <div class="ac-code-grid">
-    <div class="ac-code-edit"><textarea id="pr-code" spellcheck="false"></textarea></div>
+    <div class="ac-code-edit"><div id="pr-editor"></div></div>
     <div class="ac-code-out" id="pr-out"><span class="muted">Clique « Vérifier » pour lancer les tests.</span></div>
   </div>
   <div style="margin-top:10px;display:flex;gap:8px">
@@ -31,6 +31,11 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
 </style>
 
 <script>
+  import { EditorView, keymap } from '@codemirror/view';
+  import { basicSetup } from 'codemirror';
+  import { javascript } from '@codemirror/lang-javascript';
+  import { oneDark } from '@codemirror/theme-one-dark';
+
   const EXOS = [
     { id: 'somme', level: 'Facile', fn: 'somme', title: 'La somme de deux nombres',
       statement: 'Écris la fonction <code>somme(a, b)</code> qui renvoie la somme de <code>a</code> et <code>b</code>.',
@@ -51,13 +56,21 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
   ];
 
   function pratique() {
-    const code = document.getElementById('pr-code');
-    if (!code || code.dataset.bound) return;
-    code.dataset.bound = '1';
+    const host = document.getElementById('pr-editor');
+    if (!host || host.dataset.bound) return;
+    host.dataset.bound = '1';
     const bar = document.getElementById('pr-bar');
     const stmt = document.getElementById('pr-statement');
     const out = document.getElementById('pr-out');
     let cur = EXOS[0];
+
+    const view = new EditorView({
+      doc: cur.starter,
+      extensions: [basicSetup, javascript(), oneDark, EditorView.lineWrapping, keymap.of([{ key: 'Mod-Enter', run: () => { check(); return true; } }])],
+      parent: host,
+    });
+    const getCode = () => view.state.doc.toString();
+    const setCode = (s) => view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: s } });
 
     bar.innerHTML = EXOS.map((e, i) => `<button class="ac-tbtn${i === 0 ? ' on' : ''}" data-ex="${e.id}">${e.title} · ${e.level}</button>`).join('');
     const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -68,7 +81,7 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
       cur = ex;
       bar.querySelectorAll('.ac-tbtn').forEach((b) => b.classList.toggle('on', b.dataset.ex === ex.id));
       stmt.innerHTML = `<h2>${ex.title}</h2><p>${ex.statement}</p>`;
-      code.value = ex.starter;
+      setCode(ex.starter);
       out.innerHTML = '<span class="muted">Clique « Vérifier » pour lancer les tests.</span>';
     }
     select(cur);
@@ -77,7 +90,7 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     function check() {
       let fn;
       try {
-        fn = new Function('"use strict";\n' + code.value + '\nreturn typeof ' + cur.fn + ' === "function" ? ' + cur.fn + ' : null;')();
+        fn = new Function('"use strict";\n' + getCode() + '\nreturn typeof ' + cur.fn + ' === "function" ? ' + cur.fn + ' : null;')();
       } catch (e) { out.innerHTML = `<span class="err">${esc((e.name || 'Erreur') + ': ' + e.message)}</span>`; return; }
       if (!fn) { out.innerHTML = `<span class="err">La fonction ${esc(cur.fn)} est introuvable. Garde bien son nom.</span>`; return; }
       const lines = []; let passed = 0;
@@ -94,10 +107,6 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     }
     document.getElementById('pr-check').addEventListener('click', check);
     document.getElementById('pr-reset').addEventListener('click', () => select(cur));
-    code.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') { e.preventDefault(); const s = code.selectionStart, en = code.selectionEnd; code.value = code.value.slice(0, s) + '  ' + code.value.slice(en); code.selectionStart = code.selectionEnd = s + 2; }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); check(); }
-    });
   }
   document.addEventListener('astro:page-load', pratique);
 </script>

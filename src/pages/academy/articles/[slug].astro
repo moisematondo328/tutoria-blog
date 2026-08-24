@@ -23,7 +23,7 @@ const related = (await getCollection('blog', ({ data }) => !data.draft))
     <span class="ac-read-cat">{category}</span>
     <h1 class="ac-display">{title}</h1>
     <div class="ac-read-meta"><span>Par {SITE.author}</span><span>{dateStr}</span><span>{mins} min de lecture</span></div>
-    {cover && <img class="ac-read-cov" src={cover} alt={title} />}
+    {cover && <img class="ac-read-cov" src={cover} alt={title} fetchpriority="high" loading="eager" decoding="async" />}
     <div class="prose"><Content /></div>
   </article>
 

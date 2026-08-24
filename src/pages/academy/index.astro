@@ -1,26 +1,41 @@
 ---
 import { getCollection } from 'astro:content';
 import AcademyLayout from '../../layouts/AcademyLayout.astro';
-import { PILLARS, pillarByName, catSlugOf } from '../../consts';
+import { PILLARS, EXPERTS, pillarByName, catSlugOf } from '../../consts';
+import Ico from '../../components/Ico.astro';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+
+const PH: Record<string, string> = {
+  'sante-bien-etre': 'ph:heartbeat-duotone',
+  'developpement-personnel': 'ph:trend-up-duotone',
+  'finance-investissement': 'ph:coins-duotone',
+  'technologie-emergente': 'ph:cpu-duotone',
+};
 
 const courses = (await getCollection('courses', ({ data }) => !data.draft)).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 const lessons = await getCollection('lessons', ({ data }) => !data.draft);
 const lessonCount = (id: string) => lessons.filter((l) => l.data.course === id).length;
 const coursesOf = (slug: string) => courses.filter((c) => pillarByName(c.data.category)?.slug === slug);
 const articles = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()).slice(0, 4);
+  .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()).slice(0, 10);
+
+// Parcours guidés : le cours phare de chaque domaine + ses étapes (leçons)
+const slugOfLesson = (id: string) => id.split('/').pop() as string;
+const lessonsOfCourse = (id: string) => lessons.filter((l) => l.data.course === id).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+const paths = PILLARS.map((p) => {
+  const c = coursesOf(p.slug)[0] || null;
+  return { pillar: p, course: c, steps: c ? lessonsOfCourse(c.id) : [] };
+});
 
 const GRAD: Record<string, string[]> = {
   'sante-bien-etre': ['#12A594', '#0B6E64'],
   'developpement-personnel': ['#E0A400', '#A9760A'],
   'finance-investissement': ['#0E8074', '#0A3F3A'],
   'technologie-emergente': ['#19B7A0', '#0E8074'],
-};
-const ICON: Record<string, string> = {
-  'sante-bien-etre': '<path d="M12 21s-7-4.35-9.5-8.5C1 9.5 2.5 6 6 6c2 0 3 1.2 4 2.5C11 7.2 12 6 14 6c3.5 0 5 3.5 3.5 6.5C19 16.65 12 21 12 21z"/>',
-  'developpement-personnel': '<path d="M3 17l6-6 4 4 7-7"/><path d="M14 7h6v6"/>',
-  'finance-investissement': '<circle cx="8" cy="8" r="5"/><path d="M13 11a5 5 0 1 0 0 8"/><path d="M8 6v4M6 8h4"/>',
-  'technologie-emergente': '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
 };
 const pad = (n: number) => String(n + 1).padStart(2, '0');
 ---
@@ -30,7 +45,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   <section class="ac-hero2">
     <div>
       <span class="ac-eyebrow">Tutoria Academy</span>
-      <h1 class="ac-display" style="font-size:clamp(2.4rem,5vw,4rem);line-height:.98;letter-spacing:-.03em;margin:14px 0 18px">Apprends. Comprends. <span style="color:var(--ac-teal);position:relative">Applique.</span></h1>
+      <h1 class="ac-display" style="font-size:clamp(2.4rem,5vw,4rem);line-height:.98;letter-spacing:-.03em;margin:14px 0 18px">Apprends. Comprends. <span class="ac-hl">Applique.</span></h1>
       <p style="font-size:1.15rem;line-height:1.6;color:var(--ac-ink-soft);max-width:46ch;margin:0 0 26px">La plateforme d'apprentissage francophone. Choisis ton domaine, suis le chemin pas à pas, et emporte chaque cours avec toi.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <a class="ac-btn ac-btn-primary" href="#catalogue">Explorer les cours →</a>
@@ -79,9 +94,9 @@ toi.<span class="f">appliquer</span>();</pre>
       const g = GRAD[p.slug] || ['#0E8074', '#0A3F3A'];
       const n = coursesOf(p.slug).length;
       return (
-        <a class="ac-feat" href={`#${p.slug}`} style={`--c1:${g[0]};--c2:${g[1]}`}>
+        <a class="ac-feat" href={`/academy/bibliotheque/#${p.slug}`} style={`--c1:${g[0]};--c2:${g[1]}`}>
           <span class="ac-feat-badge">{n > 0 ? `${n} cours` : 'Bientôt'}</span>
-          <span class="ac-feat-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={ICON[p.slug]} /></span>
+          <span class="ac-feat-ic"><Ico name={PH[p.slug]} /></span>
           <h3>{p.name}</h3>
           <p>{p.blurb}</p>
           <span class="ac-feat-go">Explorer →</span>
@@ -90,62 +105,119 @@ toi.<span class="f">appliquer</span>();</pre>
     })}
   </section>
 
-  <div id="catalogue"></div>
-
-  <!-- CATALOGUE par domaine -->
-  <div id="ac-lib">
-    {PILLARS.map((p) => {
-      const list = coursesOf(p.slug);
-      return (
-        <section class="ac-band" id={p.slug} data-pillar-block style={`--c:${p.color}`}>
-          <div class="ac-band-head">
-            <div>
-              <h2><span class="em">{p.name.split(' ')[0]}</span> {p.name.split(' ').slice(1).join(' ')}</h2>
-              <p>{list.length} cours · animé par un expert</p>
-            </div>
+  <!-- PARCOURS GUIDÉS (façon "Learning Paths") -->
+  <section class="ac-paths" id="catalogue">
+    <div class="ac-paths-head">
+      <h2 class="ac-display">Parcours <span class="em">guidés</span></h2>
+      <p>Un chemin clair, leçon après leçon. Tu choisis, tu avances, tu appliques.</p>
+    </div>
+    <div class="ac-paths-grid">
+      {paths.map(({ pillar, course, steps }) => (
+        <div class="ac-path-card" style={`--c:${pillar.color}`}>
+          <div class="ac-path-top">
+            <span class="ac-path-dom"><span class="dot"></span>{pillar.name}</span>
+            {course ? <span class="ac-path-lvl">{course.data.level}</span> : <span class="ac-path-lvl soon">Bientôt</span>}
           </div>
-          {list.length === 0
-            ? <p class="ac-soon">Parcours en préparation.</p>
-            : (
-              <div class="ac-grid">
-                {list.map((c) => (
-                  <a class="ac-card" href={`/academy/${c.id}/`} style={`--c:${p.color}`} data-search={(c.data.title + ' ' + c.data.excerpt + ' ' + c.data.expert).toLowerCase()}>
-                    <div class="ac-card-top">
-                      {c.data.cover && <img src={c.data.cover} alt="" />}
-                      <span class="ac-card-lvl">{c.data.level}</span>
-                    </div>
-                    <div class="ac-card-b">
-                      <h3>{c.data.title}</h3>
-                      <p>{c.data.excerpt}</p>
-                      <div class="ac-card-m">
-                        <span class="ac-c-lessons">{lessonCount(c.id)} leçon{lessonCount(c.id) > 1 ? 's' : ''}</span>
-                        {c.data.expert && <span class="ac-c-exp">{c.data.expert}</span>}
-                      </div>
-                    </div>
-                  </a>
+          {course ? (
+            <>
+              <h3>{course.data.title}</h3>
+              <p class="ac-path-exp">{course.data.expert ? `Avec ${course.data.expert} · ` : ''}{steps.length} leçon{steps.length > 1 ? 's' : ''}</p>
+              <ol class="ac-path-steps">
+                {steps.slice(0, 5).map((l) => (
+                  <li><a href={`/academy/${course.id}/${slugOfLesson(l.id)}/`}>{l.data.title}</a></li>
                 ))}
-              </div>
-            )}
-        </section>
-      );
-    })}
-  </div>
+              </ol>
+              <a class="ac-path-cta" href={`/academy/${course.id}/`}>Commencer le parcours →</a>
+            </>
+          ) : (
+            <>
+              <h3>Parcours {pillar.name.split(' ')[0]}</h3>
+              <p class="ac-path-exp">Animé par l'expert du domaine</p>
+              <ol class="ac-path-steps ghost" aria-hidden="true">
+                <li><span class="sk"></span></li>
+                <li><span class="sk"></span></li>
+                <li><span class="sk"></span></li>
+              </ol>
+              <a class="ac-path-cta" href={`/academy/bibliotheque/#${pillar.slug}`}>Découvrir le domaine →</a>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
 
-  <!-- ARTICLES -->
+  <!-- NOS EXPERTS (carrousel Swiper) -->
+  <section class="ac-band">
+    <div class="ac-band-head">
+      <div><h2>Nos <span class="em">experts</span></h2><p>Un visage par domaine. Ce sont eux qui t'accompagnent.</p></div>
+      <a class="ac-band-more" href="/academy/accompagnement/">Se faire accompagner →</a>
+    </div>
+    <div class="swiper ac-swiper" id="sw-experts">
+      <div class="swiper-wrapper">
+        {EXPERTS.map((e) => {
+          const pil = pillarByName(e.pillar);
+          return (
+            <a class="swiper-slide ac-xp" href={`/academy/expert/${e.slug}/`} style={`--c:${pil?.color || 'var(--ac-teal)'}`}>
+              <span class="ac-xp-av">{initials(e.name)}</span>
+              <b>{e.name}</b>
+              <small>{e.role}</small>
+              <span class="ac-xp-dom">{e.pillar}</span>
+            </a>
+          );
+        })}
+      </div>
+      <div class="ac-sw-ctrl"><button class="ac-sw-prev" type="button" aria-label="Précédent">‹</button><div class="swiper-pagination"></div><button class="ac-sw-next" type="button" aria-label="Suivant">›</button></div>
+    </div>
+  </section>
+
+  <!-- DERNIERS ARTICLES (carrousel Swiper) -->
   {articles.length > 0 && (
     <section class="ac-band">
       <div class="ac-band-head">
         <div><h2>Derniers <span class="em">articles</span></h2><p>À lire vite, entre deux leçons.</p></div>
         <a class="ac-band-more" href="/academy/articles/">Tous les articles →</a>
       </div>
-      <div class="ac-arts">
-        {articles.map((a) => (
-          <a class="ac-art" href={`/academy/articles/${a.id}/`}>
-            <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" />}</div>
-            <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
-          </a>
-        ))}
+      <div class="swiper ac-swiper" id="sw-articles">
+        <div class="swiper-wrapper">
+          {articles.map((a) => (
+            <a class="swiper-slide ac-art" href={`/academy/articles/${a.id}/`}>
+              <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" decoding="async" />}</div>
+              <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
+            </a>
+          ))}
+        </div>
+        <div class="ac-sw-ctrl"><button class="ac-sw-prev" type="button" aria-label="Précédent">‹</button><div class="swiper-pagination"></div><button class="ac-sw-next" type="button" aria-label="Suivant">›</button></div>
       </div>
     </section>
   )}
 </AcademyLayout>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, A11y, Autoplay } from 'swiper/modules';
+
+  function initSwipers() {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.ac-swiper').forEach((el) => {
+      if (el.dataset.bound) return;
+      el.dataset.bound = '1';
+      const experts = el.id === 'sw-experts';
+      new Swiper(el, {
+        modules: [Navigation, Pagination, A11y, Autoplay],
+        slidesPerView: 1.15,
+        spaceBetween: 16,
+        grabCursor: true,
+        breakpoints: {
+          560: { slidesPerView: 2, spaceBetween: 18 },
+          900: { slidesPerView: 3, spaceBetween: 20 },
+          1200: { slidesPerView: experts ? 4 : 3.2, spaceBetween: 20 },
+        },
+        pagination: { el: el.querySelector('.swiper-pagination'), clickable: true },
+        navigation: { prevEl: el.querySelector('.ac-sw-prev'), nextEl: el.querySelector('.ac-sw-next') },
+        autoplay: reduce ? false : { delay: 5000, disableOnInteraction: true, pauseOnMouseEnter: true },
+        a11y: { enabled: true },
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', initSwipers);
+</script>

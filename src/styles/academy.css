@@ -8,7 +8,8 @@
   --ac-paper: #F2F6F3;      /* fond papier-menthe (pas de crème) */
   --ac-surface: #FFFFFF;
   --ac-surface-2: #FBFDFC;
-  --ac-ink: #0A2621;        /* encre teal profond */
+  --ac-ink: #0A2621;        /* encre teal profond (S'INVERSE en mode sombre) */
+  --ac-dark: #0A2621;       /* encre CONSTANTE : chrome/bandeaux/texte-sur-jaune (ne s'inverse jamais) */
   --ac-ink-soft: #3D554F;
   --ac-muted: #6A817B;
   --ac-teal: #0E8074;
@@ -21,8 +22,8 @@
   --ac-shadow: 0 18px 44px rgba(10, 38, 33, 0.10);
   --ac-shadow-sm: 0 6px 18px rgba(10, 38, 33, 0.07);
   --ac-radius: 18px;
-  --ac-display: 'Bricolage Grotesque', 'Poppins', system-ui, sans-serif;
-  --ac-body: 'Poppins', system-ui, -apple-system, sans-serif;
+  --ac-display: 'Montserrat', system-ui, sans-serif;   /* police officielle du logo Tutoria */
+  --ac-body: 'Montserrat', system-ui, -apple-system, sans-serif;
   /* accents par pilier */
   --p-sante: #0E8074;
   --p-dev: #E0A400;
@@ -81,16 +82,16 @@
 
 /* ---------- En-tête ---------- */
 .ac-top { position: sticky; top: 0; z-index: 60; background: color-mix(in srgb, var(--ac-surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--ac-line); }
-.ac-top-in { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 12px 24px; }
+.ac-top-in { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; gap: 14px; padding: 12px 24px; }
 .ac-burger { display: none; background: none; border: 0; font-size: 22px; color: var(--ac-ink); cursor: pointer; }
 .ac-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; flex: 0 0 auto; }
 .ac-brand img { height: 30px; width: auto; display: block; }
-.ac-brand .ac-badge { font-family: var(--ac-display); font-weight: 800; font-size: .7rem; letter-spacing: .06em; color: #fff; background: var(--ac-ink); padding: 3px 9px; border-radius: 7px; text-transform: uppercase; }
-.ac-nav { display: flex; align-items: center; gap: 4px; }
-.ac-nav a { font-weight: 600; font-size: .92rem; color: var(--ac-ink-soft); text-decoration: none; padding: 8px 12px; border-radius: 9px; }
-.ac-nav a:hover { color: var(--ac-teal); background: color-mix(in srgb, var(--ac-teal) 8%, transparent); }
+.ac-brand .ac-badge { font-family: var(--ac-display); font-weight: 800; font-size: .7rem; letter-spacing: .06em; color: #fff; background: var(--ac-dark); padding: 3px 9px; border-radius: 7px; text-transform: uppercase; }
+.ac-nav { display: flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+.ac-nav a { font-weight: 600; font-size: .9rem; color: var(--ac-ink-soft); text-decoration: none; padding: 7px 9px; border-radius: 9px; white-space: nowrap; }
+.ac-nav a:hover { color: var(--ac-teal); }
 .ac-nav a.cur { color: var(--ac-teal); }
-.ac-search { flex: 1; max-width: 420px; margin-left: auto; display: flex; align-items: center; gap: 9px; background: var(--ac-paper); border: 1px solid var(--ac-line); border-radius: 12px; padding: 9px 14px; color: var(--ac-muted); }
+.ac-search { flex: 1; max-width: 340px; margin-left: auto; display: flex; align-items: center; gap: 9px; background: var(--ac-paper); border: 1px solid var(--ac-line); border-radius: 12px; padding: 9px 14px; color: var(--ac-muted); }
 .ac-search input { flex: 1; border: 0; background: transparent; font-family: inherit; font-size: .92rem; color: var(--ac-ink); outline: none; }
 .ac-theme { background: none; border: 0; font-size: 18px; cursor: pointer; flex: 0 0 auto; }
 
@@ -98,7 +99,7 @@
 .ac-btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border-radius: 12px; padding: 12px 24px; border: 0; cursor: pointer; font-family: var(--ac-body); }
 .ac-btn-primary { background: var(--ac-teal); color: #fff; }
 .ac-btn-primary:hover { background: var(--ac-teal-d); }
-.ac-btn-yellow { background: var(--ac-yellow); color: var(--ac-ink); }
+.ac-btn-yellow { background: var(--ac-yellow); color: var(--ac-dark); }
 .ac-btn-yellow:hover { background: var(--ac-yellow-d); }
 .ac-btn-ghost { background: var(--ac-surface); color: var(--ac-ink); border: 1px solid var(--ac-line-strong); }
 .ac-btn-ghost:hover { border-color: var(--ac-teal); color: var(--ac-teal); }
@@ -141,7 +142,7 @@
 .ac-card:hover { transform: translateY(-5px); box-shadow: var(--ac-shadow); }
 .ac-card-top { position: relative; aspect-ratio: 16/10; background: linear-gradient(135deg, var(--c), var(--ac-teal-d)); display: flex; align-items: flex-end; padding: 16px; }
 .ac-card-top img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.ac-card-lvl { position: relative; background: var(--ac-yellow); color: var(--ac-ink); font-weight: 700; font-size: .72rem; padding: 4px 11px; border-radius: 999px; }
+.ac-card-lvl { position: relative; background: var(--ac-yellow); color: var(--ac-dark); font-weight: 700; font-size: .72rem; padding: 4px 11px; border-radius: 999px; }
 .ac-card-b { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .ac-card-b h3 { font-family: var(--ac-display); font-weight: 700; font-size: 1.16rem; letter-spacing: -0.01em; line-height: 1.24; margin: 0; }
 .ac-card-b p { margin: 0; color: var(--ac-muted); font-size: .9rem; line-height: 1.46; flex: 1; }
@@ -158,23 +159,43 @@
 
 /* ======================= HOME DENSE (façon portail tuto) ======================= */
 /* Barre utilitaire */
-.ac-util { background: var(--ac-ink); color: #cfe0da; font-size: .8rem; }
+.ac-util { background: var(--ac-dark); color: #cfe0da; font-size: .8rem; }
 .ac-util-in { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 7px 24px; }
 .ac-util a { color: #cfe0da; text-decoration: none; margin-right: 18px; font-weight: 500; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
 .ac-util a:hover { color: #fff; }
-.ac-util-l svg { width: 14px; height: 14px; flex: 0 0 auto; opacity: .85; }
+.ac-util-l svg { width: 16px; height: 16px; flex: 0 0 auto; }
 .ac-util-l { display: flex; align-items: center; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .ac-util-l::-webkit-scrollbar { display: none; }
-.ac-util-r { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; }
-.ac-util-r a { margin: 0; opacity: .85; }
-.ac-util-r a:hover { opacity: 1; }
+.ac-util-r { display: flex; align-items: center; gap: 9px; flex: 0 0 auto; }
+.ac-util-r a { margin: 0; }
+.ac-soc { display: inline-flex; align-items: center; justify-content: center; color: #9fbcb4; padding: 4px; transition: color .14s, transform .14s; }
+.ac-soc svg { width: 17px; height: 17px; }
+.ac-soc:hover { color: #fff; transform: translateY(-1px); }
 
 /* Menu déroulant Domaines */
 .ac-drop { position: relative; }
 .ac-drop > .ac-drop-t { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: .92rem; color: var(--ac-ink-soft); background: none; border: 0; cursor: pointer; padding: 8px 12px; border-radius: 9px; font-family: inherit; }
-.ac-drop > .ac-drop-t:hover { color: var(--ac-teal); background: color-mix(in srgb, var(--ac-teal) 8%, transparent); }
+.ac-drop > .ac-drop-t:hover { color: var(--ac-teal); }
 .ac-drop-menu { position: absolute; top: 100%; left: 0; margin-top: 8px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; box-shadow: var(--ac-shadow); padding: 8px; min-width: 300px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all .16s; z-index: 70; }
 .ac-drop:hover .ac-drop-menu, .ac-drop:focus-within .ac-drop-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+
+/* Méga-menu Domaines (multi-colonnes, façon "Catégories") */
+.ac-mega { position: absolute; top: 100%; left: 0; margin-top: 8px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; box-shadow: var(--ac-shadow); width: 720px; max-width: 90vw; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all .16s; z-index: 70; overflow: hidden; }
+.ac-drop:hover .ac-mega, .ac-drop:focus-within .ac-mega { opacity: 1; visibility: visible; transform: translateY(0); }
+.ac-mega-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 18px 18px 14px; }
+.ac-mega-col { padding: 6px 8px; border-radius: 12px; }
+.ac-mega-col:hover { background: color-mix(in srgb, var(--c) 7%, var(--ac-surface)); }
+.ac-mega-h { display: flex; align-items: center; gap: 8px; font-family: var(--ac-display); font-weight: 700; font-size: .94rem; color: var(--ac-ink); text-decoration: none; }
+.ac-mega-h .d-dot { width: 10px; height: 10px; border-radius: 3px; transform: rotate(45deg); flex: 0 0 auto; }
+.ac-mega-blurb { color: var(--ac-muted); font-size: .76rem; line-height: 1.4; margin: 6px 0 10px; }
+.ac-mega-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.ac-mega-list a { display: block; padding: 5px 8px; border-radius: 8px; font-size: .84rem; color: var(--ac-ink-soft); text-decoration: none; }
+.ac-mega-list a:hover { background: var(--ac-paper); color: var(--c); }
+.ac-mega-soon { padding: 5px 8px; font-size: .8rem; color: var(--ac-muted); font-style: italic; }
+.ac-mega-foot { display: flex; gap: 4px; flex-wrap: wrap; background: var(--ac-paper); border-top: 1px solid var(--ac-line); padding: 12px 18px; }
+.ac-mega-foot a { font-weight: 600; font-size: .84rem; color: var(--ac-teal); text-decoration: none; padding: 4px 10px; border-radius: 8px; }
+.ac-mega-foot a:hover { background: color-mix(in srgb, var(--ac-teal) 10%, transparent); }
+@media (max-width: 900px) { .ac-mega { display: none; } }
 .ac-drop-menu a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; text-decoration: none; color: var(--ac-ink); }
 .ac-drop-menu a:hover { background: var(--ac-paper); }
 .ac-drop-menu a .d-dot { width: 10px; height: 10px; border-radius: 3px; transform: rotate(45deg); flex: 0 0 auto; }
@@ -215,7 +236,7 @@
 .ac-feat .ac-feat-ic { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.18); border-radius: 12px; margin-bottom: 14px; }
 .ac-feat h3 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.01em; font-size: 1.28rem; margin: 0 0 8px; }
 .ac-feat p { margin: 0; font-size: .88rem; line-height: 1.45; color: rgba(255,255,255,.9); flex: 1; }
-.ac-feat .ac-feat-go { margin-top: 14px; display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.95); color: var(--ac-ink); font-weight: 700; font-size: .85rem; padding: 9px 16px; border-radius: 10px; align-self: flex-start; }
+.ac-feat .ac-feat-go { margin-top: 14px; display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.95); color: var(--ac-dark); font-weight: 700; font-size: .85rem; padding: 9px 16px; border-radius: 10px; align-self: flex-start; }
 
 /* Bande de section + carrousel */
 .ac-band { margin: 48px 0; }
@@ -258,7 +279,7 @@
 .ac-sr-arw { color: var(--ac-muted); flex: 0 0 auto; }
 
 /* Footer multi-colonnes */
-.ac-foot { border-top: 1px solid var(--ac-line); margin-top: 60px; background: var(--ac-ink); color: #b9cec8; }
+.ac-foot { border-top: 1px solid var(--ac-line); margin-top: 60px; background: var(--ac-dark); color: #b9cec8; }
 .ac-foot-cols { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 30px; padding: 44px 24px 24px; }
 .ac-foot-cols h4 { font-family: var(--ac-display); color: #fff; font-size: .95rem; margin: 0 0 14px; }
 .ac-foot-cols a { display: block; color: #b9cec8; text-decoration: none; padding: 5px 0; font-size: .9rem; }
@@ -353,12 +374,12 @@
 @media (max-width: 620px) { .ac-dash-grid { grid-template-columns: 1fr; } }
 
 /* Point d'accès compte dans la barre du haut */
-.ac-acct { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; color: var(--ac-ink); }
+.ac-acct { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; color: var(--ac-ink); white-space: nowrap; flex: 0 0 auto; }
 .ac-acct .ac-avatar { width: 30px; height: 30px; font-size: .8rem; }
 
 /* Badge de plan (tableau de bord) */
 .ac-plan-badge { display: inline-block; margin-top: 8px; font-weight: 700; font-size: .76rem; padding: 4px 12px; border-radius: 999px; background: var(--ac-line); color: var(--ac-ink-soft); }
-.ac-plan-badge.is-premium { background: var(--ac-yellow); color: var(--ac-ink); }
+.ac-plan-badge.is-premium { background: var(--ac-yellow); color: var(--ac-dark); }
 
 /* Lien Premium dans la nav (accent) */
 .ac-nav a.ac-nav-pro { color: var(--ac-yellow-d); font-weight: 700; }
@@ -391,8 +412,196 @@
 @media (max-width: 760px) { .ac-code-grid { grid-template-columns: 1fr; } .ac-code-edit textarea { border-right: 0; border-bottom: 1px solid var(--ac-line); } }
 
 /* Carte accompagnement (tableau de bord) */
-.ac-dash-accomp { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 16px; background: linear-gradient(120deg, var(--ac-ink), #123c34); color: #fff; border-radius: 18px; padding: 22px 26px; }
+.ac-dash-accomp { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 16px; background: linear-gradient(120deg, var(--ac-dark), #123c34); color: #fff; border-radius: 18px; padding: 22px 26px; }
 .ac-dash-accomp .ac-eyebrow { color: var(--ac-yellow); }
 .ac-dash-accomp p { margin: 8px 0 0; color: #bcd3cd; max-width: 52ch; font-size: .95rem; line-height: 1.5; }
 .ac-dash-accomp .ac-btn { flex: 0 0 auto; }
 @media (max-width: 620px) { .ac-dash-accomp { flex-direction: column; align-items: flex-start; } }
+
+
+/* Bande accompagnement sous le hero */
+.ac-hband { display: flex; align-items: center; gap: 16px; margin: 8px 0 30px; padding: 16px 22px; border-radius: 16px; background: linear-gradient(120deg, var(--ac-dark), #123c34); color: #fff; text-decoration: none; transition: transform .14s, box-shadow .14s; }
+.ac-hband:hover { transform: translateY(-2px); box-shadow: var(--ac-shadow); }
+.ac-hband-ic { flex: 0 0 auto; width: 42px; height: 42px; border-radius: 12px; background: rgba(255,255,255,.12); color: var(--ac-yellow); display: flex; align-items: center; justify-content: center; }
+.ac-hband-ic svg { width: 22px; height: 22px; }
+.ac-hband-txt { flex: 1; font-size: .96rem; line-height: 1.45; color: #cfe0da; }
+.ac-hband-txt b { color: #fff; font-family: var(--ac-display); font-weight: 700; }
+.ac-hband-cta { flex: 0 0 auto; font-weight: 700; font-size: .9rem; color: var(--ac-dark); background: var(--ac-yellow); padding: 10px 16px; border-radius: 10px; white-space: nowrap; }
+@media (max-width: 760px) { .ac-hband { flex-direction: column; align-items: flex-start; text-align: left; } }
+
+/* ---------- Parcours guidés (Learning Paths) ---------- */
+.ac-paths { margin: 50px 0; }
+.ac-paths-head { margin-bottom: 22px; }
+.ac-paths-head h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 1.8rem; margin: 0; }
+.ac-paths-head h2 .em { color: var(--ac-teal); }
+.ac-paths-head p { color: var(--ac-muted); margin: 4px 0 0; font-size: .95rem; }
+.ac-paths-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.ac-path-card { display: flex; flex-direction: column; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 18px; padding: 20px; transition: transform .15s, border-color .15s, box-shadow .15s; }
+.ac-path-card:hover { transform: translateY(-4px); border-color: var(--c); box-shadow: var(--ac-shadow-sm); }
+.ac-path-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; }
+.ac-path-dom { display: inline-flex; align-items: center; gap: 7px; font-size: .76rem; font-weight: 700; color: var(--c); }
+.ac-path-dom .dot { width: 9px; height: 9px; border-radius: 3px; background: var(--c); transform: rotate(45deg); flex: 0 0 auto; }
+.ac-path-lvl { font-size: .66rem; font-weight: 700; color: var(--ac-dark); background: var(--ac-yellow); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.ac-path-card h3 { font-family: var(--ac-display); font-weight: 800; font-size: 1.1rem; line-height: 1.2; margin: 0 0 4px; }
+.ac-path-exp { color: var(--ac-muted); font-size: .8rem; margin: 0 0 4px; }
+.ac-path-steps { list-style: none; counter-reset: st; margin: 14px 0 16px; padding: 0; position: relative; }
+.ac-path-steps::before { content: ""; position: absolute; left: 11px; top: 10px; bottom: 12px; width: 2px; background: var(--ac-line); }
+.ac-path-steps li { position: relative; padding-left: 34px; margin: 0 0 9px; min-height: 24px; display: flex; align-items: center; }
+.ac-path-steps li::before { counter-increment: st; content: counter(st); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--ac-surface); border: 2px solid var(--c); color: var(--c); font-family: var(--ac-display); font-weight: 800; font-size: .72rem; display: flex; align-items: center; justify-content: center; }
+.ac-path-steps a { color: var(--ac-ink-soft); text-decoration: none; font-size: .88rem; line-height: 1.3; }
+.ac-path-steps a:hover { color: var(--c); }
+.ac-path-cta { margin-top: auto; font-weight: 700; font-size: .86rem; color: var(--c); text-decoration: none; }
+.ac-path-soon { color: var(--ac-muted); flex: 1; }
+.ac-path-soon h3 { color: var(--ac-ink); }
+.ac-path-soon p { font-size: .88rem; margin: 6px 0 0; }
+.ac-path-badge { display: inline-block; margin-top: 12px; font-size: .68rem; font-weight: 700; background: var(--ac-line); color: var(--ac-ink-soft); padding: 3px 10px; border-radius: 999px; }
+@media (max-width: 900px) { .ac-paths-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .ac-paths-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Blocs de code enrichis (barre + copier + exécuter) — injectés en JS, donc GLOBAL ---------- */
+.ac-codewrap { margin: 20px 0; border: 1px solid var(--ac-line); border-radius: 12px; overflow: hidden; max-width: 72ch; }
+.ac-code-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--ac-paper); border-bottom: 1px solid var(--ac-line); padding: 7px 12px; }
+.ac-code-id { display: inline-flex; align-items: center; gap: 10px; }
+.ac-code-dots { display: inline-flex; gap: 5px; }
+.ac-code-dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+.ac-code-dots i:nth-child(1) { background: #ff5f56; }
+.ac-code-dots i:nth-child(2) { background: #ffbd2e; }
+.ac-code-dots i:nth-child(3) { background: #27c93f; }
+.ac-code-lang { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--ac-muted); }
+.ac-code-btns { display: flex; gap: 6px; }
+.ac-code-btns button { font-family: var(--ac-body); font-size: .74rem; font-weight: 600; color: var(--ac-ink); background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 7px; padding: 4px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+.ac-code-btns button:hover { border-color: var(--ac-teal); color: var(--ac-teal); }
+.ac-codewrap pre { margin: 0 !important; border-radius: 0 !important; border: 0 !important; }
+.ac-code-output { border-top: 1px solid var(--ac-line); background: #071a16; color: #cfe0da; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .82rem; line-height: 1.55; padding: 12px 14px; white-space: pre-wrap; }
+.ac-code-output .err { color: #ff9c96; }
+.ac-code-output .ok { color: #7ee0c8; }
+
+
+/* ---------- Figure de concept (schéma inline dans une leçon) ---------- */
+.ac-main .prose .ac-figure { margin: 24px 0; padding: 20px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; text-align: center; }
+.ac-main .prose .ac-figure svg { width: 100%; max-width: 380px; height: auto; }
+.ac-main .prose .ac-figure figcaption { margin-top: 10px; color: var(--ac-muted); font-size: .88rem; }
+.ac-main .prose .ac-figure figcaption code { background: var(--ac-paper); padding: 1px 6px; border-radius: 5px; font-size: .92em; }
+
+/* =========================================================================
+   RAFFINEMENT DESIGN — signature "swoosh", survols vivants, focus, mouvement
+   ========================================================================= */
+
+/* Surligneur "swoosh" (écho du trait du logo) — LA touche signature */
+.ac-hl { position: relative; color: var(--ac-teal); white-space: nowrap; }
+.ac-hl::before {
+  content: ""; position: absolute; left: -.04em; right: -.1em; top: .5em; bottom: .01em; z-index: -1;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 38' preserveAspectRatio='none'%3E%3Cpath d='M4 15C70 7 180 13 316 8c-2 8 2 16-4 22-110 6-214-2-306 6-6-8-2-15-2-21z' fill='%23FDD200'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
+  transform: rotate(-1.6deg); transform-origin: left center;
+}
+.ac-em-mark { position: relative; }
+.ac-em-mark::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 1px; height: .28em;
+  background: color-mix(in srgb, var(--ac-yellow) 55%, transparent); border-radius: 3px; z-index: -1;
+}
+
+/* Boutons : survol sobre (léger relèvement, teinte plus foncée ; aucun halo coloré) */
+.ac-btn { transition: transform .15s ease, background .15s ease; }
+.ac-btn:hover { transform: translateY(-1px); }
+.ac-btn:active { transform: translateY(0); }
+
+/* Focus clavier visible partout (plancher qualité + accessibilité) */
+.ac-btn:focus-visible, .ac-nav a:focus-visible, .ac-acct:focus-visible, .ac-tbtn:focus-visible,
+.ac-mega-foot a:focus-visible, .ac-lib-card:focus-visible, .ac-card:focus-visible, .ac-feat:focus-visible,
+.ac-path-cta:focus-visible, .ac-soc:focus-visible, .ac-util a:focus-visible {
+  outline: 2px solid var(--ac-teal); outline-offset: 3px; border-radius: 8px;
+}
+.ac-search:focus-within { border-color: var(--ac-teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ac-teal) 14%, transparent); }
+
+/* Respect du "moins de mouvement" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  .ac-btn:hover, .ac-card:hover, .ac-feat:hover, .ac-path-card:hover, .ac-lib-card:hover { transform: none; }
+}
+
+/* ---------- Icônes duotone : accent jaune selon le contexte ---------- */
+:root { --ac-ic-accent: #E0A400; }        /* jaune lisible sur fond clair */
+.ac-util { --ac-ic-accent: var(--ac-yellow); }   /* jaune vif sur la barre sombre */
+.ac-feat-ic { color: #fff; --ac-ic-accent: rgba(255, 255, 255, .55); }  /* accent tonal blanc : lisible sur TOUS les dégradés (y compris le jaune) */
+.ac-feat-ic svg { width: 24px; height: 24px; }
+.ac-tool-ic { --ac-ic-accent: #E0A400; }
+.ac-lib-ic { --ac-ic-accent: #E0A400; }
+
+/* ---------- Icônes Phosphor (astro-icon) : tailles + duotone teal+jaune ---------- */
+.ac-feat-ic svg { width: 27px; height: 27px; }
+.ac-tool-ic svg { width: 26px; height: 26px; }
+
+
+/* couche secondaire du duotone Phosphor (opacity .2) -> accent jaune de marque (icônes inline) */
+.ac-util-l svg [opacity], .ac-feat-ic svg [opacity], .ac-tool-ic svg [opacity], .ac-lib-ic svg [opacity] {
+  fill: var(--ac-ic-accent); opacity: 1;
+}
+
+/* Parcours "à venir" : structure fantôme (skeleton) pour supprimer le vide */
+.ac-path-lvl.soon { background: var(--ac-line); color: var(--ac-ink-soft); }
+.ac-path-steps.ghost li::before { content: ""; background: var(--ac-line); border-color: var(--ac-line); }
+.ac-path-steps.ghost .sk { display: block; height: 10px; border-radius: 999px; background: var(--ac-line); }
+.ac-path-steps.ghost li:nth-child(1) .sk { width: 78%; }
+.ac-path-steps.ghost li:nth-child(2) .sk { width: 90%; }
+.ac-path-steps.ghost li:nth-child(3) .sk { width: 60%; }
+
+/* ---------- Éditeur CodeMirror (compilateur / pratique) ---------- */
+.ac-code-hint { margin-left: auto; font-size: .74rem; color: var(--ac-muted); }
+#cp-editor, #pr-editor { height: 100%; }
+.ac-code-edit .cm-editor { height: 100%; min-height: 360px; border-right: 1px solid var(--ac-line); }
+.ac-code-edit .cm-editor.cm-focused { outline: none; }
+.ac-code-edit .cm-scroller { font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace; font-size: .88rem; line-height: 1.55; }
+.ac-code-edit .cm-gutters { border-right: 0; }
+@media (max-width: 760px) { .ac-code-edit .cm-editor { border-right: 0; border-bottom: 1px solid var(--ac-line); } }
+
+/* ---------- Carrousels Swiper (à la charte) ---------- */
+.ac-swiper { position: relative; padding: 4px 2px 0; }
+.ac-swiper .swiper-slide { height: auto; }
+.ac-sw-ctrl { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px; }
+.ac-sw-prev, .ac-sw-next { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--ac-line); background: var(--ac-surface); color: var(--ac-ink); font-size: 1.25rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color .15s, color .15s; flex: 0 0 auto; }
+.ac-sw-prev:hover, .ac-sw-next:hover { border-color: var(--ac-teal); color: var(--ac-teal); }
+.ac-sw-prev.swiper-button-disabled, .ac-sw-next.swiper-button-disabled { opacity: .35; cursor: default; border-color: var(--ac-line); color: var(--ac-ink); }
+.ac-swiper .swiper-pagination { position: static; display: flex; gap: 7px; align-items: center; width: auto; }
+.ac-swiper .swiper-pagination-bullet { width: 8px; height: 8px; background: var(--ac-line-strong); opacity: 1; margin: 0 !important; transition: width .2s, background .2s; }
+.ac-swiper .swiper-pagination-bullet-active { width: 22px; border-radius: 999px; background: var(--ac-teal); }
+
+/* Carte expert (dans le carrousel) */
+.ac-xp { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-left: 4px solid var(--c); border-radius: 16px; padding: 20px; text-decoration: none; color: inherit; transition: transform .15s, border-color .15s, box-shadow .15s; }
+.ac-xp:hover { transform: translateY(-4px); border-color: var(--c); box-shadow: var(--ac-shadow-sm); }
+.ac-xp-av { width: 52px; height: 52px; border-radius: 50%; background: color-mix(in srgb, var(--c) 16%, var(--ac-surface)); color: var(--c); font-family: var(--ac-display); font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+.ac-xp b { font-family: var(--ac-display); font-weight: 800; font-size: 1.05rem; line-height: 1.2; }
+.ac-xp small { color: var(--ac-muted); font-size: .84rem; }
+.ac-xp-dom { margin-top: 6px; font-size: .72rem; font-weight: 700; color: var(--c); }
+
+/* Widget Turnstile */
+.ac-ts { margin: 2px 0 16px; min-height: 65px; }
+
+/* =========================================================================
+   FORMES DE MARQUE — le "7" du logo en filigrane + blobs ambiants (discrets)
+   ========================================================================= */
+
+/* Filigrane "7" (Montserrat) dans le coin des bandeaux sombres — écho du logo */
+.ac-ac-cta, .ac-ab-cta, .ac-dash-accomp, .ac-pr-coach {
+  position: relative; overflow: hidden; isolation: isolate;
+}
+.ac-ac-cta > *, .ac-ab-cta > *, .ac-dash-accomp > *, .ac-pr-coach > * { position: relative; z-index: 1; }
+.ac-ac-cta::after, .ac-ab-cta::after, .ac-dash-accomp::after, .ac-pr-coach::after {
+  content: "7"; position: absolute; z-index: 0; right: -.02em; top: 50%; transform: translateY(-50%);
+  font-family: var(--ac-display); font-weight: 900; font-size: 12rem; line-height: .8;
+  color: rgba(255, 255, 255, .055); pointer-events: none; user-select: none;
+}
+
+/* Blobs ambiants derrière le hero (profondeur douce, non génériques) */
+.ac-hero2 { position: relative; isolation: isolate; }
+.ac-hero2 > * { position: relative; z-index: 1; }
+.ac-hero2::before {
+  content: ""; position: absolute; z-index: 0; right: 4%; top: -10%;
+  width: min(520px, 42vw); aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ac-teal) 15%, transparent), transparent 66%);
+}
+.ac-hero2::after {
+  content: ""; position: absolute; z-index: 0; left: -5%; bottom: -14%;
+  width: min(360px, 30vw); aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ac-yellow) 16%, transparent), transparent 64%);
+}
+@media (max-width: 860px) { .ac-hero2::before, .ac-hero2::after { display: none; } }

@@ -31,7 +31,8 @@ export async function getStaticPaths() {
 
 const { course, lesson, index, lessons, pillarCourses } = Astro.props;
 const slugOf = (id: string) => id.split('/').pop() as string;
-const { Content } = await render(lesson);
+const { Content, headings } = await render(lesson);
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 const pillar = pillarByName(course.data.category);
 const prev = index > 0 ? lessons[index - 1] : null;
 const next = index < lessons.length - 1 ? lessons[index + 1] : null;
@@ -42,7 +43,7 @@ const lessonSlug = slugOf(lesson.id);
 <AcademyLayout title={`${lesson.data.title} · ${course.data.title}`} description={course.data.excerpt} wide={false}>
   <div class="ac-reader">
     <button class="ac-plan-toggle" id="ac-plan" type="button" aria-label="Afficher le plan du cours">☰ Plan du cours</button>
-    <AcademyTree courses={pillarCourses} currentCourse={course.id} currentLesson={lessonSlug} pillarName={pillar?.name} />
+    <AcademyTree courses={pillarCourses} currentCourse={course.id} currentLesson={lessonSlug} pillarName={pillar?.name} activeHeadings={toc} />
 
     <article class="ac-article">
       <div class="ac-crumb"><a href="/academy/">Academy</a> › <a href={`/academy/#${pillar?.slug}`}>{course.data.category}</a> › <a href={`/academy/${course.id}/`}>{course.data.title}</a> › <span>{lesson.data.title}</span></div>
@@ -57,6 +58,16 @@ const lessonSlug = slugOf(lesson.id);
       <div class="ac-prog"><span>Leçon {index + 1} / {lessons.length}</span><div class="ac-bar"><i style={`width:${pct}%`}></i></div></div>
 
       <h1>{lesson.data.title}</h1>
+
+      {toc.length >= 2 && (
+        <nav class="ac-toc" aria-label="Sommaire de la leçon">
+          <span class="ac-toc-h">Dans cette leçon</span>
+          <ol>
+            {toc.map((h) => <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}
+          </ol>
+        </nav>
+      )}
+
       <div class="ac-prose-wrap"><div class="prose"><Content /></div></div>
 
       <div class="ac-done" data-course={course.id} data-lesson={lessonSlug}>
@@ -132,7 +143,7 @@ const lessonSlug = slugOf(lesson.id);
   .ac-done-login { font-weight: 600; font-size: .9rem; color: var(--ac-teal); text-decoration: none; }
   .ac-done-login:hover { text-decoration: underline; }
 
-  .ac-premium-tag { display: inline-block; background: var(--ac-yellow); color: var(--ac-ink); font-weight: 700; font-size: .72rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
+  .ac-premium-tag { display: inline-block; background: var(--ac-yellow); color: var(--ac-dark); font-weight: 700; font-size: .72rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
   .ac-lock { margin: 4px 0 8px; }
   .ac-lock-card { text-align: center; border: 1px solid var(--ac-line); background: var(--ac-surface); border-radius: 18px; padding: 32px 26px; box-shadow: var(--ac-shadow-sm); }
   .ac-lock-ic { color: var(--ac-teal); margin-bottom: 10px; display: flex; justify-content: center; }
@@ -141,13 +152,68 @@ const lessonSlug = slugOf(lesson.id);
   .ac-article.is-locked .ac-prose-wrap { position: relative; max-height: 300px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 52%, transparent); mask-image: linear-gradient(#000 52%, transparent); }
   .ac-article.is-locked .ac-dl { visibility: hidden; }
 
+  /* Sommaire d'ancres */
+  .ac-toc { background: var(--ac-surface); border: 1px solid var(--ac-line); border-left: 4px solid var(--ac-teal); border-radius: 12px; padding: 14px 18px; margin: 0 0 26px; max-width: 72ch; }
+  .ac-toc-h { font-family: var(--ac-display); font-weight: 700; font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ac-teal); }
+  .ac-toc ol { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: toc; }
+  .ac-toc li { margin: 3px 0; }
+  .ac-toc li.d3 { padding-left: 16px; }
+  .ac-toc li::before { counter-increment: toc; content: counter(toc, decimal-leading-zero); color: var(--ac-teal); font-weight: 700; font-size: .78rem; margin-right: 8px; }
+  .ac-toc li.d3::before { content: "›"; }
+  .ac-toc a { color: var(--ac-ink-soft); text-decoration: none; font-size: .92rem; }
+  .ac-toc a:hover { color: var(--ac-teal); text-decoration: underline; }
+
   @media print {
-    .ac-top, .ac-foot, #ac-tree, .ac-rownav, .ac-botnav, .ac-prog, .ac-done { display: none !important; }
+    .ac-top, .ac-foot, #ac-tree, .ac-rownav, .ac-botnav, .ac-prog, .ac-done, .ac-toc, .ac-code-bar { display: none !important; }
     .ac-reader { grid-template-columns: 1fr; }
   }
 </style>
 
 <script>
+  function acFmt(v) { return typeof v === 'string' ? v : (() => { try { return JSON.stringify(v); } catch { return String(v); } })(); }
+  function acEsc(s) { return String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+  function runInline(src, wrap) {
+    let out = wrap.querySelector('.ac-code-output');
+    if (!out) { out = document.createElement('div'); out.className = 'ac-code-output'; wrap.appendChild(out); }
+    const lines = [];
+    const push = (t, cls) => lines.push(cls ? `<span class="${cls}">${acEsc(t)}</span>` : acEsc(t));
+    const cons = { log: (...a) => push(a.map(acFmt).join(' ')), info: (...a) => push(a.map(acFmt).join(' ')), warn: (...a) => push(a.map(acFmt).join(' ')), error: (...a) => push(a.map(acFmt).join(' '), 'err') };
+    try {
+      const fn = new Function('console', '"use strict";\n' + src);
+      const r = fn(cons);
+      if (r !== undefined) push('⟵ ' + acFmt(r), 'ok');
+    } catch (e) { push((e && e.name ? e.name + ': ' : 'Erreur : ') + (e && e.message ? e.message : e), 'err'); }
+    out.innerHTML = lines.join('\n') || '<span style="opacity:.55">(aucune sortie)</span>';
+  }
+  function enhanceCode(root) {
+    root.querySelectorAll('.prose pre').forEach((pre) => {
+      if (pre.closest('.ac-codewrap')) return;
+      const code = pre.querySelector('code');
+      if (!code) return;
+      let lang = pre.getAttribute('data-language') || '';
+      if (!lang && code.className) { const m = code.className.match(/language-([\w-]+)/); if (m) lang = m[1]; }
+      lang = lang || 'code';
+      const wrap = document.createElement('div');
+      wrap.className = 'ac-codewrap';
+      pre.parentNode.insertBefore(wrap, pre);
+      const bar = document.createElement('div');
+      bar.className = 'ac-code-bar';
+      bar.innerHTML = `<span class="ac-code-id"><span class="ac-code-dots"><i></i><i></i><i></i></span><span class="ac-code-lang">${acEsc(lang)}</span></span><span class="ac-code-btns"></span>`;
+      wrap.appendChild(bar);
+      wrap.appendChild(pre);
+      const btns = bar.querySelector('.ac-code-btns');
+      const copy = document.createElement('button');
+      copy.type = 'button'; copy.textContent = 'Copier';
+      copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(code.innerText); copy.textContent = 'Copié ✓'; setTimeout(() => { copy.textContent = 'Copier'; }, 1500); } catch {} });
+      btns.appendChild(copy);
+      if (/^(js|javascript)$/i.test(lang)) {
+        const run = document.createElement('button');
+        run.type = 'button'; run.innerHTML = '<svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg> Exécuter';
+        run.addEventListener('click', () => runInline(code.innerText, wrap));
+        btns.appendChild(run);
+      }
+    });
+  }
   async function readerBoot() {
     const plan = document.getElementById('ac-plan');
     if (plan && !plan.dataset.bound) { plan.dataset.bound = '1'; plan.addEventListener('click', () => { document.getElementById('ac-tree')?.classList.toggle('mobile-open'); }); }
@@ -155,6 +221,8 @@ const lessonSlug = slugOf(lesson.id);
     const article = document.querySelector('.ac-article');
     if (!article || article.dataset.bound) return;
     article.dataset.bound = '1';
+
+    enhanceCode(article);
 
     let me = null;
     try { me = (await (await fetch('/api/auth/me')).json()).user; } catch {}

@@ -20,9 +20,9 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
   </div>
 
   <div class="ac-arts" id="ac-art-grid" style="margin-top:22px">
-    {articles.map((a) => (
+    {articles.map((a, i) => (
       <a class="ac-art" href={`/academy/articles/${a.id}/`} data-cat={a.data.category}>
-        <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading="lazy" />}</div>
+        <div class="ac-art-cov">{a.data.cover && <img src={a.data.cover} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />}</div>
         <div class="ac-art-b"><span class="ac-art-cat">{a.data.category}</span><h3>{a.data.title}</h3></div>
       </a>
     ))}
@@ -33,7 +33,7 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
   .ac-filters { display: flex; flex-wrap: wrap; gap: 10px; }
   .ac-chip { font-family: inherit; font-weight: 700; font-size: .86rem; color: var(--ac-ink-soft); background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
   .ac-chip:hover { border-color: var(--ac-teal); }
-  .ac-chip.on { background: var(--ac-ink); color: #fff; border-color: var(--ac-ink); }
+  .ac-chip.on { background: var(--ac-dark); color: #fff; border-color: var(--ac-dark); }
 </style>
 
 <script>
