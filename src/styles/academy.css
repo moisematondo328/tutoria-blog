@@ -19,9 +19,18 @@
   --ac-yellow-d: #E0A400;
   --ac-line: #DBE7E2;
   --ac-line-strong: #C3D6CF;
-  --ac-shadow: 0 18px 44px rgba(10, 38, 33, 0.10);
-  --ac-shadow-sm: 0 6px 18px rgba(10, 38, 33, 0.07);
-  --ac-radius: 18px;
+  /* Ombres : échelle d'élévation à 3 crans (repos / survol / flottant) */
+  --ac-shadow-sm: 0 4px 14px rgba(10, 38, 33, 0.06);
+  --ac-shadow: 0 12px 30px rgba(10, 38, 33, 0.09);
+  --ac-shadow-lg: 0 24px 56px rgba(10, 38, 33, 0.13);
+  /* Rayons : échelle contrainte (fini les 14 valeurs au hasard) */
+  --ac-radius-xs: 10px;   /* puces, mini-tuiles */
+  --ac-radius-sm: 12px;   /* boutons, champs, code */
+  --ac-radius: 16px;      /* carte standard */
+  --ac-radius-lg: 20px;   /* grandes cartes, bandeaux */
+  /* Espacement : échelle 4pt + rythme vertical des sections */
+  --ac-sp-section: clamp(56px, 7vw, 88px);
+  --ac-gutter: clamp(20px, 4vw, 32px);
   --ac-display: 'Montserrat', system-ui, sans-serif;   /* police officielle du logo Tutoria */
   --ac-body: 'Montserrat', system-ui, -apple-system, sans-serif;
   /* accents par pilier */
@@ -39,8 +48,9 @@
   --ac-muted: #8CA39D;
   --ac-line: #21322D;
   --ac-line-strong: #2C413B;
-  --ac-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
-  --ac-shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.3);
+  --ac-shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.3);
+  --ac-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  --ac-shadow-lg: 0 24px 56px rgba(0, 0, 0, 0.5);
 }
 
 .ac-body { background: var(--ac-paper); color: var(--ac-ink); font-family: var(--ac-body); overflow-x: hidden; }
@@ -77,6 +87,26 @@
 .ac-quiz-opt.ko { border-color: #d1495b; background: color-mix(in srgb, #d1495b 10%, var(--ac-surface)); }
 .ac-quiz-opt.ko::before { border-color: #d1495b; }
 .ac-quiz-opt:disabled { cursor: default; }
+/* Verdict au clic : coche verte / croix rouge à droite de l'option (Font Awesome) */
+.ac-quiz-opt.ok::after, .ac-quiz-opt.ko::after { margin-left: auto; font-family: "Font Awesome 7 Free"; font-weight: 900; font-size: .95rem; flex: 0 0 auto; }
+.ac-quiz-opt.ok::after { content: "\f00c"; color: var(--ac-teal); }
+.ac-quiz-opt.ko::after { content: "\f00d"; color: #d1495b; }
+/* Message de résultat sous les options */
+.ac-quiz-fb { margin: 12px 0 0; font-weight: 700; font-size: .92rem; display: flex; align-items: center; gap: 8px; }
+.ac-quiz-fb::before { font-family: "Font Awesome 7 Free"; font-weight: 900; }
+.ac-quiz-fb.ok { color: var(--ac-teal-d); }
+.ac-quiz-fb.ok::before { content: "\f058"; }
+.ac-quiz-fb.ko { color: #d1495b; }
+.ac-quiz-fb.ko::before { content: "\f06a"; }
+/* Score de fin (leçons à plusieurs questions) */
+.ac-quiz-score { margin: 18px 0 0; padding: 13px 16px; border-radius: var(--ac-radius-sm); font-family: var(--ac-display); font-weight: 800; font-size: .98rem; display: flex; align-items: center; gap: 10px; }
+.ac-quiz-score::before { font-family: "Font Awesome 7 Free"; font-weight: 900; font-size: 1.05rem; flex: 0 0 auto; }
+.ac-quiz-score.ok { background: color-mix(in srgb, var(--ac-teal) 12%, var(--ac-surface)); color: var(--ac-teal-d); }
+.ac-quiz-score.ok::before { content: "\f091"; }
+.ac-quiz-score.mid { background: color-mix(in srgb, var(--ac-yellow) 22%, var(--ac-surface)); color: var(--ac-dark); }
+.ac-quiz-score.mid::before { content: "\f005"; }
+.ac-quiz-score.ko { background: color-mix(in srgb, #d1495b 10%, var(--ac-surface)); color: #d1495b; }
+.ac-quiz-score.ko::before { content: "\f021"; }
 .ac-display { font-family: var(--ac-display); font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; }
 .ac-eyebrow { font-family: var(--ac-body); font-weight: 700; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ac-teal); }
 
@@ -88,15 +118,20 @@
 .ac-brand img { height: 30px; width: auto; display: block; }
 .ac-brand .ac-badge { font-family: var(--ac-display); font-weight: 800; font-size: .7rem; letter-spacing: .06em; color: #fff; background: var(--ac-dark); padding: 3px 9px; border-radius: 7px; text-transform: uppercase; }
 .ac-nav { display: flex; align-items: center; gap: 2px; flex: 0 0 auto; }
-.ac-nav a { font-weight: 600; font-size: .9rem; color: var(--ac-ink-soft); text-decoration: none; padding: 7px 9px; border-radius: 9px; white-space: nowrap; }
-.ac-nav a:hover { color: var(--ac-teal); }
+.ac-nav a { position: relative; font-weight: 600; font-size: .9rem; color: var(--ac-ink-soft); text-decoration: none; padding: 7px 9px; border-radius: 9px; white-space: nowrap; }
+/* Soulignement signature : swoosh jaune (echo du surligneur du hero), pousse depuis le centre */
+.ac-nav a::after { content: ""; position: absolute; left: 9px; right: 9px; bottom: 3px; height: 3px; border-radius: 3px; background: var(--ac-yellow); transform: scaleX(0); transform-origin: center; transition: transform .2s cubic-bezier(.2,.7,.3,1); }
+.ac-nav a:hover { color: var(--ac-ink); }
+.ac-nav a:hover::after, .ac-nav a.cur::after { transform: scaleX(1); }
 .ac-nav a.cur { color: var(--ac-teal); }
+.ac-nav a.ac-nav-pro::after { background: var(--ac-teal); }
+@media (prefers-reduced-motion: reduce) { .ac-nav a::after { transition: none; } }
 .ac-search { flex: 1; max-width: 340px; margin-left: auto; display: flex; align-items: center; gap: 9px; background: var(--ac-paper); border: 1px solid var(--ac-line); border-radius: 12px; padding: 9px 14px; color: var(--ac-muted); }
 .ac-search input { flex: 1; border: 0; background: transparent; font-family: inherit; font-size: .92rem; color: var(--ac-ink); outline: none; }
 .ac-theme { background: none; border: 0; font-size: 18px; cursor: pointer; flex: 0 0 auto; }
 
 /* ---------- Boutons ---------- */
-.ac-btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border-radius: 12px; padding: 12px 24px; border: 0; cursor: pointer; font-family: var(--ac-body); }
+.ac-btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; border-radius: var(--ac-radius-sm); padding: 12px 24px; border: 0; cursor: pointer; font-family: var(--ac-body); }
 .ac-btn-primary { background: var(--ac-teal); color: #fff; }
 .ac-btn-primary:hover { background: var(--ac-teal-d); }
 .ac-btn-yellow { background: var(--ac-yellow); color: var(--ac-dark); }
@@ -131,9 +166,9 @@
 .ac-pillar .ac-pcount { font-weight: 700; font-size: .8rem; color: var(--ac-teal); }
 
 /* ---------- Sections catalogue ---------- */
-.ac-sec { margin: 46px 0; scroll-margin-top: 88px; }
+.ac-sec { margin: var(--ac-sp-section) 0; scroll-margin-top: 88px; }
 .ac-sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
-.ac-sec-head h2 { font-family: var(--ac-display); font-weight: 800; font-size: 1.7rem; letter-spacing: -0.02em; margin: 0; padding-left: 14px; border-left: 5px solid var(--c); }
+.ac-sec-head h2 { font-family: var(--ac-display); font-weight: 800; font-size: clamp(1.5rem, 2.6vw, 1.9rem); letter-spacing: -0.02em; margin: 0; padding-left: 14px; border-left: 5px solid var(--c); }
 .ac-sec-head .ac-sec-count { color: var(--ac-muted); font-size: .9rem; }
 .ac-soon { color: var(--ac-muted); padding-left: 19px; font-style: italic; }
 
@@ -180,16 +215,18 @@
 .ac-drop:hover .ac-drop-menu, .ac-drop:focus-within .ac-drop-menu { opacity: 1; visibility: visible; transform: translateY(0); }
 
 /* Méga-menu Domaines (multi-colonnes, façon "Catégories") */
-.ac-mega { position: absolute; top: 100%; left: 0; margin-top: 8px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; box-shadow: var(--ac-shadow); width: 720px; max-width: 90vw; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all .16s; z-index: 70; overflow: hidden; }
+.ac-mega { position: absolute; top: 100%; left: 0; margin-top: 8px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; box-shadow: var(--ac-shadow); width: min(960px, 94vw); opacity: 0; visibility: hidden; transform: translateY(6px); transition: all .16s; z-index: 70; overflow: hidden; }
 .ac-drop:hover .ac-mega, .ac-drop:focus-within .ac-mega { opacity: 1; visibility: visible; transform: translateY(0); }
-.ac-mega-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 18px 18px 14px; }
-.ac-mega-col { padding: 6px 8px; border-radius: 12px; }
+/* minmax(0,1fr) : colonnes strictement égales, le texte revient à la ligne au lieu de déborder */
+.ac-mega-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 18px 18px 14px; }
+.ac-mega-col { min-width: 0; padding: 8px 10px; border-radius: 12px; }
 .ac-mega-col:hover { background: color-mix(in srgb, var(--c) 7%, var(--ac-surface)); }
-.ac-mega-h { display: flex; align-items: center; gap: 8px; font-family: var(--ac-display); font-weight: 700; font-size: .94rem; color: var(--ac-ink); text-decoration: none; }
+.ac-mega-h { display: flex; align-items: flex-start; gap: 8px; min-width: 0; font-family: var(--ac-display); font-weight: 700; font-size: .92rem; line-height: 1.25; color: var(--ac-ink); text-decoration: none; overflow-wrap: break-word; }
+.ac-mega-h .d-dot { margin-top: 5px; }
 .ac-mega-h .d-dot { width: 10px; height: 10px; border-radius: 3px; transform: rotate(45deg); flex: 0 0 auto; }
-.ac-mega-blurb { color: var(--ac-muted); font-size: .76rem; line-height: 1.4; margin: 6px 0 10px; }
+.ac-mega-blurb { color: var(--ac-muted); font-size: .76rem; line-height: 1.4; margin: 6px 0 10px; overflow-wrap: break-word; }
 .ac-mega-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.ac-mega-list a { display: block; padding: 5px 8px; border-radius: 8px; font-size: .84rem; color: var(--ac-ink-soft); text-decoration: none; }
+.ac-mega-list a { display: block; padding: 5px 8px; border-radius: 8px; font-size: .82rem; line-height: 1.3; color: var(--ac-ink-soft); text-decoration: none; white-space: normal; overflow-wrap: break-word; }
 .ac-mega-list a:hover { background: var(--ac-paper); color: var(--c); }
 .ac-mega-soon { padding: 5px 8px; font-size: .8rem; color: var(--ac-muted); font-style: italic; }
 .ac-mega-foot { display: flex; gap: 4px; flex-wrap: wrap; background: var(--ac-paper); border-top: 1px solid var(--ac-line); padding: 12px 18px; }
@@ -207,7 +244,7 @@
 /* Collage du hero (façon portail tuto : chaque vignette dit un domaine) */
 .ac-hero2 .ac-h-illu { position: relative; height: 460px; }
 .ac-hi-thread { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
-.ac-hi-card { position: absolute; z-index: 2; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; box-shadow: var(--ac-shadow-sm); padding: 13px 15px; }
+.ac-hi-card { position: absolute; z-index: 2; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius-sm); box-shadow: var(--ac-shadow); padding: 13px 15px; }
 .ac-hi-card .hi-cap { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ac-muted); margin-bottom: 9px; }
 .hi-budget { top: 4px; right: 0; width: 236px; }
 .hi-budget .hi-bar { display: flex; height: 16px; border-radius: 6px; overflow: hidden; }
@@ -230,7 +267,7 @@
 
 /* Cartes-features (piliers en dégradé) */
 .ac-features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 10px 0 8px; }
-.ac-feat { position: relative; border-radius: 20px; overflow: hidden; text-decoration: none; color: #fff; padding: 22px; min-height: 210px; display: flex; flex-direction: column; background: linear-gradient(150deg, var(--c1), var(--c2)); transition: transform .16s, box-shadow .16s; }
+.ac-feat { position: relative; border-radius: var(--ac-radius-lg); overflow: hidden; text-decoration: none; color: #fff; padding: 24px; min-height: 210px; display: flex; flex-direction: column; background: linear-gradient(150deg, var(--c1), var(--c2)); transition: transform .16s, box-shadow .16s; }
 .ac-feat:hover { transform: translateY(-5px); box-shadow: var(--ac-shadow); }
 .ac-feat .ac-feat-badge { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,.22); color: #fff; font-weight: 700; font-size: .68rem; padding: 4px 10px; border-radius: 999px; backdrop-filter: blur(4px); }
 .ac-feat .ac-feat-ic { width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.18); border-radius: 12px; margin-bottom: 14px; }
@@ -239,16 +276,16 @@
 .ac-feat .ac-feat-go { margin-top: 14px; display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.95); color: var(--ac-dark); font-weight: 700; font-size: .85rem; padding: 9px 16px; border-radius: 10px; align-self: flex-start; }
 
 /* Bande de section + carrousel */
-.ac-band { margin: 48px 0; }
+.ac-band { margin: var(--ac-sp-section) 0; }
 .ac-band-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-.ac-band-head h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 1.8rem; margin: 0; }
+.ac-band-head h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: clamp(1.5rem, 2.6vw, 1.9rem); margin: 0; }
 .ac-band-head h2 .em { color: var(--ac-teal); }
 .ac-band-head p { margin: 4px 0 0; color: var(--ac-muted); font-size: .92rem; }
 .ac-band-more { font-weight: 700; color: var(--ac-teal); text-decoration: none; font-size: .9rem; white-space: nowrap; }
 
 /* Tuiles domaine (grid) */
 .ac-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.ac-tile { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 14px; padding: 15px 16px; text-decoration: none; color: var(--ac-ink); transition: border-color .14s, transform .14s; }
+.ac-tile { display: flex; align-items: center; gap: 14px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius); padding: 16px; text-decoration: none; color: var(--ac-ink); transition: border-color .14s, transform .14s; }
 .ac-tile:hover { border-color: var(--c); transform: translateX(3px); }
 .ac-tile .ac-tile-ic { width: 40px; height: 40px; border-radius: 11px; background: color-mix(in srgb, var(--c) 16%, var(--ac-surface)); color: var(--c); display: flex; align-items: center; justify-content: center; font-family: var(--ac-display); font-weight: 800; flex: 0 0 auto; }
 .ac-tile b { display: block; font-family: var(--ac-display); font-weight: 700; font-size: .98rem; }
@@ -256,7 +293,7 @@
 
 /* Mini-cartes articles */
 .ac-arts { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-.ac-art { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
+.ac-art { background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius); overflow: hidden; text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; }
 .ac-art:hover { transform: translateY(-4px); box-shadow: var(--ac-shadow); }
 .ac-art .ac-art-cov { aspect-ratio: 16/9; background: var(--ac-line); }
 .ac-art .ac-art-cov img { width: 100%; height: 100%; object-fit: cover; }
@@ -432,7 +469,7 @@
 /* ---------- Parcours guidés (Learning Paths) ---------- */
 .ac-paths { margin: 50px 0; }
 .ac-paths-head { margin-bottom: 22px; }
-.ac-paths-head h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: 1.8rem; margin: 0; }
+.ac-paths-head h2 { font-family: var(--ac-display); font-weight: 800; letter-spacing: -.02em; font-size: clamp(1.5rem, 2.6vw, 1.9rem); margin: 0; }
 .ac-paths-head h2 .em { color: var(--ac-teal); }
 .ac-paths-head p { color: var(--ac-muted); margin: 4px 0 0; font-size: .95rem; }
 .ac-paths-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -519,23 +556,15 @@
   .ac-btn:hover, .ac-card:hover, .ac-feat:hover, .ac-path-card:hover, .ac-lib-card:hover { transform: none; }
 }
 
-/* ---------- Icônes duotone : accent jaune selon le contexte ---------- */
-:root { --ac-ic-accent: #E0A400; }        /* jaune lisible sur fond clair */
-.ac-util { --ac-ic-accent: var(--ac-yellow); }   /* jaune vif sur la barre sombre */
-.ac-feat-ic { color: #fff; --ac-ic-accent: rgba(255, 255, 255, .55); }  /* accent tonal blanc : lisible sur TOUS les dégradés (y compris le jaune) */
-.ac-feat-ic svg { width: 24px; height: 24px; }
-.ac-tool-ic { --ac-ic-accent: #E0A400; }
-.ac-lib-ic { --ac-ic-accent: #E0A400; }
-
-/* ---------- Icônes Phosphor (astro-icon) : tailles + duotone teal+jaune ---------- */
-.ac-feat-ic svg { width: 27px; height: 27px; }
-.ac-tool-ic svg { width: 26px; height: 26px; }
-
-
-/* couche secondaire du duotone Phosphor (opacity .2) -> accent jaune de marque (icônes inline) */
-.ac-util-l svg [opacity], .ac-feat-ic svg [opacity], .ac-tool-ic svg [opacity], .ac-lib-ic svg [opacity] {
-  fill: var(--ac-ic-accent); opacity: 1;
-}
+/* =========================================================================
+   ICÔNES — Font Awesome (glyphes <i>), monochromes, tailles par contexte
+   ========================================================================= */
+.ac-uic { font-size: .9rem; width: 1.15em; text-align: center; flex: 0 0 auto; }
+.ac-feat-ic { color: #fff; }
+.ac-feat-ic i { font-size: 22px; line-height: 1; }
+.ac-tool-ic i { font-size: 22px; line-height: 1; }
+.ac-soc i { font-size: 16px; line-height: 1; }
+.ac-lib-ic i { font-size: 20px; line-height: 1; }
 
 /* Parcours "à venir" : structure fantôme (skeleton) pour supprimer le vide */
 .ac-path-lvl.soon { background: var(--ac-line); color: var(--ac-ink-soft); }
@@ -566,12 +595,13 @@
 .ac-swiper .swiper-pagination-bullet-active { width: 22px; border-radius: 999px; background: var(--ac-teal); }
 
 /* Carte expert (dans le carrousel) */
-.ac-xp { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-left: 4px solid var(--c); border-radius: 16px; padding: 20px; text-decoration: none; color: inherit; transition: transform .15s, border-color .15s, box-shadow .15s; }
-.ac-xp:hover { transform: translateY(-4px); border-color: var(--c); box-shadow: var(--ac-shadow-sm); }
-.ac-xp-av { width: 52px; height: 52px; border-radius: 50%; background: color-mix(in srgb, var(--c) 16%, var(--ac-surface)); color: var(--c); font-family: var(--ac-display); font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-.ac-xp b { font-family: var(--ac-display); font-weight: 800; font-size: 1.05rem; line-height: 1.2; }
-.ac-xp small { color: var(--ac-muted); font-size: .84rem; }
-.ac-xp-dom { margin-top: 6px; font-size: .72rem; font-weight: 700; color: var(--c); }
+.ac-xp { height: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius); padding: 22px; text-decoration: none; color: inherit; transition: transform .16s, border-color .16s, box-shadow .16s; }
+.ac-xp:hover { transform: translateY(-4px); border-color: var(--c); }
+.ac-xp-av { width: 56px; height: 56px; border-radius: 50%; background: color-mix(in srgb, var(--c) 14%, var(--ac-surface)); color: var(--c); font-family: var(--ac-display); font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 9%, transparent); }
+.ac-xp b { font-family: var(--ac-display); font-weight: 800; font-size: 1.08rem; line-height: 1.22; color: var(--ac-ink); }
+.ac-xp small { color: var(--ac-muted); font-size: .86rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ac-xp-dom { margin-top: auto; display: inline-flex; align-items: center; gap: 7px; font-size: .74rem; font-weight: 700; color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--ac-surface)); padding: 5px 11px; border-radius: 999px; }
+.ac-xp-dom::before { content: ""; width: 7px; height: 7px; border-radius: 2px; transform: rotate(45deg); background: var(--c); flex: 0 0 auto; }
 
 /* Widget Turnstile */
 .ac-ts { margin: 2px 0 16px; min-height: 65px; }
@@ -605,3 +635,45 @@
   background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ac-yellow) 16%, transparent), transparent 64%);
 }
 @media (max-width: 860px) { .ac-hero2::before, .ac-hero2::after { display: none; } }
+
+/* =========================================================================
+   RYTHME D'ARRIÈRES-PLANS — bandes blanches pleine largeur (structure la page)
+   ========================================================================= */
+
+/* Une section marquée .ac-onwhite pose un fond blanc pleine largeur derrière elle
+   (le contenu reste aligné sur la grille 1300px). Filets fins haut/bas + motif de
+   "chemin" pointillé très discret (écho du fil du hero). */
+.ac-onwhite { position: relative; isolation: isolate; padding: var(--ac-sp-section) 0; margin: 0; }
+.ac-onwhite > * { position: relative; z-index: 1; }
+.ac-onwhite::before {
+  content: ""; position: absolute; z-index: 0; top: 0; bottom: 0;
+  left: calc(50% - 50vw); width: 100vw;
+  background: var(--ac-surface);
+  border-top: 1px solid var(--ac-line); border-bottom: 1px solid var(--ac-line);
+}
+/* Motif de chemin pointillé, très estompé, en haut de la bande */
+.ac-onwhite::after {
+  content: ""; position: absolute; z-index: 0; top: 26px; left: calc(50% - 50vw); width: 100vw; height: 60px;
+  background: radial-gradient(circle at center, var(--ac-line-strong) 1.4px, transparent 1.6px) 0 0 / 22px 22px;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+  opacity: .5; pointer-events: none;
+}
+/* La bande suivante colle à la précédente : on fusionne le filet partagé */
+.ac-onwhite + .ac-onwhite { margin-top: -1px; }
+@media (max-width: 620px) { .ac-onwhite { padding: 40px 0; } .ac-onwhite::after { display: none; } }
+
+/* =========================================================================
+   ÉLÉVATION HARMONISÉE — profondeur douce au repos, lift net au survol
+   (un seul système d'ombres pour toute la famille de cartes)
+   ========================================================================= */
+.ac-card, .ac-art, .ac-xp, .ac-path-card, .ac-pillar, .ac-feat, .ac-lib-card {
+  box-shadow: var(--ac-shadow-sm);
+}
+.ac-card:hover, .ac-art:hover, .ac-xp:hover, .ac-path-card:hover, .ac-pillar:hover,
+.ac-feat:hover, .ac-lib-card:hover {
+  box-shadow: var(--ac-shadow-lg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-card, .ac-art, .ac-xp, .ac-path-card, .ac-pillar, .ac-feat, .ac-lib-card { transition: box-shadow .01ms; }
+}

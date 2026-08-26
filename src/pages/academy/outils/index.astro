@@ -1,12 +1,11 @@
 ---
 import AcademyLayout from '../../../layouts/AcademyLayout.astro';
 
-import Ico from '../../../components/Ico.astro';
 const tools = [
-  { name: 'Compilateur en ligne', href: '/academy/outils/compilateur/', icon: 'ph:code-duotone', desc: 'Écris et exécute du code dans ton navigateur. JavaScript tourne en direct.', status: 'JS en direct' },
-  { name: 'Code de pratique', href: '/academy/outils/pratique/', icon: 'ph:terminal-window-duotone', desc: 'Des exercices guidés, vérifiés automatiquement pendant que tu codes.', status: 'Disponible' },
-  { name: 'Tableau blanc', href: '/academy/outils/tableau-blanc/', icon: 'ph:chalkboard-simple-duotone', desc: 'Un espace pour schématiser une idée, un budget, un plan. Puis télécharge.', status: 'Disponible' },
-  { name: 'Calculatrice graphique', href: '/academy/outils/calculatrice/', icon: 'ph:chart-line-duotone', desc: 'Écris une fonction et vois sa courbe. Zoome, compare, comprends.', status: 'Disponible' },
+  { name: 'Compilateur en ligne', href: '/academy/outils/compilateur/', icon: 'fa-solid fa-code', desc: 'Écris et exécute du code dans ton navigateur. JavaScript tourne en direct.', status: 'JS en direct' },
+  { name: 'Code de pratique', href: '/academy/outils/pratique/', icon: 'fa-solid fa-terminal', desc: 'Des exercices guidés, vérifiés automatiquement pendant que tu codes.', status: 'Disponible' },
+  { name: 'Tableau blanc', href: '/academy/outils/tableau-blanc/', icon: 'fa-solid fa-chalkboard', desc: 'Un espace pour schématiser une idée, un budget, un plan. Puis télécharge.', status: 'Disponible' },
+  { name: 'Calculatrice graphique', href: '/academy/outils/calculatrice/', icon: 'fa-solid fa-chart-line', desc: 'Écris une fonction et vois sa courbe. Zoome, compare, comprends.', status: 'Disponible' },
 ];
 ---
 
@@ -20,7 +19,7 @@ const tools = [
   <div class="ac-tiles" style="margin-top:24px">
     {tools.map((t) => (
       <a class="ac-tool" href={t.href}>
-        <span class="ac-tool-ic"><Ico name={t.icon} /></span>
+        <span class="ac-tool-ic"><i class={t.icon} aria-hidden="true"></i></span>
         <div class="ac-tool-b">
           <div class="ac-tool-top"><b>{t.name}</b><span class="ac-tool-ok">{t.status}</span></div>
           <p>{t.desc}</p>

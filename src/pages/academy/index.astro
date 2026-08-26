@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import AcademyLayout from '../../layouts/AcademyLayout.astro';
 import { PILLARS, EXPERTS, pillarByName, catSlugOf } from '../../consts';
-import Ico from '../../components/Ico.astro';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -10,10 +9,10 @@ import 'swiper/css/pagination';
 const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
 const PH: Record<string, string> = {
-  'sante-bien-etre': 'ph:heartbeat-duotone',
-  'developpement-personnel': 'ph:trend-up-duotone',
-  'finance-investissement': 'ph:coins-duotone',
-  'technologie-emergente': 'ph:cpu-duotone',
+  'sante-bien-etre': 'fa-solid fa-heart-pulse',
+  'developpement-personnel': 'fa-solid fa-arrow-trend-up',
+  'finance-investissement': 'fa-solid fa-coins',
+  'technologie-emergente': 'fa-solid fa-microchip',
 };
 
 const courses = (await getCollection('courses', ({ data }) => !data.draft)).sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
@@ -96,7 +95,7 @@ toi.<span class="f">appliquer</span>();</pre>
       return (
         <a class="ac-feat" href={`/academy/bibliotheque/#${p.slug}`} style={`--c1:${g[0]};--c2:${g[1]}`}>
           <span class="ac-feat-badge">{n > 0 ? `${n} cours` : 'Bientôt'}</span>
-          <span class="ac-feat-ic"><Ico name={PH[p.slug]} /></span>
+          <span class="ac-feat-ic"><i class={PH[p.slug]} aria-hidden="true"></i></span>
           <h3>{p.name}</h3>
           <p>{p.blurb}</p>
           <span class="ac-feat-go">Explorer →</span>
@@ -106,7 +105,7 @@ toi.<span class="f">appliquer</span>();</pre>
   </section>
 
   <!-- PARCOURS GUIDÉS (façon "Learning Paths") -->
-  <section class="ac-paths" id="catalogue">
+  <section class="ac-paths ac-onwhite" id="catalogue">
     <div class="ac-paths-head">
       <h2 class="ac-display">Parcours <span class="em">guidés</span></h2>
       <p>Un chemin clair, leçon après leçon. Tu choisis, tu avances, tu appliques.</p>
@@ -172,7 +171,7 @@ toi.<span class="f">appliquer</span>();</pre>
 
   <!-- DERNIERS ARTICLES (carrousel Swiper) -->
   {articles.length > 0 && (
-    <section class="ac-band">
+    <section class="ac-band ac-onwhite">
       <div class="ac-band-head">
         <div><h2>Derniers <span class="em">articles</span></h2><p>À lire vite, entre deux leçons.</p></div>
         <a class="ac-band-more" href="/academy/articles/">Tous les articles →</a>

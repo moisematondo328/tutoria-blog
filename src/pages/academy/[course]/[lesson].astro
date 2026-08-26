@@ -87,8 +87,10 @@ const lessonSlug = slugOf(lesson.id);
                   <button type="button" class="ac-quiz-opt" data-correct={o.correct ? '1' : '0'}>{o.t}</button>
                 ))}
               </div>
+              <p class="ac-quiz-fb" hidden></p>
             </div>
           ))}
+          <p class="ac-quiz-score" hidden></p>
         </section>
       )}
 

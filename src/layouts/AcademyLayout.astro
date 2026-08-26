@@ -6,7 +6,9 @@ import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import { getCollection } from 'astro:content';
 import { PILLARS, SOCIALS, pillarByName } from '../consts';
-import Ico from '../components/Ico.astro';
+import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+import '@fortawesome/fontawesome-free/css/solid.min.css';
+import '@fortawesome/fontawesome-free/css/brands.min.css';
 import '../styles/global.css';
 import '../styles/academy.css';
 
@@ -68,18 +70,17 @@ const path = Astro.url.pathname;
     <div class="ac-util">
       <div class="ac-util-in">
         <div class="ac-util-l">
-          <a href="/academy/"><Ico class="ac-uic" name="ph:house-duotone" />Accueil</a>
-          <a href="/academy/outils/tableau-blanc/"><Ico class="ac-uic" name="ph:chalkboard-simple-duotone" />Tableau blanc</a>
-          <a href="/academy/outils/pratique/"><Ico class="ac-uic" name="ph:terminal-window-duotone" />Code de pratique</a>
-          <a href="/academy/outils/calculatrice/"><Ico class="ac-uic" name="ph:chart-line-duotone" />Calculatrice graphique</a>
-          <a href="/academy/outils/compilateur/"><Ico class="ac-uic" name="ph:code-duotone" />Compilateurs en ligne</a>
-          <a href="/academy/articles/"><Ico class="ac-uic" name="ph:article-duotone" />Articles</a>
-          <a href="/academy/outils/"><Ico class="ac-uic" name="ph:wrench-duotone" />Outils</a>
+          <a href="/academy/"><i class="ac-uic fa-solid fa-house" aria-hidden="true"></i>Accueil</a>
+          <a href="/academy/outils/tableau-blanc/"><i class="ac-uic fa-solid fa-chalkboard" aria-hidden="true"></i>Tableau blanc</a>
+          <a href="/academy/outils/pratique/"><i class="ac-uic fa-solid fa-terminal" aria-hidden="true"></i>Code de pratique</a>
+          <a href="/academy/outils/calculatrice/"><i class="ac-uic fa-solid fa-chart-line" aria-hidden="true"></i>Calculatrice graphique</a>
+          <a href="/academy/outils/compilateur/"><i class="ac-uic fa-solid fa-code" aria-hidden="true"></i>Compilateurs en ligne</a>
+          <a href="/academy/outils/"><i class="ac-uic fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>Outils</a>
         </div>
         <div class="ac-util-r">
-          <a class="ac-soc" href={SOCIALS.tiktok} target="_blank" rel="noopener" aria-label="TikTok"><Ico name="si:tiktok" /></a>
-          <a class="ac-soc" href={SOCIALS.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Ico name="si:youtube" /></a>
-          <a class="ac-soc" href={SOCIALS.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Ico name="si:facebook" /></a>
+          <a class="ac-soc" href={SOCIALS.tiktok} target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok" aria-hidden="true"></i></a>
+          <a class="ac-soc" href={SOCIALS.youtube} target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          <a class="ac-soc" href={SOCIALS.facebook} target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
           <button class="ac-theme" id="theme-toggle" aria-label="Mode sombre">🌙</button>
         </div>
       </div>
@@ -112,15 +113,16 @@ const path = Astro.url.pathname;
                 })}
               </div>
               <div class="ac-mega-foot">
-                <a href="/academy/bibliotheque/">Bibliothèque complète</a>
-                <a href="/academy/">Tous les cours</a>
+                <a href="/academy/bibliotheque/">Tutoriels (gratuit)</a>
+                <a href="/academy/cours/">Cours (expert)</a>
+                <a href="/academy/articles/">Articles</a>
                 <a href="/academy/outils/">Outils</a>
                 <a href="/academy/accompagnement/">Accompagnement</a>
-                <a href="/academy/articles/">Articles</a>
               </div>
             </div>
           </div>
-          <a href="/academy/bibliotheque/" class={path.startsWith('/academy/bibliotheque') ? 'cur' : ''}>Bibliothèque</a>
+          <a href="/academy/bibliotheque/" class={path.startsWith('/academy/bibliotheque') ? 'cur' : ''}>Tutoriels</a>
+          <a href="/academy/cours/" class={path.startsWith('/academy/cours') ? 'cur' : ''}>Cours</a>
           <a href="/academy/articles/" class={path.startsWith('/academy/articles') ? 'cur' : ''}>Articles</a>
           <a href="/academy/accompagnement/" class={path.startsWith('/academy/accompagnement') ? 'cur ac-nav-pro' : 'ac-nav-pro'}>Accompagnement</a>
         </nav>
@@ -137,8 +139,8 @@ const path = Astro.url.pathname;
             <a href={`/academy/#${p.slug}`}><span class="ac-mob-dot" style={`background:${p.color}`}></span>{p.name}</a>
           ))}
         </div>
-        <a href="/academy/">Tous les cours</a>
-        <a href="/academy/bibliotheque/">Bibliothèque</a>
+        <a href="/academy/bibliotheque/">Tutoriels</a>
+        <a href="/academy/cours/">Cours</a>
         <a href="/academy/articles/">Articles</a>
         <a class="pro" href="/academy/accompagnement/">Accompagnement</a>
         <a href="/academy/outils/">Outils</a>
@@ -164,9 +166,10 @@ const path = Astro.url.pathname;
         </div>
         <div>
           <h4>Academy</h4>
-          <a href="/academy/">Tous les cours</a>
-          <a href="/academy/accompagnement/">Accompagnement</a>
+          <a href="/academy/bibliotheque/">Tutoriels</a>
+          <a href="/academy/cours/">Cours</a>
           <a href="/academy/articles/">Articles</a>
+          <a href="/academy/accompagnement/">Accompagnement</a>
           <a href="/academy/outils/">Outils</a>
           <a href="/academy/a-propos/">À propos</a>
         </div>
@@ -215,14 +218,35 @@ const path = Astro.url.pathname;
           if (b.dataset.bound) return; b.dataset.bound = '1';
           b.addEventListener('click', (e) => { e.preventDefault(); const item = b.closest('.ac-tree-item'); if (!item) return; const open = item.classList.toggle('open'); b.setAttribute('aria-expanded', open ? 'true' : 'false'); });
         });
-        document.querySelectorAll('.ac-quiz-q').forEach((qq) => {
-          if (qq.dataset.bound) return; qq.dataset.bound = '1';
-          const opts = Array.from(qq.querySelectorAll('.ac-quiz-opt'));
-          opts.forEach((o) => o.addEventListener('click', () => {
-            if (qq.dataset.done) return; qq.dataset.done = '1';
-            opts.forEach((x) => { x.disabled = true; if (x.dataset.correct === '1') x.classList.add('ok'); });
-            if (o.dataset.correct !== '1') o.classList.add('ko');
-          }));
+        document.querySelectorAll('.ac-quiz').forEach((quiz) => {
+          if (quiz.dataset.bound) return; quiz.dataset.bound = '1';
+          const qs = Array.from(quiz.querySelectorAll('.ac-quiz-q'));
+          const scoreEl = quiz.querySelector('.ac-quiz-score');
+          let answered = 0, correct = 0;
+          qs.forEach((qq) => {
+            const opts = Array.from(qq.querySelectorAll('.ac-quiz-opt'));
+            const fb = qq.querySelector('.ac-quiz-fb');
+            opts.forEach((o) => o.addEventListener('click', () => {
+              if (qq.dataset.done) return; qq.dataset.done = '1';
+              opts.forEach((x) => { x.disabled = true; if (x.dataset.correct === '1') x.classList.add('ok'); });
+              const good = o.dataset.correct === '1';
+              if (!good) o.classList.add('ko');
+              if (fb) {
+                fb.classList.add(good ? 'ok' : 'ko');
+                fb.textContent = good ? 'Bien vu, c’est exactement ça.' : 'Presque. La bonne réponse est surlignée en vert.';
+                fb.hidden = false;
+              }
+              answered++; if (good) correct++;
+              // Score de fin : seulement si la leçon a au moins 2 questions
+              if (scoreEl && qs.length >= 2 && answered === qs.length) {
+                const pct = correct / qs.length;
+                scoreEl.className = 'ac-quiz-score ' + (pct === 1 ? 'ok' : pct >= 0.5 ? 'mid' : 'ko');
+                const msg = pct === 1 ? 'Sans faute, tu maîtrises.' : pct >= 0.5 ? 'Bien, tu tiens l’essentiel.' : 'Relis la leçon, puis retente.';
+                scoreEl.textContent = 'Score : ' + correct + '/' + qs.length + '. ' + msg;
+                scoreEl.hidden = false;
+              }
+            }));
+          });
         });
         const q = document.getElementById('ac-q');
         const grid = document.getElementById('ac-lib');

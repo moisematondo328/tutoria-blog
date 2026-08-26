@@ -68,7 +68,10 @@ function decode(s = ''): string {
   return s
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ')
-    .replace(/&#x27;/g, "'").replace(/&rsquo;/g, '’');
+    .replace(/&#x27;/g, "'").replace(/&rsquo;/g, '’')
+    // Retours à la ligne "doux" du markdown (source coupée en lignes) -> espace.
+    // Les vrais sauts (<br>) passent par un segment '\n' séparé, non concerné ici.
+    .replace(/\s*\n\s*/g, ' ');
 }
 function plain(tokens: any[]): string {
   return flatten(tokens).map((s) => s.text).join('');
@@ -135,26 +138,45 @@ export async function buildLessonPdf(input: LessonPdfInput): Promise<Buffer> {
   doc.moveTo(left, doc.y).lineTo(left + contentW, doc.y).lineWidth(1).strokeColor(C.line).stroke();
   doc.moveDown(0.8);
 
-  // ---- Rendu inline (texte riche) ----
-  const inline = (tokens: any[], opts: { x?: number; width?: number; size?: number; color?: string; lineGap?: number; base?: string } = {}) => {
-    const x = opts.x ?? left;
+  // ---- Rendu inline (texte riche), layout mot-à-mot ----
+  // On place chaque mot nous-mêmes (mesure + retour à la ligne + saut de page manuels).
+  // Ça évite le bug pdfkit où le texte `continued` se chevauche quand la police change
+  // au milieu d'une ligne qui se coupe (ce qui garnissait le PDF de texte superposé).
+  type RichOpts = { x?: number; y?: number; width?: number; size?: number; color?: string; lineGap?: number; base?: string };
+  const richText = (segs: Seg[], opts: RichOpts = {}): number => {
+    const x0 = opts.x ?? left;
     const width = opts.width ?? contentW;
-    const size = opts.size ?? 10.5;
-    const color = opts.color ?? C.ink;
+    const size0 = opts.size ?? 10.5;
+    const colorDef = opts.color ?? C.ink;
+    const baseFont = opts.base ?? F.body;
     const lineGap = opts.lineGap ?? 4;
-    const base = opts.base ?? F.body;
+    doc.font(baseFont).fontSize(size0);
+    const lineH = doc.currentLineHeight() + lineGap;
+    let x = x0;
+    let y = opts.y ?? doc.y;
+    for (const s of segs) {
+      if (s.text === '') continue;
+      const font = s.code ? F.med : s.bold ? F.semi : s.italic ? F.med : baseFont;
+      const color = s.code ? C.tealD : colorDef;
+      const size = s.code ? size0 - 0.5 : size0;
+      for (const part of s.text.split(/(\s+)/)) {
+        if (part === '') continue;
+        if (part.indexOf('\n') !== -1) { x = x0; y += lineH; continue; }
+        doc.font(font).fontSize(size);
+        if (/^\s+$/.test(part)) { if (x > x0) x += doc.widthOfString(part); continue; }
+        const w = doc.widthOfString(part);
+        if (x + w > x0 + width && x > x0) { x = x0; y += lineH; }
+        if (y + lineH > bottom) { doc.addPage(); y = doc.page.margins.top; x = x0; }
+        doc.fillColor(color).text(part, x, y, { lineBreak: false });
+        x += w;
+      }
+    }
+    doc.x = x0; doc.y = y + lineH;
+    return doc.y;
+  };
+  const inline = (tokens: any[], opts: RichOpts = {}) => {
     const segs = flatten(tokens).filter((s) => s.text !== '');
-    if (!segs.length) return;
-    // hauteur estimée pour saut de page
-    ensure(doc.heightOfString(segs.map((s) => s.text).join(''), { width }) );
-    doc.x = x;
-    segs.forEach((s, i) => {
-      const last = i === segs.length - 1;
-      const font = s.code ? F.med : s.bold ? F.semi : s.italic ? F.med : base;
-      doc.font(font).fontSize(s.code ? size - 0.5 : size)
-        .fillColor(s.code ? C.tealD : color)
-        .text(s.text, { continued: !last, width, lineGap });
-    });
+    if (segs.length) richText(segs, opts);
   };
 
   // ---- Tableau ----
@@ -211,15 +233,25 @@ export async function buildLessonPdf(input: LessonPdfInput): Promise<Buffer> {
     const y0 = doc.y;
     doc.roundedRect(left, y0, contentW, boxH, 10).fill(C.tint);
     doc.rect(left, y0, 5, boxH).fill(C.yellow);
-    doc.x = left + pad + 6; doc.y = y0 + pad;
-    const segs = flat.filter((s: Seg) => s.text !== '');
-    segs.forEach((s: Seg, i: number) => {
-      const last = i === segs.length - 1;
-      doc.font(s.bold ? F.semi : F.body).fontSize(10).fillColor(C.ink)
-        .text(s.text, left + pad + 6, doc.y, { continued: !last, width: innerW, lineGap: 3 });
-    });
+    richText(flat.filter((s: Seg) => s.text !== ''), { x: left + pad + 6, y: y0 + pad, width: innerW, size: 10, lineGap: 3 });
     doc.y = y0 + boxH;
     doc.moveDown(0.7);
+  };
+
+  // ---- Bloc HTML (ex. <figure><svg>…</figure>) : on n'imprime PAS le markup.
+  // On récupère juste la légende <figcaption> pour ne pas perdre le sens de la figure.
+  const renderHtml = (tok: any) => {
+    const raw: string = tok.raw || tok.text || '';
+    const m = raw.match(/<figcaption[^>]*>([\s\S]*?)<\/figcaption>/i);
+    if (m) {
+      const caption = decode(m[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
+      if (caption) {
+        ensure(28);
+        doc.moveDown(0.2);
+        richText([{ text: caption, italic: true }], { size: 9, color: C.muted });
+        doc.moveDown(0.4);
+      }
+    }
   };
 
   // ---- Liste ----
@@ -282,9 +314,11 @@ export async function buildLessonPdf(input: LessonPdfInput): Promise<Buffer> {
         doc.moveDown(0.3);
         doc.moveTo(left, doc.y).lineTo(left + contentW, doc.y).lineWidth(1).strokeColor(C.line).stroke();
         doc.moveDown(0.6); break;
+      case 'html': renderHtml(tok); break;
       case 'space': break;
       default:
-        if (tok.text) { inline([{ type: 'text', text: tok.text }]); doc.moveDown(0.5); }
+        // On n'imprime le brut que si ce n'est PAS du HTML (sinon on vidait le markup SVG).
+        if (tok.text && tok.type !== 'html') { inline([{ type: 'text', text: tok.text }]); doc.moveDown(0.5); }
     }
   }
 
@@ -320,15 +354,19 @@ export async function buildLessonPdf(input: LessonPdfInput): Promise<Buffer> {
 
   // ---- Pied de page (toutes les pages) ----
   const range = doc.bufferedPageRange();
+  // On dessine dans la zone de marge basse : sans neutraliser la marge, pdfkit ajoute
+  // une page à chaque text() (c'est ce qui créait les pages fantômes + le "1/2" décalé).
+  doc.page.margins.bottom = 0;
   for (let i = range.start; i < range.start + range.count; i++) {
     doc.switchToPage(i);
+    doc.page.margins.bottom = 0;
     const fy = doc.page.height - 44;
     doc.moveTo(left, fy).lineTo(left + contentW, fy).lineWidth(0.6).strokeColor(C.line).stroke();
-    doc.font(F.semi).fontSize(8).fillColor(C.teal).text('Tutoria Academy', left, fy + 8, { continued: false });
+    doc.font(F.semi).fontSize(8).fillColor(C.teal).text('Tutoria Academy', left, fy + 8, { lineBreak: false });
     doc.font(F.body).fontSize(8).fillColor(C.muted)
-      .text('tutoria.news · Apprends, comprends, applique', left, fy + 8, { width: contentW, align: 'center' });
+      .text('tutoria.news · Apprends, comprends, applique', left, fy + 8, { width: contentW, align: 'center', lineBreak: false });
     doc.font(F.med).fontSize(8).fillColor(C.muted)
-      .text(`${i + 1} / ${range.count}`, left, fy + 8, { width: contentW, align: 'right' });
+      .text(`${i + 1} / ${range.count}`, left, fy + 8, { width: contentW, align: 'right', lineBreak: false });
   }
 
   doc.end();

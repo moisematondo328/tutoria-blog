@@ -1,31 +1,52 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import AcademyLayout from '../layouts/AcademyLayout.astro';
 import { PILLARS } from '../consts';
+
+const PH: Record<string, string> = {
+  'sante-bien-etre': 'fa-solid fa-heart-pulse',
+  'developpement-personnel': 'fa-solid fa-arrow-trend-up',
+  'finance-investissement': 'fa-solid fa-coins',
+  'technologie-emergente': 'fa-solid fa-microchip',
+};
+const GRAD: Record<string, string[]> = {
+  'sante-bien-etre': ['#12A594', '#0B6E64'],
+  'developpement-personnel': ['#E0A400', '#A9760A'],
+  'finance-investissement': ['#0E8074', '#0A3F3A'],
+  'technologie-emergente': ['#19B7A0', '#0E8074'],
+};
 ---
 
-<BaseLayout title="Page introuvable" description="Cette page n'existe pas ou a été déplacée.">
-  <section class="banner">
-    <div class="wrap">
-      <span class="eyebrow">Erreur 404</span>
-      <h1>Oups, page introuvable</h1>
+<AcademyLayout title="Page introuvable">
+  <section class="ac-404">
+    <span class="ac-eyebrow">Erreur 404</span>
+    <h1 class="ac-display">Cette page a pris <span class="ac-hl">un autre chemin.</span></h1>
+    <p>La page que tu cherches n'existe pas ou a été déplacée. Reprends le fil par ici :</p>
+    <div class="ac-404-cta">
+      <a class="ac-btn ac-btn-primary" href="/academy/">Retour à l'accueil</a>
+      <a class="ac-btn ac-btn-ghost" href="/academy/bibliotheque/">Voir la bibliothèque</a>
     </div>
   </section>
 
-  <div class="wrap" style="max-width:720px;padding:44px 20px 20px;text-align:center">
-    <p style="font-size:1.1rem;color:var(--muted)">
-      La page que tu cherches n'existe pas ou a été déplacée. Pas de panique, voici par où continuer :
-    </p>
-    <p style="margin:22px 0">
-      <a class="badge-inline" href="/" style="font-size:.9rem;padding:10px 20px">← Retour à l'accueil</a>
-    </p>
-    <div class="pillars" style="margin-top:20px">
-      {PILLARS.map((p) => (
-        <a class="pillar" href={`/categorie/${p.slug}/`}>
+  <section class="ac-features ac-404-doms">
+    {PILLARS.map((p) => {
+      const g = GRAD[p.slug] || ['#0E8074', '#0A3F3A'];
+      return (
+        <a class="ac-feat" href={`/academy/bibliotheque/#${p.slug}`} style={`--c1:${g[0]};--c2:${g[1]}`}>
+          <span class="ac-feat-ic"><i class={PH[p.slug]} aria-hidden="true"></i></span>
           <h3>{p.name}</h3>
           <p>{p.blurb}</p>
-          <div class="bar" style={`background:${p.color}`}></div>
+          <span class="ac-feat-go">Explorer →</span>
         </a>
-      ))}
-    </div>
-  </div>
-</BaseLayout>
+      );
+    })}
+  </section>
+</AcademyLayout>
+
+<style>
+  .ac-404 { text-align: center; max-width: 640px; margin: 0 auto; padding: 64px 0 36px; }
+  .ac-404 .ac-eyebrow { display: block; margin-bottom: 14px; }
+  .ac-404 h1 { font-size: clamp(2rem, 4.6vw, 3rem); letter-spacing: -0.03em; line-height: 1.04; margin: 0 0 16px; }
+  .ac-404 p { color: var(--ac-ink-soft); font-size: 1.1rem; line-height: 1.6; margin: 0 0 26px; }
+  .ac-404-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .ac-404-doms { margin: 8px 0 24px; }
+</style>

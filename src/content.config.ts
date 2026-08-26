@@ -37,12 +37,16 @@ const videos = defineCollection({
   }),
 });
 
-// Cours = un parcours structuré (par pilier, porté par un expert). Le corps du .md = la présentation.
+// Série de leçons structurée (par pilier, portée par un expert). Le corps du .md = la présentation.
+//   kind   'tutoriel' = gratuit, l'aimant (parcours d'apprentissage) ; 'cours' = payant, porté par un expert.
+//   access 'free' | 'paid' — dérive de kind par défaut mais reste réglable (ex. tutoriel avec module bonus).
 const courses = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/courses' }),
   schema: z.object({
     title: z.string(),
     category: z.string(), // pilier
+    kind: z.enum(['tutoriel', 'cours']).optional().default('tutoriel'),
+    access: z.enum(['free', 'paid']).optional().default('free'),
     expert: z.string().optional().default(''),
     cover: z.string().optional().default(''),
     excerpt: z.string().optional().default(''),

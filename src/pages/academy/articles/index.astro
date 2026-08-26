@@ -27,6 +27,8 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
       </a>
     ))}
   </div>
+  <p class="ac-art-empty" id="ac-art-empty" hidden>Aucun article dans ce domaine pour l'instant.</p>
+  <nav class="ac-pager" id="ac-pager" aria-label="Pagination des articles"></nav>
 </AcademyLayout>
 
 <style>
@@ -34,22 +36,88 @@ const articles = (await getCollection('blog', ({ data }) => !data.draft))
   .ac-chip { font-family: inherit; font-weight: 700; font-size: .86rem; color: var(--ac-ink-soft); background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
   .ac-chip:hover { border-color: var(--ac-teal); }
   .ac-chip.on { background: var(--ac-dark); color: #fff; border-color: var(--ac-dark); }
+  .ac-art-empty { color: var(--ac-muted); font-style: italic; margin: 30px 0; }
+
+  .ac-pager { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin: 34px 0 8px; }
+  .ac-pager button { min-width: 40px; height: 40px; padding: 0 12px; font-family: inherit; font-weight: 700; font-size: .9rem; color: var(--ac-ink); background: var(--ac-surface); border: 1px solid var(--ac-line); border-radius: var(--ac-radius-sm); cursor: pointer; transition: border-color .14s, color .14s, background .14s; }
+  .ac-pager button:hover:not(:disabled):not(.on) { border-color: var(--ac-teal); color: var(--ac-teal); }
+  .ac-pager button.on { background: var(--ac-dark); color: #fff; border-color: var(--ac-dark); cursor: default; }
+  .ac-pager button:disabled { opacity: .4; cursor: default; }
+  .ac-pager .ac-pager-gap { min-width: auto; border: 0; background: none; color: var(--ac-muted); cursor: default; }
+  .ac-pager .ac-pager-nav i { font-size: .8rem; }
 </style>
 
 <script>
-  function acArtFilter() {
+  const PER_PAGE = 12;
+
+  function acArticles() {
     const wrap = document.getElementById('ac-filters');
     const grid = document.getElementById('ac-art-grid');
-    if (!wrap || !grid || wrap.dataset.bound) return;
+    const pager = document.getElementById('ac-pager');
+    const empty = document.getElementById('ac-art-empty');
+    if (!wrap || !grid || !pager || wrap.dataset.bound) return;
     wrap.dataset.bound = '1';
+
     const chips = Array.from(wrap.querySelectorAll('.ac-chip'));
     const cards = Array.from(grid.querySelectorAll('[data-cat]'));
+    let cat = '';
+    let page = 1;
+
+    const filtered = () => (cat ? cards.filter((c) => c.dataset.cat === cat) : cards);
+
+    function render() {
+      const list = filtered();
+      const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
+      if (page > pages) page = pages;
+      const start = (page - 1) * PER_PAGE;
+      const end = start + PER_PAGE;
+      cards.forEach((c) => { c.style.display = 'none'; });
+      list.slice(start, end).forEach((c) => { c.style.display = ''; });
+      if (empty) empty.hidden = list.length > 0;
+      renderPager(pages);
+    }
+
+    function pageBtn(n) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = String(n);
+      if (n === page) b.classList.add('on');
+      b.addEventListener('click', () => { if (n !== page) { page = n; render(); scrollUp(); } });
+      return b;
+    }
+    function navBtn(label, target, disabled) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'ac-pager-nav'; b.innerHTML = label; b.disabled = disabled;
+      b.addEventListener('click', () => { if (!disabled) { page = target; render(); scrollUp(); } });
+      return b;
+    }
+    function gap() {
+      const s = document.createElement('span'); s.className = 'ac-pager-gap'; s.textContent = '…'; return s;
+    }
+    function renderPager(pages) {
+      pager.innerHTML = '';
+      if (pages <= 1) return;
+      pager.appendChild(navBtn('<i class="fa-solid fa-chevron-left" aria-hidden="true"></i>', page - 1, page === 1));
+      // fenêtre de pages : 1 … (p-1 p p+1) … N
+      const nums = new Set([1, pages, page, page - 1, page + 1]);
+      const sorted = [...nums].filter((n) => n >= 1 && n <= pages).sort((a, b) => a - b);
+      let prev = 0;
+      sorted.forEach((n) => { if (n - prev > 1) pager.appendChild(gap()); pager.appendChild(pageBtn(n)); prev = n; });
+      pager.appendChild(navBtn('<i class="fa-solid fa-chevron-right" aria-hidden="true"></i>', page + 1, page === pages));
+    }
+    function scrollUp() {
+      const y = grid.getBoundingClientRect().top + window.scrollY - 90;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+
     wrap.addEventListener('click', (e) => {
       const b = e.target.closest('.ac-chip'); if (!b) return;
       chips.forEach((c) => c.classList.toggle('on', c === b));
-      const cat = b.dataset.cat || '';
-      cards.forEach((c) => { c.style.display = !cat || c.dataset.cat === cat ? '' : 'none'; });
+      cat = b.dataset.cat || '';
+      page = 1;
+      render();
     });
+
+    render();
   }
-  document.addEventListener('astro:page-load', acArtFilter);
+  document.addEventListener('astro:page-load', acArticles);
 </script>

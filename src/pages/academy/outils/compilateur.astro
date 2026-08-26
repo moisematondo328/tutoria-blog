@@ -115,4 +115,7 @@ import AcademyLayout from '../../../layouts/AcademyLayout.astro';
     document.getElementById('cp-clear').addEventListener('click', () => { out.innerHTML = PLACEHOLDER; });
   }
   document.addEventListener('astro:page-load', compiler);
+  // Filet de sécurité : si l'event a déjà été émis avant l'exécution de ce module
+  // (course au 1er chargement avec ClientRouter), on monte tout de suite. Idempotent.
+  if (document.readyState !== 'loading') compiler();
 </script>
